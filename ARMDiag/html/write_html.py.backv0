@@ -1,0 +1,181 @@
+import os
+import webbrowser
+def write_html():
+    basedir='/g/g92/zhang40/calc_stats/ARMDiag/ARMDiag/html/'
+    os.chdir(basedir)
+############################################
+    f=open('set0/AC_mean_table.html','w')
+    message = """<html>
+    <HEAD>
+    <TITLE>ARM Diagnostic Tables</TITLE>
+    </HEAD>
+    <b>DIAG Set 0 - Annual Mean Tables</b>
+    <hr noshade size=2 size="100%">
+    <TABLE>
+    <TR>
+          <TH><BR>
+        <TR>
+        <TH ALIGN=LEFT>Multi-variable Tables
+        <TH ALIGN=LEFT>of DJF, MAM, JJA, SON and Annual Mean
+        <TH ALIGN=LEFT><A HREF="ANN_mean_table.html"> ANN</a>
+        <TH ALIGN=LEFT><A HREF="DJF_mean_table.html"> DJF</a>
+        <TH ALIGN=LEFT><A HREF="MAM_mean_table.html"> MAM</a>
+        <TH ALIGN=LEFT><A HREF="JJA_mean_table.html"> JJA</a>
+        <TH ALIGN=LEFT><A HREF="SON_mean_table.html"> SON</a>
+        <TR>
+    <TR>
+      <TH><BR>
+    <TR>
+    </TABLE>
+    </html>"""
+    
+    f.write(message)
+    f.close()
+#    #########################
+    f=open('set1/mon_diurnal_clim.html','w')
+    message = """<html>
+    <HEAD>
+    <TITLE>ARM Diagnostic Plots</TITLE>
+    </HEAD>
+    <b>DIAG Set 1 - Vertical contour plots of monthly means</b>
+    <hr noshade size=2 size="100%">
+    <TABLE>
+    <TR>
+          <TH><BR>
+          <TH ALIGN=LEFT><font color=blue size=+1>ARSCL Cloud Fraction</font>
+        <TR>
+        <TH ALIGN=LEFT>Pressure level cl
+        <TH ALIGN=LEFT>Monthly mean diurnal cycle
+        <TH ALIGN=LEFT><A HREF="../../figures/ARSCL_cl_mon_diurnal_clim.png"> obs.</a>
+        <TH ALIGN=LEFT><A HREF="../../figures/CFMIP2_EC-EARTH_cl_mon_diurnal_clim.png">model</a>
+        <TR>
+    <TR>
+      <TH><BR>
+    <TR>
+    </TABLE>
+    </html>"""
+    
+    f.write(message)
+    f.close()
+#    #########################
+#    f=open('set1/cl_mon_diurnal_clim.html','w')
+#    message = """<html>
+#    <div style="float:left;">
+#    <img alt="logo" src="/g/g92/zhang40/calc_stats/ARMDiag/ARMDiag/figures/ARSCL_cl_mon_diurnal_clim.png"  width="600" height="400" /><img alt="background" src="/g/g92/zhang40/calc_stats/ARMDiag/ARMDiag/figures/CFMIP2_EC-EARTH_cl_mon_diurnal_clim.png" width="600" height="400" />
+#    </div>
+#    </html>"""
+#    
+#    f.write(message)
+#    f.close()
+#    #########################
+#    
+#
+#    f=open('set1/mon_diurnal_clim.html','w')
+#    message = """<html>
+#    <HEAD>
+#    <TITLE>ARM Diagnostic Plots</TITLE>
+#    </HEAD>
+#    <b>DIAG Set 1 - Vertical contour plots of Diurnal cycle</b>
+#    <hr noshade size=2 size="100%">
+#    <TABLE>
+#    <TR>
+#      <TH><BR>
+#      <TH ALIGN=LEFT><font color=blue size=+1>ARSCL Cloud Fraction</font>
+#    <TR>
+#    <TH ALIGN=LEFT>cl *
+#    <TH ALIGN=LEFT>Pressure level cl
+#    <TH ALIGN=LEFT><A HREF="set1/cl_mon_diurnal_clim.html">plot</a>
+#    <TR>
+#    </TABLE>
+#
+#    </html>"""
+#    
+#    f.write(message)
+#    f.close()
+#    
+#    #########################
+    f=open('set2/cl_annual_cycle_clim.html','w')
+    message = """<html>
+    <div style="float:left;">
+    <img alt="logo" src="/g/g92/zhang40/calc_stats/ARMDiag/ARMDiag/figures/ARSCL_cl_anual_cycle_clim.png"  width="600" height="400" /><img alt="background" src="/g/g92/zhang40/calc_stats/ARMDiag/ARMDiag/figures/CFMIP2_EC-EARTH_cl_anual_cycle_clim.png" width="600" height="400" />
+    </div>
+    </html>"""
+    
+    f.write(message)
+    f.close()
+    
+    #########################
+    f=open('set3/cl_diurnal_clim.html','w')
+    message = """<html>
+    <div style="float:left;"><img alt="logo" src="/g/g92/zhang40/calc_stats/ARMDiag/ARMDiag/figures/ARSCL_cl_diurnal_clim.png"  width="600" height="400" /><img alt="background" src="/g/g92/zhang40/calc_stats/ARMDiag/ARMDiag/figures/CFMIP2_EC-EARTH_cl_diurnal_clim.png" width="600" height="400" />
+    </div>
+    </html>"""
+    
+    f.write(message)
+    f.close()
+    
+    #########################
+    f=open('set4/cl_seasonal_clim.html','w')
+    message = """<html>
+    <div style="float:left;"><img alt="logo" src="/g/g92/zhang40/calc_stats/ARMDiag/ARMDiag/figures/DJF_ARSCL_CFMIP2_EC-EARTH.png"  width="400" height="400" /><img alt="background" src="/g/g92/zhang40/calc_stats/ARMDiag/ARMDiag/figures/MAM_ARSCL_CFMIP2_EC-EARTH.png" width="400" height="400" />
+    </div>
+    
+    <div style="float:left;">
+    <img alt="logo" src="/g/g92/zhang40/calc_stats/ARMDiag/ARMDiag/figures/JJA_ARSCL_CFMIP2_EC-EARTH.png"  width="400" height="400" /><img alt="background" src="/g/g92/zhang40/calc_stats/ARMDiag/ARMDiag/figures/SON_ARSCL_CFMIP2_EC-EARTH.png" width="400" height="400" />
+    </div>
+    <div style="float:left;">
+    <img alt="logo" src="/g/g92/zhang40/calc_stats/ARMDiag/ARMDiag/figures/Annual_ARSCL_CFMIP2_EC-EARTH.png"  width="800" height="600" />
+    </div>
+    </html>"""
+    
+    f.write(message)
+    f.close()
+    #########################
+    
+    
+    f = open('ARM_diag.html','w')
+    
+    message = """<html>
+    <head>
+    <TITLE>ARM Diagnostics Plots</TITLE>
+    <BODY BGCOLOR="white">
+    </head>
+    </table>
+    </b></font>
+    <hr noshade size=2 size="100%">
+    <TABLE width='1150' >
+    <TR>
+    <TD>
+      <TH ALIGN=left VALIGN=top>
+      <font color=blue>Set</font>
+      <font color=blue>Description </font><br>
+      <font color=red>1</font> <A HREF="set0/AC_mean_table.html">Tables</A> of DJF, MAM, JJA, SON and Annual Mean.<br>
+      <font color=red>1</font> <A HREF="set1/mon_diurnal_clim.html">Contour plots</A> of diurnal monthly climatology.<br>
+      <font color=red>2</font> <A HREF="set2/cl_annual_cycle_clim.html">Contour plots</A> of annual cycle climatology.<br>
+      <font color=red>3</font> <A HREF="set3/cl_diurnal_clim.html">Contour plots</A> of diurnal ANN climatology.<br>
+      <font color=red>4</font> <A HREF="set4/cl_seasonal_clim.html">Line plots</A> of DJF, MAM, JJA, SON and Annual Mean.<br>
+     
+    
+    </TD>
+    
+    <TD>
+    <TH ALIGN=LEFT>
+    <em>Click on Plot Type</em></b><p>
+      <a href="set1/mon_diurnal_clim.html"><img src="/g/g92/zhang40/calc_stats/ARMDiag/ARMDiag/figures/ARSCL_cl_mon_diurnal_clim.png"  border=1 hspace=3 alt="Set 1" width="70" height="50"></a>
+      <a href="set2/cl_annual_cycle_clim.html"><img src="/g/g92/zhang40/calc_stats/ARMDiag/ARMDiag/figures/ARSCL_cl_anual_cycle_clim.png"   border=1 hspace=3 alt="Set 2" width="70" height="50"></a>
+      <a href="set3/cl_diurnal_clim.html"><img src="/g/g92/zhang40/calc_stats/ARMDiag/ARMDiag/figures/ARSCL_cl_diurnal_clim.png"   border=1 hspace=3 alt="Set 3" width="70" height="50"></a>
+      <a href="set4/cl_seasonal_clim.html"><img src="/g/g92/zhang40/calc_stats/ARMDiag/ARMDiag/figures/Annual_ARSCL_CFMIP2_EC-EARTH.png"   border=1 hspace=3 alt="Set 4" width="70" height="50"></a>
+    
+    </TH>
+    </TD>
+    
+    </TR>
+    </TABLE>
+    
+    </html>"""
+    
+    f.write(message)
+    f.close()
+     
+#    filename='file://'+basedir+'ARM_diag.html'
+#    webbrowser.open_new_tab(filename)
