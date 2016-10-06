@@ -4,6 +4,7 @@ import config
 mod = config.modelname
 
 def DC_amip_contour_html():
+    """Create set 5 diag. html hosting contour plots of diurnal cycle"""
     pathname = os.path.dirname(sys.argv[0])
     basedir=os.path.abspath(pathname)+'/ARMDiag/'
 

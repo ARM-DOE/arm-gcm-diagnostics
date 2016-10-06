@@ -6,6 +6,7 @@ mod = config.modelname
 
 
 def write_html():
+    """Creat the main html page hosting all sets of diagnostics"""
     pathname = os.path.dirname(sys.argv[0])
     basedir=os.path.abspath(pathname)+'/ARMDiag/'
     
@@ -20,7 +21,7 @@ def write_html():
     <p>
     <b>ARM Metrics and Diagnostics Package</b>
     <p>
-    <b>Model: CESM-CAM5</b>
+    <b>Model: """+mod+"""</b>
     <hr noshade size=2 size="100%">
     <TABLE width='1550' >
     <TR>

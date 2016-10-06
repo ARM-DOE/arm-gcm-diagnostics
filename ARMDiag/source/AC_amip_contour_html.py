@@ -4,6 +4,7 @@ import config
 mod = config.modelname
 
 def AC_amip_contour_html():
+    """ Create set 3 diag. html hosting contour and vertical profiles of annual cycle"""
     pathname = os.path.dirname(sys.argv[0])
     basedir=os.path.abspath(pathname)+'/ARMDiag/'
     

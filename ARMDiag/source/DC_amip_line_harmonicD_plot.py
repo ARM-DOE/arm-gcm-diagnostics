@@ -6,6 +6,7 @@ import os,sys
 import config
 
 def DC_amip_line_harmonicD_plot():
+    """Prepare line and harmonic Dial diagram for diurnal cycle of precipitation"""
     mod = config.modelname
     pathname = os.path.dirname(sys.argv[0])
     basedir=os.path.abspath(pathname)+'/ARMDiag/'

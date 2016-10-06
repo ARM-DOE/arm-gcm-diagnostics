@@ -5,6 +5,7 @@ import config
 mod = config.modelname
 
 def Daily_amip_PDF_plot_html():
+    """Create set 6 diag. html hosting line plots of precipitation pdfs"""
     pathname = os.path.dirname(sys.argv[0])
     basedir=os.path.abspath(pathname)+'/ARMDiag/'
     

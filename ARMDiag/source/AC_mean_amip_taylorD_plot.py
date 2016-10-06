@@ -8,6 +8,7 @@ import config
 mod = config.modelname
 
 def AC_mean_amip_taylorD_plot():
+   """ Prepare Taylor Diagram of annual cycle for set 2 of diag.."""
     pathname = os.path.dirname(sys.argv[0])
     basedir=os.path.abspath(pathname)+'/ARMDiag/'
     vas=['tas','pr','clt','hurs','hfss','hfls','rlus','rlds','rsus','rsds','ps','prw','cllvi','albedo']

@@ -7,6 +7,8 @@ import config
 
 mod = config.modelname
 def AC_mean_amip_plot():
+    """1. Make line plots of annual cycle for the 2nd set of diagnostics. 2. Prepare for data for tables in the 1st set of diagnostics."""
+
     pathname = os.path.dirname(sys.argv[0])
     basedir=os.path.abspath(pathname)+'/ARMDiag/'
     vas=['tas','pr','clt','hurs','hfss','hfls','rlus','rlds','rsus','rsds','ps','prw','cllvi','albedo']

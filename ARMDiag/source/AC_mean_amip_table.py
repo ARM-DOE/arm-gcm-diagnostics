@@ -4,6 +4,7 @@ import config
 
 mod = config.modelname
 def AC_mean_amip_table():
+    """Create set 1 diag. html hosting the table summarizing DJF, MAM, JJA, SON,ANN mean climatology"""
     pathname = os.path.dirname(sys.argv[0])
     basedir=os.path.abspath(pathname)+'/ARMDiag/'
     

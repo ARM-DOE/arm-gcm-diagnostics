@@ -5,6 +5,7 @@ import config
 mod = config.modelname
 
 def AC_mean_amip_line_taylorD_html():
+    """Create set 2 diag. html hosting line plot and Taylor Diagram."""
     pathname = os.path.dirname(sys.argv[0])
     basedir=os.path.abspath(pathname)+'/ARMDiag/'
     

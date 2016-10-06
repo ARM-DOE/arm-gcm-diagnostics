@@ -7,6 +7,7 @@ import config
 
 mod = config.modelname
 def AC_DC_cl_p_plot():
+    """Prepare annual cycle and diurnal cycle plots of cloud fraction fro set 3 and set 5 diag"""
     pathname = os.path.dirname(sys.argv[0])
     basedir=os.path.abspath(pathname)+'/ARMDiag/'
     vas=['cl_p']

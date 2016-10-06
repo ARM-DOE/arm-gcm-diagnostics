@@ -4,8 +4,9 @@ import numpy as np
 import os,sys
 import config
 
+mod = config.modelname
 def Daily_amip_PDF_plot():
-    mod = config.modelname
+    """ Prepare line plots (PDFs) of precipitation based on daily mean data for set 6 diag"""
     pathname = os.path.dirname(sys.argv[0])
     basedir=os.path.abspath(pathname)+'/ARMDiag/'
     vas=['pr']

@@ -5,6 +5,7 @@ import config
 mod = config.modelname
 
 def DC_mean_amip_line_harmonicD_html():
+    """Create set 4 diag. html hosting line and harmonic dial diagram for diurnal cycle of precipitation"""
     pathname = os.path.dirname(sys.argv[0])
     basedir=os.path.abspath(pathname)+'/ARMDiag/'
     
