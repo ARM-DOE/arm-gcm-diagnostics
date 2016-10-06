@@ -25,11 +25,13 @@ Install
 The data files including observation and CMIP5 model data are available through ARM archive. The analytical codes to calculate and visualize the diagnostics results are placed via repository (arm-gcm-diagnostics) at https://github.com/ARM-DOE/
 
 For downloading data:
+
 - Click https://www.arm.gov/data/eval/123
 - Following the Data Directory link on that page, it will lead to the area that the data files are placed. A short registration is required if you do not already have an ARM account.
 - DOI for the citation of the data is 10.5439/1282169
 
 For obtaining codes::
+
     git clone https://github.com/ARM-DOE/arm-gcm-diagnostics/
     
 
@@ -42,14 +44,17 @@ python ARMDiag_driver.py
 
 To view the diagnostics results:
 For Mac OS::
+
     open <Your Directory>/ARMDiag/html/ARM_diag.html
 
 For Linux::
+
     xdg-open <Your Directory>/ARMDiag/html/ARM_diag.html
 
 Examples
 =============
 In this release, the package provides 6 sets of diagnostics including:
+
 - Tables summarizing DJF, MAM, JJA, SON and Annual Mean climatology using monthly output 
 - Line plots and Taylor diagrams diagnosing annual cycle using monthly output
 - Contour and vertical profiles of annual cycle for quantities with vertical distribution (i.e., cloud fraction)
