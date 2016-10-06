@@ -1,36 +1,18 @@
 .. -*- mode: rst -*-
 
-|Travis|_ |AppVeyor|_
 
-.. |Travis| image:: https://api.travis-ci.org/ARM-DOE/pyart.png?branch=master
-   .. _Travis: https://travis-ci.org/ARM-DOE/pyart
-
-.. |AppVeyor| image:: https://ci.appveyor.com/api/projects/status/9do57qycha65j4v9/branch/master?svg=true
-   .. _AppVeyor: https://ci.appveyor.com/project/JonathanHelmus/pyart-l711v/branch/master
-
-
-The Python ARM Radar Toolkit (Py-ART)
+ARM data-oriented diagnostics package for GCMs
 =====================================
 
-The Python ARM Radar Toolkit, Py-ART, is an open source Python module 
-containing a growing collection of weather radar algorithms and utilities
-build on top of the Scientific Python stack and distributed under the
-3-Clause BSD license. Py-ART is used by the 
-`Atmospheric Radiation Measurement (ARM) Climate Research Facility 
-<http://www.arm.gov>`_ for working with data from a number of precipitation
-and cloud radars, but has been designed so that it can be used by others in
-the radar and atmospheric communities to examine, processes, and analyze
-data from many types of weather radars. 
+This Python-based diagnostics package is currently being developed by the ARM Infrastructure Team to facilitate the use of long-term high frequency measurements from the ARM program in evaluating the regional climate simulation of clouds, radiation and precipitation. This diagnostics package computes climatological means of targeted climate model simulation and generates tables and plots for comparing the model simulation with ARM observational data. The CMIP model data sets are also included in the package to enable model inter-comparison.
 
 
 Important Links
 ===============
 
-- Official source code repository: https://github.com/ARM-DOE/pyart
-- HTML documentation: http://arm-doe.github.io/pyart-docs-travis/
-- Examples: http://arm-doe.github.io/pyart/dev/auto_examples/index.html
-- Mailing List: http://groups.google.com/group/pyart-users/
-- Issue Tracker: https://github.com/ARM-DOE/pyart/issues
+- Official source code repository: https://github.com/ARM-DOE/arm-gcm-diagnostics
+- ARM webpage: http://www.arm.gov/data/eval/123
+- Technical Report: http://arm-doe.github.io/pyart/dev/auto_examples/index.html
 
 
 Citing
