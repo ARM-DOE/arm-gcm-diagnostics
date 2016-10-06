@@ -40,7 +40,8 @@ Testing
 A working prototype has been set up for the users to run the package out-of-the-box. In this case, all the observation and CMIP data are already placed under directoris: /ARMDiag/observation and /ARMDiag/cmip, respectively, in the format of comma-separated values (csv). The demo model data are placed under /ARMDiag/model.
 
 To run the package, simply type in the terminal the following::
-python ARMDiag_driver.py
+
+    python ARMDiag_driver.py
 
 To view the diagnostics results:
 For Mac OS::
@@ -61,6 +62,16 @@ In this release, the package provides 6 sets of diagnostics including:
 - Line plots of diurnal cycle for quantities without vertical distribution (i.e., precipitation)
 - Contour plots of diurnal cycle for quantities with vertical distribution 
 - Line plots of Probability Density Functions using daily output
+
+Set-up new case
+=================
+
+- Follow sample codes and data file name convention to generate model data and then place the processed data in model data directory: ARMDiag/model
+- Edit config.py to change model name accordingly (make sure the model name in config.gy matchs generated model data name)
+- Run the package by typing::
+
+              python ARMDiag_driver.py
+
 
 
 Extensions and related software
