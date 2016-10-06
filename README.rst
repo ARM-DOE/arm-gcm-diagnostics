@@ -70,7 +70,7 @@ Within the package, we provide several code samples (in the directory ARMDiag/sa
 
 To have UVCDAT installed please following steps provided from below link:
 
-* `UVCDAT <https://github.com/UV-CDAT/uvcdat>`_ : 
+* `UVCDAT <https://github.com/UV-CDAT/uvcdat/wiki/install>`_ : 
   Ultrascale Visualization Climate Data Analysis Tools.
 
 The other required dependencies to install Py-ART in addition to Python are:
