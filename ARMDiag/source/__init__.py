@@ -1,4 +1,4 @@
-import AC_mean_amip_data
+#import AC_mean_amip_data
 import AC_mean_amip_plot #import compute_metrics
 import AC_mean_amip_table
 import AC_mean_amip_taylorD_plot
