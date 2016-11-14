@@ -63,15 +63,18 @@ def AC_mean_amip_plot():
                 pr_mmm_sns=pr_mmm[0:12]
             pr_sns_data[va_ind,si,:]=(np.mean(pr_mod_sns),np.mean(pr_obs_sns),np.mean(pr_mod_sns)-np.mean(pr_obs_sns),np.mean(pr_mmm_sns),np.sqrt(((pr_mod_sns - pr_obs_sns) ** 2).mean()))
     header=['Variables','Model','Obs','Model-Obs','CMIP5_MMM','RMSE']
-    header=[x+space*20 for x in header]
+#    header=[x+space*20 for x in header]
     for si in range(len(seasons)):
        with open(basedir+'metrics/'+mod+'_table_'+seasons[si]+'.csv','w') as f1:
-               writer=csv.writer(f1, delimiter='\t',lineterminator='\n', quoting=csv.QUOTE_NONE)
+               writer=csv.writer(f1, delimiter=',',lineterminator='\n', quoting=csv.QUOTE_NONE)
                writer.writerow(header)
-               for i in range(len(vas)):
-                   row=['%-20s'%xaxis[i]+space*20 +'%20s'%str('%6.3f'%pr_sns_data[i,si,0])+space*20 +'%20s'%str('%6.3f'%pr_sns_data[i,si,1])+space*20 +'%20s'%str('%6.3f'%pr_sns_data[i,si,2])+space*20 +'%20s'%str('%6.3f'%pr_sns_data[i,si,3])+space*20 +'%20s'%str('%6.3f'%pr_sns_data[i,si,4])]
-                   writer.writerow(row )
-       np.savetxt(basedir+'metrics/'+mod+'_AC_amip_'+seasons[si]+'.csv',pr_sns_data[:,si,:],fmt='%.3f')#,delimiter=10*'&nbsp;')
+               #use tuple to generate csv 
+               writer.writerows([c]+row.tolist() for c, row in zip(xaxis,pr_sns_data[:,si,:]))
+
+#               for i in range(len(vas)):
+#                   row=['%-20s'%xaxis[i]+space*20 +'%20s'%str('%6.3f'%pr_sns_data[i,si,0])+space*20 +'%20s'%str('%6.3f'%pr_sns_data[i,si,1])+space*20 +'%20s'%str('%6.3f'%pr_sns_data[i,si,2])+space*20 +'%20s'%str('%6.3f'%pr_sns_data[i,si,3])+space*20 +'%20s'%str('%6.3f'%pr_sns_data[i,si,4])]
+#                   writer.writerow(row )
+#       np.savetxt(basedir+'metrics/'+mod+'_AC_amip_'+seasons[si]+'.csv',pr_sns_data[:,si,:],fmt='%.3f')#,delimiter=10*'&nbsp;')
 
 
 

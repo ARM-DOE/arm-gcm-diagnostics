@@ -32,10 +32,12 @@ def AC_mean_amip_table():
         
           #  write all other rows 
              else:
-                htmlfile.write('<tr>')    
+                htmlfile.write('<tr><div style="width: 50px" >')
+                #htmlfile.write('<tr>')    
                 for column in row:
                     htmlfile.write('<td>' + column +'</td>')
-                htmlfile.write('</tr>')
+                #htmlfile.write('</tr>')
+                htmlfile.write('</div></tr>')
              #increment row count 
              rownum += 1
       # write </table> tag
