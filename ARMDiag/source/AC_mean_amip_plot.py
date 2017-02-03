@@ -18,15 +18,18 @@ def AC_mean_amip_plot():
     ylim=[(-5,45),(0,6),(10,80),(20,90),(-10,140),(0,160),(300,550),(240,440),(10,80),(100,350),(-25,35),(5,45),(-0.1,0.25),(0.0,0.3)]
     
     seasons=['DJF','MAM','JJA','SON','ANN']
-    sns=[2,5,8,11,0]
+    #sns=[2,5,8,11,0]
+    sns=[11,2,5,8,0]
     pr_sns_data=np.empty([len(vas),len(seasons),5])*np.nan
     space='&nbsp;'
     for va_ind in range(len(vas)):
         fig = plt.figure()# Create figure
         ax  =fig.add_axes([0.15, 0.14, 0.8, 0.8]) # Create axes
-        pr_cmip=genfromtxt(basedir+'cmip/'+vas[va_ind]+'_model_regrid_3x3_correct.csv')
-        pr_mod=genfromtxt(basedir+'model/'+vas[va_ind]+'_'+mod+'_regrid_3x3_correct.csv')
-        pr_obs=genfromtxt(basedir+'observation/all_'+vas[va_ind]+'_obs_regrid_3x3.csv')
+        pr_cmip=genfromtxt(basedir+'cmip/all_'+vas[va_ind]+'_model_regrid_3x3_correct.csv')
+        #pr_mod=genfromtxt(basedir+'model/'+vas[va_ind]+'_'+mod+'_regrid_3x3_correct.csv')
+        pr_mod=genfromtxt(basedir+'model/all_'+vas[va_ind]+'_'+mod+'_regrid_3x3_correct.csv')
+        #pr_obs=genfromtxt(basedir+'observation/all_'+vas[va_ind]+'_obs_regrid_3x3.csv')
+        pr_obs=genfromtxt(basedir+'observation/all_'+vas[va_ind]+'_ac_obs.csv')
         pr_obs=pr_obs[0]
         mod_num=pr_cmip.shape[0]-1
         pr_mmm=pr_cmip[mod_num,:]
@@ -61,8 +64,9 @@ def AC_mean_amip_plot():
                 pr_mod_sns=pr_mod[0:12]
                 pr_obs_sns=pr_obs[0:12]
                 pr_mmm_sns=pr_mmm[0:12]
-            pr_sns_data[va_ind,si,:]=(np.mean(pr_mod_sns),np.mean(pr_obs_sns),np.mean(pr_mod_sns)-np.mean(pr_obs_sns),np.mean(pr_mmm_sns),np.sqrt(((pr_mod_sns - pr_obs_sns) ** 2).mean()))
-    header=['Variables','Model','Obs','Model-Obs','CMIP5_MMM','RMSE']
+            #pr_sns_data[va_ind,si,:]=(np.mean(pr_mod_sns),np.mean(pr_obs_sns),np.mean(pr_mod_sns)-np.mean(pr_obs_sns),np.mean(pr_mmm_sns),np.sqrt(((pr_mod_sns - pr_obs_sns) ** 2).mean()))
+            pr_sns_data[va_ind,si,:]=(round(np.mean(pr_mod_sns),3),round(np.mean(pr_obs_sns),3),round(np.mean(pr_mod_sns)-np.mean(pr_obs_sns),3),round(np.mean(pr_mmm_sns),3),round(np.sqrt(((pr_mod_sns - pr_obs_sns) ** 2).mean()),3))
+    header=['Variables','Model','Obs','Model-Obs','CMIP5','RMSE']
 #    header=[x+space*20 for x in header]
     for si in range(len(seasons)):
        with open(basedir+'metrics/'+mod+'_table_'+seasons[si]+'.csv','w') as f1:

@@ -27,4 +27,4 @@ def AC_mean_amip_line_taylorD_html():
         fig1='../figures/AC_amip_'+vas[va_ind]+'.png'
         fig2='../figures/AC_amip_taylorD_'+vas[va_ind]+'.png'
         htmlfile1.write('<div class="container"><div style="float:left"><img src='+fig1+' alt="Line" width="500" height="450"></div><div style="float:left"><img src='+fig2+' alt="Line" width="500" height="450"></div>')
-    htmlfile.write('<TH ALIGN=LEFT><A HREF='+two_figs+'>Line plot and Taylor Diagram.</a>')
+        htmlfile.write('<TH ALIGN=LEFT><A HREF='+two_figs+'>Line plot and Taylor Diagram.</a>')

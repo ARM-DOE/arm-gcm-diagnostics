@@ -14,9 +14,11 @@ def AC_mean_amip_taylorD_plot():
     vas=['tas','pr','clt','hurs','hfss','hfls','rlus','rlds','rsus','rsds','ps','prw','cllvi','albedo']
     xaxis=['Surface Temperature (C)','Precipitation (mm/day)','Total Cloud Fraction (%)','Rel. Humidity (%)','Sensible Heat Flux (W/m2)','Latent Heat Flux(W/m2)','Upwelling LW (W/m2)','Downwelling LW (W/m2)','Upwelling SW (W/m2)','Downwelling SW (W/m2)','Surface Pressure (Pa)', 'Preciptable Water (mm)', 'Liquid Water Path (mm)','Surface Albedo']
     for va_ind in range(len(vas)):
-        pr_cmip=genfromtxt(basedir+'cmip/'+vas[va_ind]+'_model_regrid_3x3_correct.csv')
-        pr_mod=genfromtxt(basedir+'model/'+vas[va_ind]+'_'+mod+'_regrid_3x3_correct.csv')
-        pr_obs=genfromtxt(basedir+'observation/all_'+vas[va_ind]+'_obs_regrid_3x3.csv')
+        pr_cmip=genfromtxt(basedir+'cmip/all_'+vas[va_ind]+'_model_regrid_3x3_correct.csv')
+        #pr_mod=genfromtxt(basedir+'model/'+vas[va_ind]+'_'+mod+'_regrid_3x3_correct.csv')
+        pr_mod=genfromtxt(basedir+'model/all_'+vas[va_ind]+'_'+mod+'_regrid_3x3_correct.csv')
+        #pr_obs=genfromtxt(basedir+'observation/all_'+vas[va_ind]+'_obs_regrid_3x3.csv')
+        pr_obs=genfromtxt(basedir+'observation/all_'+vas[va_ind]+'_ac_obs.csv')
         pr_obs=pr_obs[0]
         mod_num=pr_cmip.shape[0]-1
         pr_mmm=pr_cmip[mod_num,:]
