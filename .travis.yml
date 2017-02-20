@@ -1,0 +1,58 @@
+
+s:
+  - linux
+  - osx
+  # There's currently no support for OSX/macOS on travis.
+
+language: python
+python:
+  - "2.7"
+
+#osx_image: xcode8.2
+#language: python
+#env:
+#  global:
+#    - CI=true
+
+
+matrix:
+    include:
+        - os: linux
+          python: 2.7
+          sudo: false
+        - os: osx
+          sudo: false
+          language: generic
+
+install:
+    -python setup.py install
+# command to run tests
+script: pytest
+  # Install Anaconda
+  #- if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
+
+  #    brew update;
+  #    brew install python;
+  #    python -m venv venv;
+  #    source venv/bin/activate;
+  #  fi
+
+#  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+#      wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
+#    fi
+#  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+#      wget https://repo.continuum.io/miniconda/Miniconda2-latest-MacOSX-x86_64.sh -O miniconda.sh;
+#    fi
+#  - bash miniconda.sh -b -p $HOME/miniconda
+#  - export PATH="$HOME/miniconda/bin:$PATH"
+#  - hash -r
+#  - conda config --set always_yes yes --set changeps1 no
+#  - conda update -q conda
+#
+#  - python setup.py install
+#
+#script:
+#  - bash cdp/test/test.sh
+#
+#after_success:
+#  - test $TRAVIS_BRANCH = "master" && conda install conda-build && conda install anaconda-client && bash conda/conda_upload.sh
