@@ -27,7 +27,8 @@ matrix:
 install:
     -python setup.py install
 # command to run tests
-script: pytest
+script: 
+    -python arm-gcm-diagnostics/test/test.py
   # Install Anaconda
   #- if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
 
