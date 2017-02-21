@@ -1,0 +1,12 @@
+{
+        "arm_diags": [
+          {
+      "diags_set": "tables"
+      "variables": ["tas","pr","clt","hurs","hfss","hfls","rlus","rlds","rsus","rsds","ps","prw","cllvi","albedo"]
+      "ref_models": ["ACCESS1-0","ACCESS1-3","bcc-csm1-1-m","bcc-csm1-1","BNU-ESM","CCSM4", "CESM1-CAM5","CSIRO-Mk3-6-0", "CanAM4","FGOALS-g2","FGOALS-s2","GFDL-HIRAM-C360","GFDL-HIRAM-C180","GISS-E2-R","HadGEM2-A","inmcm4","IPSL-CM5A-LR", "IPSL-CM5A-MR", "IPSL-CM5B-LR", "MIROC5","MPI-ESM-LR", "MPI-ESM-MR", "NorESM1-M"],
+      "season": ["ANN","DJF","MAM","JJA","SON"],
+                }
+          ]
+
+}
+
