@@ -1,15 +1,65 @@
 import ast
 import cdp.cdp_parser
-import arm_diags.arm_parameter
+import arm_parameter
 
 
 class ARMParser(cdp.cdp_parser.CDPParser):
     def __init__(self, *args, **kwargs):
-        super(ARMParser, self).__init__(arm_diags.arm_parameter.ARMParameter, *args, **kwargs)
+        super(ARMParser, self).__init__(arm_parameter.ARMParameter, *args, **kwargs)
 
     def load_default_args(self):
         # this has '-p' and '--parameter' reserved
         super(ARMParser, self).load_default_args()
+
+        self.add_argument(
+            '-p', '--parameters',
+            type=str,
+            dest='parameter',
+            help='Path to the user-defined parameter file',
+            required=False)
+
+        self.add_argument(
+            '--base_path',
+            type=str,
+            dest='base_path',
+            help='Path to arm_diags',
+            required=False)
+
+        self.add_argument(
+            '--test_data_path',
+            type=str,
+            dest='test_data_path',
+            help='Path to test data',
+            required=False)
+
+        self.add_argument(
+            '--obs_path',
+            type=str,
+            dest='obs_path',
+            help='Path to ARM obs data',
+            required=False)
+
+        self.add_argument(
+            '--cmip_path',
+            type=str,
+            dest='cmip_path',
+            help='Path to cmip data',
+            required=False)
+
+        self.add_argument(
+            '--output_path',
+            type=str,
+            dest='output_path',
+            help='Path to output data',
+            required=False)
+
+        self.add_argument(
+            '-m', '--models',
+            type=str,
+            nargs='+',
+            dest='models',
+            help='Models to use',
+            required=False)
 
         self.add_argument(
             '-r', '--reference_data_set',

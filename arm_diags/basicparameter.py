@@ -1,13 +1,12 @@
 
-
 test_mod = 'CESM1-CAM5'
 
 case_id = 'CESM1-CAM5_arm_diag_test'  #create folder to save diagnostics results 
 
 
-base_path = '/Users/zhang40/Documents/AIMS/arm_diags/arm_diags/'
+base_path = '/Users/zhang40/Documents/ARM_LLNL/repo/arm-gcm-diagnostics/arm_diags/'
 
-mod_path = base_path+'model'
+test_data_path = base_path+'model'
 
 obs_path = base_path+'observation'
 
