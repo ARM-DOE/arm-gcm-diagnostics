@@ -6,6 +6,9 @@ class ARMParameter(cdp.cdp_parameter.CDPParameter):
         self.case_id = ''
         self.reference_data_path = ''
         self.test_data_path = ''
+        self.obs_path = ''
+        self.cmip_path = ''
+        self.output_path =''
         self.reference_data_set = ''
         self.test_data_set = ''
 
