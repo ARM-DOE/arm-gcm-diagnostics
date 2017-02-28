@@ -1,3 +1,0 @@
-from  source import AC_mean_amip_plot,AC_mean_amip_table,AC_mean_amip_taylorD_plot,AC_mean_amip_line_taylorD_html,AC_DC_cl_p_plot,AC_amip_contour_html,DC_amip_contour_html,DC_amip_line_harmonicD_plot,DC_mean_amip_line_harmonicD_html,Daily_amip_PDF_plot,Daily_amip_PDF_plot_html,write_html
-#from html import write_html, AC_mean_amip_table,AC_amip_html,AC_amip_contour,DC_amip_line,DC_amip_contour,Daily_amip_PDF
-# AC_mean_amip_data,
