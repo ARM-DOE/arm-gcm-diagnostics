@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='ARM Diagnoistic Package',
-      version='1.0',
+      version='v0 alpha',
       description='An ARM data-oriented package for climate model evaluation',
       url='https://github.com/ARM-DOE/arm-gcm-diagnostics',
       author='Chengzhu Zhang and Shaocheng Xie',
