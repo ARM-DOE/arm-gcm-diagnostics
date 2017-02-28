@@ -30,7 +30,7 @@ install:
   - python setup.py install
 
 script: 
-  - python tests/test.sh
+  - python tests/test_arm_diags.py
 
 #
 #after_success:
