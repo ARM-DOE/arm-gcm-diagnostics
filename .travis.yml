@@ -30,7 +30,7 @@ install:
   - python setup.py install
 
 script: 
-  - python arm-gcm-diagnostics/tests/test_arm_diags.py
+  - python tests/test.sh
 
 #
 #after_success:
