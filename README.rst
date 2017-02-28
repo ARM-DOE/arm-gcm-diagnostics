@@ -22,6 +22,7 @@ TBD
 
 Install
 =======
+
 The data files including observation and CMIP5 model data are available through ARM archive. The analytical codes to calculate and visualize the diagnostics results are placed via repository (arm-gcm-diagnostics) at https://github.com/ARM-DOE/
 
 For downloading data:
@@ -35,6 +36,7 @@ For obtaining codes::
     git clone https://github.com/ARM-DOE/arm-gcm-diagnostics/
     
 
+(Below works for v0-alpha version, will be revised upon new release)
 Testing
 =============
 A working prototype has been set up for the users to run the package out-of-the-box. In this case, all the observation and CMIP data are already placed under directoris: /ARMDiag/observation and /ARMDiag/cmip, respectively, in the format of comma-separated values (csv). The demo model data are placed under /ARMDiag/model.
