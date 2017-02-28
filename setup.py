@@ -1,6 +1,6 @@
 from setuptools import find_packages,setup
 
-setup(name='ARM Diagnoistic Package',
+setup(name='arm_diags',
       version='2.0',
       description='An ARM data-oriented package for climate model evaluation',
       url='https://github.com/ARM-DOE/arm-gcm-diagnostics',

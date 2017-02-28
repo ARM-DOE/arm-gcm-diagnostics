@@ -1,59 +1,37 @@
 
-s:
+os:
   - linux
   - osx
-  # There's currently no support for OSX/macOS on travis.
+
 
 language: python
 python:
   - "2.7"
 
-#osx_image: xcode8.2
-#language: python
-#env:
-#  global:
-#    - CI=true
+before_install:
+  - sudo apt-get update
+  # We do this conditionally because it saves us some downloading if the
+  # version is the same.
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
+      wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
+    else
+      wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+    fi
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  - conda config --set anaconda_upload no
 
-
-matrix:
-    include:
-        - os: linux
-          python: 2.7
-          sudo: false
-        - os: osx
-          sudo: false
-          language: generic
-
+  - conda install python=$TRAVIS_PYTHON_VERSION cdp cdutil cdms2 numpy -c conda-forge -c uvcdat -y
+  - export UVCDAT_ANONYMOUS_LOG=False
 install:
-    -python setup.py install
-# command to run tests
+  - python setup.py install
+
 script: 
-    -python arm-gcm-diagnostics/test/test.py
-  # Install Anaconda
-  #- if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
+  - python arm-gcm-diagnostics/tests/test_arm_diags.py
 
-  #    brew update;
-  #    brew install python;
-  #    python -m venv venv;
-  #    source venv/bin/activate;
-  #  fi
-
-#  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-#      wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
-#    fi
-#  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-#      wget https://repo.continuum.io/miniconda/Miniconda2-latest-MacOSX-x86_64.sh -O miniconda.sh;
-#    fi
-#  - bash miniconda.sh -b -p $HOME/miniconda
-#  - export PATH="$HOME/miniconda/bin:$PATH"
-#  - hash -r
-#  - conda config --set always_yes yes --set changeps1 no
-#  - conda update -q conda
-#
-#  - python setup.py install
-#
-#script:
-#  - bash cdp/test/test.sh
 #
 #after_success:
 #  - test $TRAVIS_BRANCH = "master" && conda install conda-build && conda install anaconda-client && bash conda/conda_upload.sh
