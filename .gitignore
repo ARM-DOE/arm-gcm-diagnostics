@@ -1,0 +1,6 @@
+# exclude everything
+arm_diags/model/*
+
+# exception to the rule
+!arm_diags/model/.gitkeep 
+
