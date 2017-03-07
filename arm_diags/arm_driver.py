@@ -11,10 +11,15 @@ import glob
 import os
 import fnmatch
 from src.seasonal_mean import seasonal_mean_table
+from src.annual_cycle import annual_cycle_data
+from src.annual_cycle import annual_cycle_line_plot
+from src.annual_cycle import annual_cycle_taylor_diagram
 from src.create_htmls import seasonal_mean_table_html
+from src.create_htmls import annual_cycle_html
 
 def make_parameters(basic_parameter):
-    f_data = open('diags_sets.json').read()
+    #f_data = open('diags_sets.json').read()
+    f_data = open('diags_set2.json').read()
     json_file = json.loads(f_data)
 
     parameters = []
@@ -51,7 +56,11 @@ for parameter in parameters:
         seasonal_mean_table(parameter) #Calculate seasonal mean climatology
         seasonal_mean_table_html(parameter) #Generate html 
 
-#    if diags_set == set2_annual_cycle:
+    if diags_set == 'set2_annual_cycle':
+        annual_cycle_data(parameter)
+        annual_cycle_line_plot(parameter)
+        annual_cycle_taylor_diagram(parameter)
+        annual_cycle_html(parameter)
 #        AC_mean_amip_plot(parameter)
 #        AC_mean_amip_taylorD_plot(parameter)
 #        # Create set 2 diag. html hosting line plot and Taylor Diagram. 

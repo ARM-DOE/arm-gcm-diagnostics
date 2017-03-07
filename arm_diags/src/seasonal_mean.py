@@ -8,7 +8,7 @@ from varid_dict import varid_longname
 
 def var_seasons(var, seasons):
     "Calculate seasonal climatology of each variable"
-    var_season_data = np.empty([len(seasons)])
+    var_season_data = np.empty([len(seasons)])*np.nan
     cdutil.setTimeBoundsMonthly(var)
     for k, season in enumerate(seasons):
         if season == 'ANN':
