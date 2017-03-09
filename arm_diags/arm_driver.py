@@ -14,12 +14,15 @@ from src.seasonal_mean import seasonal_mean_table
 from src.annual_cycle import annual_cycle_data
 from src.annual_cycle import annual_cycle_line_plot
 from src.annual_cycle import annual_cycle_taylor_diagram
+from src.annual_cycle_zt import annual_cycle_zt_data
+#from src.annual_cycle_zt import annual_cycle_zt_plot
 from src.create_htmls import seasonal_mean_table_html
 from src.create_htmls import annual_cycle_html
 
 def make_parameters(basic_parameter):
     #f_data = open('diags_sets.json').read()
-    f_data = open('diags_set2.json').read()
+    #f_data = open('diags_set2.json').read()
+    f_data = open('diags_set3.json').read()
     json_file = json.loads(f_data)
 
     parameters = []
@@ -61,6 +64,10 @@ for parameter in parameters:
         annual_cycle_line_plot(parameter)
         annual_cycle_taylor_diagram(parameter)
         annual_cycle_html(parameter)
+
+    if diags_set == 'set3_annual_cycle_zt':
+        annual_cycle_zt_data(parameter)
+        annual_cycle_plot(parameter)
 #        AC_mean_amip_plot(parameter)
 #        AC_mean_amip_taylorD_plot(parameter)
 #        # Create set 2 diag. html hosting line plot and Taylor Diagram. 
