@@ -1,0 +1,12 @@
+{
+        "arm_diags": [
+          {
+      "diags_set": "set3_annual_cycle_zt",
+      "variables": ["cl"],
+      "ref_models": ["TEST"],
+      "season": ["J","F","M","A","M","J","J","A","S","O","N","D"]
+                }
+          ]
+
+}
+
