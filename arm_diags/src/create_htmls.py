@@ -84,3 +84,69 @@ def annual_cycle_html(parameter):
         htmlfile.write('<TH ALIGN=LEFT><A HREF='+two_figs+'>Line plot and Taylor Diagram.</a>')
 
 
+def annual_cycle_zt_html(parameter):
+    """ Create set 3 diag. html hosting contour and vertical profiles of annual cycle"""
+
+    output_path = parameter.output_path
+    test_model = parameter.test_data_set
+    variables = parameter.variables
+
+    var_longname = [ varid_longname[x] for x in variables]
+
+#    vas=['cl_p','T','Q']
+#    vas_source=['ARSCL','Sounding','Sounding']
+#    vas_long=['Cloud Fraction (%)','Temperature(C)','Specific Humidity (kg/kg)']
+    seasons=['ANN','DJF','MAM','JJA','SON']
+    #for va_ind in range(len(vas)-2):# at this stage for cl_p only
+    for j, variable in enumerate(variables):
+        htmlfile = open(output_path+'/html/AC_amip_contour.html',"w")
+        htmlfile.write('<p><th><b>'+test_model+': Annual Cycle'+ '</b></th></p>')
+        htmlfile.write('<table>')
+        htmlfile.write('<TR><TH ALIGN=LEFT><BR><TH ALIGN=LEFT><font color=blue size=+1>Southern Great Plains (SGP)</font><TH><BR><TR>')
+        #htmlfile.write('<TH><BR>')
+        htmlfile.write('<TR><TH><BR><TH ALIGN=LEFT><font color=red >Contour plots</font><BR><TH ALIGN=LEFT><font color=red > Vertical profiles</font>')
+
+        htmlfile.write('<TR><TH ALIGN=LEFT>'+var_longname[j])#+'('+vas_source[va_ind]+')')
+        fig_obs=output_path+'/figures/obs_'+variable+'_annual_cycle_clim.png'
+        fig_mod=output_path+'/figures/mod_'+variable+'_annual_cycle_clim.png'
+        fig_diff=output_path+'/figures/diff_'+variable+'_annual_cycle_clim.png'
+        htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig_mod+'> Model</a>')
+        htmlfile.write('<A HREF='+fig_obs+'> Obs.</a>')
+        htmlfile.write('<A HREF='+fig_diff+'> Model-Obs.</a>')
+        #htmlfile.write('<TH><BR>')
+
+        for si in range(len(seasons)):
+           fig=output_path+'/figures/'+seasons[si]+'_'+variable+'_diff.png'
+           if seasons[si]=='ANN':
+               htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig+'> '+seasons[si]+'</a>')
+           else:
+
+               htmlfile.write('<A HREF='+fig+'> '+seasons[si]+'</a>')
+
+
+def diurnal_cycle_zt_html(parameter):
+    """Create set 5 diag. html hosting contour plots of diurnal cycle"""
+    output_path = parameter.output_path
+    test_model = parameter.test_data_set
+    variables = parameter.variables
+
+    var_longname = [ varid_longname[x] for x in variables]
+
+    htmlfile = open(output_path+'/html/DC_amip_contour.html',"w")
+    htmlfile.write('<p><th><b>'+test_model+': Diurnal Cycle'+ '</b></th></p>')
+    htmlfile.write('<table>')
+    htmlfile.write('<TR><TH ALIGN=LEFT><BR><TH ALIGN=LEFT><font color=blue size=+1>Southern Great Plains (SGP)</font><TH><BR><TR>')
+    htmlfile.write('<TR><TH><BR><TH ALIGN=LEFT><font color=red >Monthly Mean</font><BR><TH ALIGN=LEFT><font color=red > Annual Mean</font>')
+
+    for j, variable in enumerate(variables):
+    #for va_ind in range(len(vas)-2):# at this stage for cl_p only
+        htmlfile.write('<TR><TH ALIGN=LEFT>'+var_longname[j])#+'('+vas_source[va_ind]+')')
+        fig_obs=output_path+'/figures/obs_'+variable+'_diurnal_clim.png'
+        fig_mod=output_path+'/figures/mod_'+variable+'_diurnal_clim.png'
+        fig_obs_mon=output_path+'/figures/obs_'+variable+'_mon_diurnal_clim.png'
+        fig_mod_mon=output_path+'/figures/mod_'+variable+'_mon_diurnal_clim.png'
+        htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig_mod_mon+'> Model</a>')
+        htmlfile.write('<A HREF='+fig_obs_mon+'> Obs.</a>')
+        htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig_mod+'> Model</a>')
+        htmlfile.write('<A HREF='+fig_obs+'> Obs.</a>')
+
