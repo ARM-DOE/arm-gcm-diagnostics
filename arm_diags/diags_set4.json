@@ -1,0 +1,12 @@
+{
+        "arm_diags": [
+          {
+      "diags_set": "set4_diurnal_cycle",
+      "variables": ["pr"],
+      "ref_models": ["TEST"],
+      "season": "JJA"
+                }
+          ]
+
+}
+
