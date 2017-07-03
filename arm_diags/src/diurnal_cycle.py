@@ -47,14 +47,14 @@ def diurnal_cycle_data(parameter):
     obs_path = parameter.obs_path
     cmip_path = parameter.cmip_path
     output_path = parameter.output_path
-    season = parameter.season
+    seasons = parameter.season
    
     test_model = parameter.test_data_set 
     ref_models = parameter.ref_models
 
     # Calculate for test model
     
-#    test_var_season=np.empty([len(variables),len(seasons)])*np.nan
+    test_var_season=np.empty([len(variables),8])*np.nan
     test_file = glob.glob(os.path.join(test_path,'*'+test_model+'*3hr*.nc')) #read in 3hr test data
     fin = cdms2.open(test_file[0])
     
@@ -63,13 +63,15 @@ def diurnal_cycle_data(parameter):
     for j, variable in enumerate(variables): 
         try:
             var = fin (variable,squeeze = 1)
-            test_var_dc = var_diurnal_cycle(var,season)
+            test_var_dc = var_diurnal_cycle(var,seasons)
             print test_var_dc
 
         except:
             print (variable+" not processed for " + test_model)
+        test_var_season[j,:] = test_var_dc
 
     # Calculate for observational data
+    obs_var_season=np.empty([len(variables),24])*np.nan
     obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag*diurnal*.nc')) #read in diurnal test data
     print 'ARM data'
     fin = cdms2.open(obs_file[0])
@@ -79,7 +81,7 @@ def diurnal_cycle_data(parameter):
             var = fin (variable)
             print var.shape
             var_dc = np.reshape(var,(12,24))
-            if season == 'JJA':
+            if seasons == 'JJA':
                 obs_var_dc = np.nanmean(var_dc[5:8,:],axis=0)
             if var.id == 'tas':
                 obs_var_dc = obs_var_dc-273.15
@@ -89,13 +91,13 @@ def diurnal_cycle_data(parameter):
             print obs_var_dc 
         except:
             print (variable+" not processed for obs")
+        obs_var_season[j,:] = obs_var_dc
 
-    quit()
     # Calculate cmip model seasonal mean climatology
     cmip_var_season=np.empty([len(ref_models),len(variables),8])*np.nan
  
     for i, ref_model in enumerate(ref_models):
-         ref_file = glob.glob(os.path.join(cmip_path,'*'+ref_model+'*mo*.nc')) #read in monthly cmip data
+         ref_file = glob.glob(os.path.join(cmip_path,'*'+ref_model+'*3hr*.nc')) #read in monthly cmip data
          print 'ref_model', ref_model
          if not ref_file :
              print (ref_model+" not found!") 
@@ -104,7 +106,7 @@ def diurnal_cycle_data(parameter):
          
              for j, variable in enumerate(variables): 
                  try:
-                     var = fin (variable)
+                     var = fin (variable,squeeze = 1)
                      cmip_var_season[i, j, :] = var_diurnal_cycle(var, seasons)
 
                  except:
@@ -120,22 +122,22 @@ def diurnal_cycle_data(parameter):
         np.savetxt(output_path+'/metrics/'+variable+'_cmip_diurnal_cycle.csv',cmip_var_season[:,j,:])
         np.savetxt(output_path+'/metrics/'+variable+'_obs_diurnal_cycle.csv',obs_var_season[j,:])
 
-        # Reference dapret
-        data = obs_var_season[j,:]
-        refstd = data.std(ddof=1)           # Reference standard deviation
-        x=np.arange(len(seasons))
-
-        # Compute and save stddev and correlation coefficient of models,for taylor diagram
-        mod_num=len(ref_models)
-        m_all=[cmip_var_season[x,j,:] for x in range(mod_num)]
-        cmip_samples = np.array([ [m.std(ddof=1), np.corrcoef(data, m)[0,1]] for m in m_all])
-        test_sample=np.array([test_var_season[j,:].std(ddof=1), np.corrcoef(data, test_var_season[j,:])[0,1]])
-        mmm_sample=np.array([mmm_var_season[j,:].std(ddof=1), np.corrcoef(data,mmm_var_season[j,:])[0,1]])
-        obs_sample=np.array([refstd,1.0])
-        np.savetxt(output_path+'/metrics/'+variable+'_obs_diurnal_cycle_std_corr.csv',obs_sample)
-        np.savetxt(output_path+'/metrics/'+variable+'_test_diurnal_cycle_std_corr.csv',test_sample)
-        np.savetxt(output_path+'/metrics/'+variable+'_mmm_diurnal_cycle_std_corr.csv',mmm_sample)
-        np.savetxt(output_path+'/metrics/'+variable+'_cmip_diurnal_cycle_std_corr.csv',cmip_samples)
+#        # Reference dapret
+#        data = obs_var_season[j,:]
+#        refstd = data.std(ddof=1)           # Reference standard deviation
+#        x=np.arange(len(seasons))
+#
+#        # Compute and save stddev and correlation coefficient of models,for taylor diagram
+#        mod_num=len(ref_models)
+#        m_all=[cmip_var_season[x,j,:] for x in range(mod_num)]
+#        cmip_samples = np.array([ [m.std(ddof=1), np.corrcoef(data, m)[0,1]] for m in m_all])
+#        test_sample=np.array([test_var_season[j,:].std(ddof=1), np.corrcoef(data, test_var_season[j,:])[0,1]])
+#        mmm_sample=np.array([mmm_var_season[j,:].std(ddof=1), np.corrcoef(data,mmm_var_season[j,:])[0,1]])
+#        obs_sample=np.array([refstd,1.0])
+#        np.savetxt(output_path+'/metrics/'+variable+'_obs_diurnal_cycle_std_corr.csv',obs_sample)
+#        np.savetxt(output_path+'/metrics/'+variable+'_test_diurnal_cycle_std_corr.csv',test_sample)
+#        np.savetxt(output_path+'/metrics/'+variable+'_mmm_diurnal_cycle_std_corr.csv',mmm_sample)
+#        np.savetxt(output_path+'/metrics/'+variable+'_cmip_diurnal_cycle_std_corr.csv',cmip_samples)
     
 
 def diurnal_cycle_line_plot(parameter):
