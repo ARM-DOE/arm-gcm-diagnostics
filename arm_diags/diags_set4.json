@@ -1,0 +1,12 @@
+{
+        "arm_diags": [
+          {
+      "diags_set": "set4_diurnal_cycle",
+      "variables": ["pr"],
+      "ref_models": ["MIROC5","CMCC-CM","inmcm4","CCSM4","GFDL-HIRAM-C180","GFDL-HIRAM-C360","FGOALS-s2","ACCESS1-0","ACCESS1-3"],
+      "season": ["JJA"]
+                }
+          ]
+
+}
+
