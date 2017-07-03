@@ -18,17 +18,20 @@ from src.annual_cycle_zt import annual_cycle_zt_data
 from src.annual_cycle_zt import annual_cycle_zt_plot
 from src.diurnal_cycle import diurnal_cycle_data
 from src.diurnal_cycle import diurnal_cycle_plot
+from src.pdf_daily import pdf_daily_data
 from src.create_htmls import annual_cycle_zt_html
 from src.create_htmls import diurnal_cycle_zt_html
 from src.create_htmls import diurnal_cycle_html
 from src.create_htmls import seasonal_mean_table_html
 from src.create_htmls import annual_cycle_html
 
+print 'lalala'
 def make_parameters(basic_parameter):
     #f_data = open('diags_sets.json').read()
     #f_data = open('diags_set2.json').read()
     #f_data = open('diags_set3.json').read()
-    f_data = open('diags_set4.json').read()
+    #f_data = open('diags_set4.json').read()
+    f_data = open('diags_set6.json').read()
     json_file = json.loads(f_data)
 
     parameters = []
@@ -72,7 +75,7 @@ for parameter in parameters:
         annual_cycle_taylor_diagram(parameter)
         annual_cycle_html(parameter)
 
-    if diags_set == 'set3_annual_cycle_zt':
+    if diags_set == 'set3_annual_cycle_zt': # this also include set5 diags
         annual_cycle_zt_data(parameter)
         annual_cycle_zt_plot(parameter)
         annual_cycle_zt_html(parameter)
@@ -82,6 +85,11 @@ for parameter in parameters:
         diurnal_cycle_data(parameter)
         diurnal_cycle_plot(parameter)
         diurnal_cycle_html(parameter)
+
+    if diags_set == 'set6_pdf_daily':
+        pdf_daily_data(parameter)
+        #pdf_daily_plot(parameter)
+        #pdf_daily_html(parameter)
 #
 ## Creat the main html page hosting all sets of diagnostics
 #write_html()
