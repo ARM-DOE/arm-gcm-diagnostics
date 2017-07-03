@@ -17,10 +17,10 @@ from src.annual_cycle import annual_cycle_taylor_diagram
 from src.annual_cycle_zt import annual_cycle_zt_data
 from src.annual_cycle_zt import annual_cycle_zt_plot
 from src.diurnal_cycle import diurnal_cycle_data
-#from src.diurnal_cycle import diurnal_cycle_plot
+from src.diurnal_cycle import diurnal_cycle_plot
 from src.create_htmls import annual_cycle_zt_html
 from src.create_htmls import diurnal_cycle_zt_html
-#from src.create_htmls import diurnal_cycle_html
+from src.create_htmls import diurnal_cycle_html
 from src.create_htmls import seasonal_mean_table_html
 from src.create_htmls import annual_cycle_html
 

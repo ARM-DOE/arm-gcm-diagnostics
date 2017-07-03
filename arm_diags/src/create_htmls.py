@@ -124,6 +124,37 @@ def annual_cycle_zt_html(parameter):
                htmlfile.write('<A HREF='+fig+'> '+seasons[si]+'</a>')
 
 
+def diurnal_cycle_html(parameter):
+    """Create set 4 diag. html hosting line and harmonic dial diagram for diurnal cycle of precipitation"""
+    output_path = parameter.output_path
+    test_model = parameter.test_data_set
+    variables = parameter.variables
+    season = parameter.season
+
+    var_longname = [ varid_longname[x] for x in variables]
+
+
+    htmlfile = open(output_path+'/html/DC_amip_line_harmonicD.html',"w")
+    htmlfile.write('<p><th><b>'+test_model+': Diurnal Cycle'+ '</b></th></p>')
+    htmlfile.write('<table>')
+    htmlfile.write('<TR><TH ALIGN=LEFT><BR><TH ALIGN=LEFT><font color=blue size=+1>Southern Great Plains (SGP)</font><TH><BR><TR>')
+    htmlfile.write('<TR><TH><BR><TH ALIGN=LEFT><font color=red >Line plot and Harmonic Dial</font>')
+
+    for j, variable in enumerate(variables):
+        # Create the HTML file for output
+        htmlfile.write('<TH><BR>')
+        htmlfile.write('<TR><TH ALIGN=LEFT>'+var_longname[j])
+        for season in season:
+            two_figs='DC_amip_line_harmonicD_'+variable+'_'+season+'_2plots.html'
+            htmlfile1 = open(output_path+'/html/'+two_figs,"w")
+            fig1=output_path+'/figures/'+variable+'_'+season+'_diurnal_cycle.png'
+            fig2=output_path+'/figures/'+variable+'_'+season+'_diurnal_cycle_harmonic_diagram.png'
+            htmlfile1.write('<div class="container"><div style="float:left"><img src='+fig1+' alt="Line" width="550" height="500"></div><div style="float:left"><img src='+fig2+' alt="Line" width="500" height="450"></div>')
+            htmlfile.write('<TD><A HREF='+two_figs+'>'+season+'.</a></TD>')
+
+
+
+
 def diurnal_cycle_zt_html(parameter):
     """Create set 5 diag. html hosting contour plots of diurnal cycle"""
     output_path = parameter.output_path
