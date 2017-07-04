@@ -3,7 +3,7 @@
           {
       "diags_set": "set6_pdf_daily",
       "variables": ["pr"],
-      "ref_models": ["MIROC5"],
+      "ref_models": ["MIROC5","CMCC-CM","CCSM4","FGOALS-s2","ACCESS1-0","ACCESS1-3"],
       "season": ["JJA"]
                 }
           ]

@@ -18,14 +18,14 @@ from src.annual_cycle_zt import annual_cycle_zt_data
 from src.annual_cycle_zt import annual_cycle_zt_plot
 from src.diurnal_cycle import diurnal_cycle_data
 from src.diurnal_cycle import diurnal_cycle_plot
-print 'bbb'
 from src.pdf_daily import pdf_daily_data
-print 'aaa'
+from src.pdf_daily import pdf_daily_plot
 from src.create_htmls import annual_cycle_zt_html
 from src.create_htmls import diurnal_cycle_zt_html
 from src.create_htmls import diurnal_cycle_html
 from src.create_htmls import seasonal_mean_table_html
 from src.create_htmls import annual_cycle_html
+from src.create_htmls import pdf_daily_html
 
 def make_parameters(basic_parameter):
     #f_data = open('diags_sets.json').read()
@@ -89,8 +89,8 @@ for parameter in parameters:
 
     if diags_set == 'set6_pdf_daily':
         pdf_daily_data(parameter)
-        #pdf_daily_plot(parameter)
-        #pdf_daily_html(parameter)
+        pdf_daily_plot(parameter)
+        pdf_daily_html(parameter)
 #
 ## Creat the main html page hosting all sets of diagnostics
 #write_html()
