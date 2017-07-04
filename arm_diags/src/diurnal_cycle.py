@@ -24,7 +24,7 @@ def var_diurnal_cycle(var, season):
     years = range(1979,2006)         
     var_dc_year = np.empty([len(years),8])*np.nan
     for iy,year in enumerate(years):
-        t1 = comptime(year,03,01)
+        t1 = comptime(year,mo0,01)
         t2 = t1.add(90,Days)
 #        try:
         var_yr =  var(time=(t1,t2,'co'))
@@ -240,44 +240,6 @@ def diurnal_cycle_plot(parameter):
 
 
     
-def diurnal_cycle_taylor_diagram(parameter):
-    """Calculate diurnal cycle climatology"""
-    variables = parameter.variables
-    seasons = parameter.season
-    output_path = parameter.output_path
-
-    var_longname = [ varid_longname[x] for x in variables]
-    for j, variable in enumerate(variables):
-        obs_data = genfromtxt(output_path+'/metrics/'+variable+'_obs_diurnal_cycle_std_corr.csv')
-        test_data = genfromtxt(output_path+'/metrics/'+variable+'_test_diurnal_cycle_std_corr.csv')
-        mmm_data = genfromtxt(output_path+'/metrics/'+variable+'_mmm_diurnal_cycle_std_corr.csv')
-        cmip_data = genfromtxt(output_path+'/metrics/'+variable+'_cmip_diurnal_cycle_std_corr.csv')
-        mod_num = cmip_data.shape[0]
-        
-
-        fig = plt.figure(figsize=(8,8))
-        refstd = obs_data[0]
-        dia = TaylorDiagram(refstd, fig=fig,rect=111, label="Reference")
-
-        # Add samples to Taylor diagram
-        for i,(stddev,corrcoef) in enumerate(cmip_data):
-            dia.add_sample(stddev, corrcoef, marker='.',ms=10, c='grey')
-
-        dia.add_sample(test_data[0], test_data[1],marker='.',ms=15, c='red',label='MOD')
-        dia.add_sample(mmm_data[0], mmm_data[1],marker='.',ms=15, c='b',label='MMM')
-
-        # Add RMS contours, and label them
-        contours = dia.add_contours(colors='0.5')
-        plt.clabel(contours, inline=1, fontsize=10)
-        plt.title(var_longname[j])
-
-        # Add a figure legend
-        fig.legend([dia.samplePoints[0],dia.samplePoints[-2],dia.samplePoints[-1]] ,
-                   [ p.get_label() for p in [dia.samplePoints[0],dia.samplePoints[-2],dia.samplePoints[-1]] ],
-                   numpoints=1,  loc='upper right',prop={'size':10})
-#        np.savetxt(basedir+'metrics/'+vas[va_ind]+'_'+mod+'std_corr.csv',mod_sample,fmt='%.3f')
-        fig.savefig(output_path+'/figures/'+variable+'_diurnal_cycle_taylor_diagram.png')
-        plt.close('all')
 
 
     
