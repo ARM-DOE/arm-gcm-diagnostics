@@ -1,0 +1,12 @@
+{
+        "arm_diags": [
+          {
+      "diags_set": "set6_pdf_daily",
+      "variables": ["pr"],
+      "ref_models": ["MIROC5"],
+      "season": ["JJA"]
+                }
+          ]
+
+}
+

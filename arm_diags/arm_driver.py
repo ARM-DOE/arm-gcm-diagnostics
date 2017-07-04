@@ -25,7 +25,6 @@ from src.create_htmls import diurnal_cycle_html
 from src.create_htmls import seasonal_mean_table_html
 from src.create_htmls import annual_cycle_html
 
-print 'lalala'
 def make_parameters(basic_parameter):
     #f_data = open('diags_sets.json').read()
     #f_data = open('diags_set2.json').read()
