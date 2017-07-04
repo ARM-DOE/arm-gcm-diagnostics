@@ -18,7 +18,9 @@ from src.annual_cycle_zt import annual_cycle_zt_data
 from src.annual_cycle_zt import annual_cycle_zt_plot
 from src.diurnal_cycle import diurnal_cycle_data
 from src.diurnal_cycle import diurnal_cycle_plot
+print 'bbb'
 from src.pdf_daily import pdf_daily_data
+print 'aaa'
 from src.create_htmls import annual_cycle_zt_html
 from src.create_htmls import diurnal_cycle_zt_html
 from src.create_htmls import diurnal_cycle_html

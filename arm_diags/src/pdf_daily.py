@@ -10,7 +10,6 @@ from matplotlib.pyplot import grid
 from varid_dict import varid_longname
 from cdtime import *
 
-print 'lalala'
 def var_pdf_daily(var, season, years):
     "Calculate diurnal cycle climatology of each variable"
     if season == 'JJA':
@@ -127,14 +126,16 @@ def pdf_daily_data(parameter):
             np.savetxt(output_path+'/metrics/'+variable+'_'+season+'_cmip_pdf_daily.csv',cmip_var_season[:,j,:])
             np.savetxt(output_path+'/metrics/'+variable+'_'+season+'_obs_pdf_daily.csv',obs_var_season[j,:])
 
+def accum(list):
+    """Sequential accumulation of the original list"""
+    result = []
+    for i in range(len(list)):
+        result.append(sum(list[:i+1]))
+    return result
     
-quit()
-
-def func24(x,p1,p2):
-     return p1*np.sin(2*np.pi/24*x+p2)
 
 def pdf_daily_plot(parameter):
-    """Calculate diurnal cycle climatology"""
+    """plotting pdf using daily mean"""
     variables = parameter.variables
     seasons = parameter.season
     output_path = parameter.output_path
@@ -150,136 +151,197 @@ def pdf_daily_plot(parameter):
             obs_data =  genfromtxt(output_path+'/metrics/'+variable+'_'+season+'_obs_pdf_daily.csv')
             cmip_data = genfromtxt(output_path+'/metrics/'+variable+'_'+season+'_cmip_pdf_daily.csv')
             mod_num = cmip_data.shape[0]
+
+            bins_width=[0.0025*1.2**(x) for x in range(55)]
+            bins=accum(bins_width)
+            bins=[x for x in bins]
+            precip_cutoff=0.03-0.0025/2 
+            
     
-            fig = plt.figure()# Create figure
-            ax  =fig.add_axes([0.15, 0.14, 0.8, 0.8]) # Create axes
-            xax_3hr=np.array([3.0*x-6.5 for x in range(8)])
-            xax_1hr=np.array([1.0*x-6.5 for x in range(24)]) 
-            #xax =  np.arange (1,13,1)
+            ######################Use same method to calculate PDFs for obs, model and cmip multi-models.
+            for index in range(pr_cmip.shape[0]+1):
+                if index==0:
+                   pr_da_cf=[x*24.0 for x in pr_obs]
+                elif index==1:
+                   pr_da_cf=[x*24.0 for x in pr_mod]
+                else:
+                   pr_da_cf=[x*24.0 for x in pr_cmip[index-2,:]]
     
-            # plotting ref models 
-            mod_phase=np.empty([mod_num])
-            mod_amp=np.empty([mod_num])
-            for mod_ind in range(mod_num):
-                popt, pcov = curve_fit(func24, xax_3hr, cmip_data[mod_ind,:] ,p0=(1.0,0.2))
-                p1_mod = popt[0]
-                p2_mod = popt[1]
-                ymod_fit=func24(xax_1hr,p1_mod,p2_mod)+np.mean(cmip_data[mod_ind,:])
-                
-                mod_fit,=ax.plot(np.concatenate((xax_1hr,[x+24 for x in xax_1hr])),np.concatenate((ymod_fit,ymod_fit)), 'grey',lw=1)
-                mod_amp[mod_ind]=p1_mod
-                if p1_mod<=0 :
-                   p2_mod=1.5*np.pi-p2_mod
-                if p1_mod>0 :
-                   p2_mod=0.5*np.pi-p2_mod
-                mod_phase[mod_ind]=p2_mod
-                #ax.plot(xax_3hr,cmip_data[mod_ind,:],'grey',lw=1)
+                pr_da_cf=np.array(pr_da_cf)
+                ind=np.where(pr_da_cf>precip_cutoff)
+                pr_da=pr_da_cf[ind]
+                y,binEdges=np.histogram(pr_da,bins=bins,density=True)
+                cumulative = np.cumsum(y*(binEdges[1:]-binEdges[:-1]))
+                wday_ob=100.0*np.size(pr_da)/np.size(pr_da_cf)
     
-            # plotting test model
-            ann_mean=np.mean(test_data[:])
-            popt, pcov = curve_fit(func24, xax_3hr, test_data ,p0=(1.0,0.2))
-            p1_mod = popt[0]
-            p2_mod = popt[1]
-            ymod_fit=func24(xax_1hr,p1_mod,p2_mod)+np.mean(test_data)
-            mod_fit,=ax.plot(np.concatenate((xax_1hr,[x+24 for x in xax_1hr])),np.concatenate((ymod_fit,ymod_fit)), 'r',label = 'MOD: %.2f'%ann_mean,lw=2)
-            ax.plot(np.concatenate((xax_3hr,[x+24 for x in xax_3hr])),np.concatenate((test_data,test_data)),'.r',label='MOD',lw=2,markersize=15)
-            test_amp=p1_mod
-            if p1_mod<=0 :
-               p2_mod=1.5*np.pi-p2_mod
-            if p1_mod>0 :
-               p2_mod=0.5*np.pi-p2_mod
-            test_phase=p2_mod
-            #ax.plot(xax_3hr,test_data[:],'r',label='MOD: %.2f'%ann_mean,lw=3)
+                if index==0 :
+                    ax.plot(0.5*(binEdges[1:]+binEdges[:-1]),y,'r',lw=3)
+                    y1=y*0.5*(binEdges[1:]+binEdges[:-1])
+                    ax1.plot(0.5*(binEdges[1:]+binEdges[:-1]),y1,'r',lw=3)
+                elif index==1 :
+                    ax.plot(0.5*(binEdges[1:]+binEdges[:-1]),y,'b',lw=3)
+                    y1=y*0.5*(binEdges[1:]+binEdges[:-1])
+                    ax1.plot(0.5*(binEdges[1:]+binEdges[:-1]),y1,'b',lw=3)
     
-            # plotting test model
-            ann_mean=np.mean(obs_data[:])
-            popt, pcov = curve_fit(func24, xax_1hr, obs_data ,p0=(1.0,0.2))
-            p1_obs = popt[0]
-            p2_obs = popt[1]
-            yobs2=func24(xax_1hr,p1_obs,p2_obs)+np.mean(obs_data)
-            obs2,=plt.plot(np.concatenate((xax_1hr,[x+24 for x in xax_1hr])),np.concatenate((obs_data,obs_data)),'k.',label='OBS: %.2f'%ann_mean,lw=2,markersize=15)
-            obs_fit2,=plt.plot(np.concatenate((xax_1hr,[x+24 for x in xax_1hr])), np.concatenate((yobs2,yobs2)),'k',lw=2)
-            obs2_amp=abs(p1_obs)
-            obs2_phase=0.5*np.pi-p2_obs  #-5.0/24*2*np.pi
+                else :
+                    ax.plot(0.5*(binEdges[1:]+binEdges[:-1]),y,'grey',lw=1)
+                    y1=y*0.5*(binEdges[1:]+binEdges[:-1])
+                    ax1.plot(0.5*(binEdges[1:]+binEdges[:-1]),y1,'grey',lw=1)
+                    cumulative1 = np.cumsum(y1*(binEdges[1:]-binEdges[:-1]))
+                ax.text(0.85, 0.9,'OBS',color='r',verticalalignment='top', horizontalalignment='right',transform=ax.transAxes)
+                ax.text(0.85, 0.8,'MOD',color='b',verticalalignment='top', horizontalalignment='right',transform=ax.transAxes)
+                ax1.text(1.2, 1,'OBS',color='r',verticalalignment='top', horizontalalignment='right',transform=ax.transAxes)
+                ax1.text(1.2, 0.9,'MOD',color='b',verticalalignment='top', horizontalalignment='right',transform=ax.transAxes)
     
-            #ax.plot(xax_1hr,obs_data[:],'k',label='OBS: %.2f'%ann_mean,lw=3)
-            #ann_mean=np.mean(mmm_data[:])
-            #ax.plot(xax_3hr,mmm_data[:],'b',label='MMM: %.2f'%ann_mean,lw=3)
-            my_xticks=['0h', '3h', '6h', '9h', '12h', '15h', '18h', '21h']
-            my_xticks_loc=np.array([3*x for x in range(8)])
-            plt.xticks(my_xticks_loc, my_xticks)
-            ax.set_xlim([0,24])
-            ax.set_ylim([-0.5,7])
-            ax.text(0.3, 0.95,'OBS',color='k',verticalalignment='top', horizontalalignment='left',transform=ax.transAxes)
-            ax.text(0.3, 0.85,'MOD',color='r',verticalalignment='top', horizontalalignment='left',transform=ax.transAxes)
-            plt.xlabel('local solar time [hr]')
-            plt.ylabel(var_longname[j])
-            fig.savefig(output_path+'/figures/'+variable+'_'+season+'_pdf_daily.png')
-            plt.close('all')
-           
-    
-    
-            ##########Generate hormonic dial plot: mapping phase and amplitude to Dial
-    
-            fig2 = plt.figure()
-            ax2  =fig2.add_axes([0.1, 0.1, 0.8, 0.8],polar=True)#, axisbg='#d5de9c')
-    
-            size=50
-            ax2.scatter(obs2_phase,obs2_amp,color='k',label='OBS',s=size*2)
-            ax2.scatter(mod_phase[:],abs(mod_amp[:]),color='grey',s=size)
-            ax2.scatter(test_phase,abs(test_amp),color='r',label='MOD',s=size*2)
-            ax2.legend(scatterpoints=1,loc='center right',bbox_to_anchor=(1.2,0.90),prop={'size':15})
-            ax2.set_rmax(3)
-            ax2.set_theta_direction(-1)
-            ax2.set_theta_offset(np.pi/2)
-            ax2.set_xticklabels(['0h', '3h', '6h', '9h', '12h', '15h', '18h', '21h'])
-            grid(True)
-    
-            fig2.savefig(output_path+'/figures/'+variable+'_'+season+'_pdf_daily_harmonic_diagram.png')
+                ax.set_xscale('log')
+                ax.set_yscale('log')
+                ax.set_xlim([0.05,200])
+                ax.set_ylim([0.0001,20])
+                ax.set_ylabel('Frequency')
+                ax.set_xlabel('Precipitation rate (mm/day)')
+                ax1.set_xlim([0.05,200])
+                ax1.set_ylim([0.01,1])
+                ax1.set_xscale('log')
+                ax1.set_yscale('log')
+                ax1.set_ylabel('Precipitation Amount (mm/day)')
+                ax1.set_xlabel('Precipitation rate (mm/day)')
+                fig.savefig(basedir+'figures/Daily_amip_'+vas[va_ind]+'_JJA_pdf1.png')
+                fig1.savefig(basedir+'figures/Daily_amip_'+vas[va_ind]+'_JJA_pdf2.png')
 
 
-    
-def pdf_daily_taylor_diagram(parameter):
-    """Calculate diurnal cycle climatology"""
-    variables = parameter.variables
-    seasons = parameter.season
-    output_path = parameter.output_path
-
-    var_longname = [ varid_longname[x] for x in variables]
-    for j, variable in enumerate(variables):
-        obs_data = genfromtxt(output_path+'/metrics/'+variable+'_obs_pdf_daily_std_corr.csv')
-        test_data = genfromtxt(output_path+'/metrics/'+variable+'_test_pdf_daily_std_corr.csv')
-        mmm_data = genfromtxt(output_path+'/metrics/'+variable+'_mmm_pdf_daily_std_corr.csv')
-        cmip_data = genfromtxt(output_path+'/metrics/'+variable+'_cmip_pdf_daily_std_corr.csv')
-        mod_num = cmip_data.shape[0]
-        
-
-        fig = plt.figure(figsize=(8,8))
-        refstd = obs_data[0]
-        dia = TaylorDiagram(refstd, fig=fig,rect=111, label="Reference")
-
-        # Add samples to Taylor diagram
-        for i,(stddev,corrcoef) in enumerate(cmip_data):
-            dia.add_sample(stddev, corrcoef, marker='.',ms=10, c='grey')
-
-        dia.add_sample(test_data[0], test_data[1],marker='.',ms=15, c='red',label='MOD')
-        dia.add_sample(mmm_data[0], mmm_data[1],marker='.',ms=15, c='b',label='MMM')
-
-        # Add RMS contours, and label them
-        contours = dia.add_contours(colors='0.5')
-        plt.clabel(contours, inline=1, fontsize=10)
-        plt.title(var_longname[j])
-
-        # Add a figure legend
-        fig.legend([dia.samplePoints[0],dia.samplePoints[-2],dia.samplePoints[-1]] ,
-                   [ p.get_label() for p in [dia.samplePoints[0],dia.samplePoints[-2],dia.samplePoints[-1]] ],
-                   numpoints=1,  loc='upper right',prop={'size':10})
-#        np.savetxt(basedir+'metrics/'+vas[va_ind]+'_'+mod+'std_corr.csv',mod_sample,fmt='%.3f')
-        fig.savefig(output_path+'/figures/'+variable+'_pdf_daily_taylor_diagram.png')
-        plt.close('all')
 
 
-    
-    
-    
-    
+
+#    
+#            fig = plt.figure()# Create figure
+#            ax  =fig.add_axes([0.15, 0.14, 0.8, 0.8]) # Create axes
+#            xax_3hr=np.array([3.0*x-6.5 for x in range(8)])
+#            xax_1hr=np.array([1.0*x-6.5 for x in range(24)]) 
+#            #xax =  np.arange (1,13,1)
+#    
+#            # plotting ref models 
+#            mod_phase=np.empty([mod_num])
+#            mod_amp=np.empty([mod_num])
+#            for mod_ind in range(mod_num):
+#                popt, pcov = curve_fit(func24, xax_3hr, cmip_data[mod_ind,:] ,p0=(1.0,0.2))
+#                p1_mod = popt[0]
+#                p2_mod = popt[1]
+#                ymod_fit=func24(xax_1hr,p1_mod,p2_mod)+np.mean(cmip_data[mod_ind,:])
+#                
+#                mod_fit,=ax.plot(np.concatenate((xax_1hr,[x+24 for x in xax_1hr])),np.concatenate((ymod_fit,ymod_fit)), 'grey',lw=1)
+#                mod_amp[mod_ind]=p1_mod
+#                if p1_mod<=0 :
+#                   p2_mod=1.5*np.pi-p2_mod
+#                if p1_mod>0 :
+#                   p2_mod=0.5*np.pi-p2_mod
+#                mod_phase[mod_ind]=p2_mod
+#                #ax.plot(xax_3hr,cmip_data[mod_ind,:],'grey',lw=1)
+#    
+#            # plotting test model
+#            ann_mean=np.mean(test_data[:])
+#            popt, pcov = curve_fit(func24, xax_3hr, test_data ,p0=(1.0,0.2))
+#            p1_mod = popt[0]
+#            p2_mod = popt[1]
+#            ymod_fit=func24(xax_1hr,p1_mod,p2_mod)+np.mean(test_data)
+#            mod_fit,=ax.plot(np.concatenate((xax_1hr,[x+24 for x in xax_1hr])),np.concatenate((ymod_fit,ymod_fit)), 'r',label = 'MOD: %.2f'%ann_mean,lw=2)
+#            ax.plot(np.concatenate((xax_3hr,[x+24 for x in xax_3hr])),np.concatenate((test_data,test_data)),'.r',label='MOD',lw=2,markersize=15)
+#            test_amp=p1_mod
+#            if p1_mod<=0 :
+#               p2_mod=1.5*np.pi-p2_mod
+#            if p1_mod>0 :
+#               p2_mod=0.5*np.pi-p2_mod
+#            test_phase=p2_mod
+#            #ax.plot(xax_3hr,test_data[:],'r',label='MOD: %.2f'%ann_mean,lw=3)
+#    
+#            # plotting test model
+#            ann_mean=np.mean(obs_data[:])
+#            popt, pcov = curve_fit(func24, xax_1hr, obs_data ,p0=(1.0,0.2))
+#            p1_obs = popt[0]
+#            p2_obs = popt[1]
+#            yobs2=func24(xax_1hr,p1_obs,p2_obs)+np.mean(obs_data)
+#            obs2,=plt.plot(np.concatenate((xax_1hr,[x+24 for x in xax_1hr])),np.concatenate((obs_data,obs_data)),'k.',label='OBS: %.2f'%ann_mean,lw=2,markersize=15)
+#            obs_fit2,=plt.plot(np.concatenate((xax_1hr,[x+24 for x in xax_1hr])), np.concatenate((yobs2,yobs2)),'k',lw=2)
+#            obs2_amp=abs(p1_obs)
+#            obs2_phase=0.5*np.pi-p2_obs  #-5.0/24*2*np.pi
+#    
+#            #ax.plot(xax_1hr,obs_data[:],'k',label='OBS: %.2f'%ann_mean,lw=3)
+#            #ann_mean=np.mean(mmm_data[:])
+#            #ax.plot(xax_3hr,mmm_data[:],'b',label='MMM: %.2f'%ann_mean,lw=3)
+#            my_xticks=['0h', '3h', '6h', '9h', '12h', '15h', '18h', '21h']
+#            my_xticks_loc=np.array([3*x for x in range(8)])
+#            plt.xticks(my_xticks_loc, my_xticks)
+#            ax.set_xlim([0,24])
+#            ax.set_ylim([-0.5,7])
+#            ax.text(0.3, 0.95,'OBS',color='k',verticalalignment='top', horizontalalignment='left',transform=ax.transAxes)
+#            ax.text(0.3, 0.85,'MOD',color='r',verticalalignment='top', horizontalalignment='left',transform=ax.transAxes)
+#            plt.xlabel('local solar time [hr]')
+#            plt.ylabel(var_longname[j])
+#            fig.savefig(output_path+'/figures/'+variable+'_'+season+'_pdf_daily.png')
+#            plt.close('all')
+#           
+#    
+#    
+#            ##########Generate hormonic dial plot: mapping phase and amplitude to Dial
+#    
+#            fig2 = plt.figure()
+#            ax2  =fig2.add_axes([0.1, 0.1, 0.8, 0.8],polar=True)#, axisbg='#d5de9c')
+#    
+#            size=50
+#            ax2.scatter(obs2_phase,obs2_amp,color='k',label='OBS',s=size*2)
+#            ax2.scatter(mod_phase[:],abs(mod_amp[:]),color='grey',s=size)
+#            ax2.scatter(test_phase,abs(test_amp),color='r',label='MOD',s=size*2)
+#            ax2.legend(scatterpoints=1,loc='center right',bbox_to_anchor=(1.2,0.90),prop={'size':15})
+#            ax2.set_rmax(3)
+#            ax2.set_theta_direction(-1)
+#            ax2.set_theta_offset(np.pi/2)
+#            ax2.set_xticklabels(['0h', '3h', '6h', '9h', '12h', '15h', '18h', '21h'])
+#            grid(True)
+#    
+#            fig2.savefig(output_path+'/figures/'+variable+'_'+season+'_pdf_daily_harmonic_diagram.png')
+#
+#
+#    
+#def pdf_daily_taylor_diagram(parameter):
+#    """Calculate diurnal cycle climatology"""
+#    variables = parameter.variables
+#    seasons = parameter.season
+#    output_path = parameter.output_path
+#
+#    var_longname = [ varid_longname[x] for x in variables]
+#    for j, variable in enumerate(variables):
+#        obs_data = genfromtxt(output_path+'/metrics/'+variable+'_obs_pdf_daily_std_corr.csv')
+#        test_data = genfromtxt(output_path+'/metrics/'+variable+'_test_pdf_daily_std_corr.csv')
+#        mmm_data = genfromtxt(output_path+'/metrics/'+variable+'_mmm_pdf_daily_std_corr.csv')
+#        cmip_data = genfromtxt(output_path+'/metrics/'+variable+'_cmip_pdf_daily_std_corr.csv')
+#        mod_num = cmip_data.shape[0]
+#        
+#
+#        fig = plt.figure(figsize=(8,8))
+#        refstd = obs_data[0]
+#        dia = TaylorDiagram(refstd, fig=fig,rect=111, label="Reference")
+#
+#        # Add samples to Taylor diagram
+#        for i,(stddev,corrcoef) in enumerate(cmip_data):
+#            dia.add_sample(stddev, corrcoef, marker='.',ms=10, c='grey')
+#
+#        dia.add_sample(test_data[0], test_data[1],marker='.',ms=15, c='red',label='MOD')
+#        dia.add_sample(mmm_data[0], mmm_data[1],marker='.',ms=15, c='b',label='MMM')
+#
+#        # Add RMS contours, and label them
+#        contours = dia.add_contours(colors='0.5')
+#        plt.clabel(contours, inline=1, fontsize=10)
+#        plt.title(var_longname[j])
+#
+#        # Add a figure legend
+#        fig.legend([dia.samplePoints[0],dia.samplePoints[-2],dia.samplePoints[-1]] ,
+#                   [ p.get_label() for p in [dia.samplePoints[0],dia.samplePoints[-2],dia.samplePoints[-1]] ],
+#                   numpoints=1,  loc='upper right',prop={'size':10})
+##        np.savetxt(basedir+'metrics/'+vas[va_ind]+'_'+mod+'std_corr.csv',mod_sample,fmt='%.3f')
+#        fig.savefig(output_path+'/figures/'+variable+'_pdf_daily_taylor_diagram.png')
+#        plt.close('all')
+#
+#
+#    
+#    
+#    
+#    
