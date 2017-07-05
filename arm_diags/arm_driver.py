@@ -28,16 +28,19 @@ from src.create_htmls import annual_cycle_html
 from src.create_htmls import pdf_daily_html
 
 def make_parameters(basic_parameter):
-    #f_data = open('diags_sets.json').read()
+    #f_data = open('diags_set1.json').read()
     #f_data = open('diags_set2.json').read()
     #f_data = open('diags_set3.json').read()
     #f_data = open('diags_set4.json').read()
-    f_data = open('diags_set6.json').read()
+    #f_data = open('diags_set6.json').read()
+    f_data = open('diags_all.json').read()
     json_file = json.loads(f_data)
 
     parameters = []
     for key in json_file:
+        print key
         for single_run in json_file[key]:
+            print single_run
             p = copy.deepcopy(basic_parameter)
             for attr_name in single_run:
                 setattr(p, attr_name, single_run[attr_name])
