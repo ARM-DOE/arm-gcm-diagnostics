@@ -26,6 +26,7 @@ from src.create_htmls import diurnal_cycle_html
 from src.create_htmls import seasonal_mean_table_html
 from src.create_htmls import annual_cycle_html
 from src.create_htmls import pdf_daily_html
+from src.create_htmls import diags_main_html
 
 def make_parameters(basic_parameter):
     #f_data = open('diags_set1.json').read()
@@ -38,9 +39,7 @@ def make_parameters(basic_parameter):
 
     parameters = []
     for key in json_file:
-        print key
         for single_run in json_file[key]:
-            print single_run
             p = copy.deepcopy(basic_parameter)
             for attr_name in single_run:
                 setattr(p, attr_name, single_run[attr_name])
@@ -67,33 +66,37 @@ if not os.path.exists(case_id):
 for parameter in parameters:
 
     diags_set = parameter.diags_set
+    output_path = parameter.output_path
+    test_model = parameter.test_data_set
     print diags_set
     # set1 diagnostics
     if diags_set == 'set1_tables':
-        seasonal_mean_table(parameter) #Calculate seasonal mean climatology
+        #seasonal_mean_table(parameter) #Calculate seasonal mean climatology
         seasonal_mean_table_html(parameter) #Generate html 
 
     if diags_set == 'set2_annual_cycle':
-        annual_cycle_data(parameter)
-        annual_cycle_line_plot(parameter)
-        annual_cycle_taylor_diagram(parameter)
+        #annual_cycle_data(parameter)
+        #annual_cycle_line_plot(parameter)
+        #annual_cycle_taylor_diagram(parameter)
         annual_cycle_html(parameter)
 
     if diags_set == 'set3_annual_cycle_zt': # this also include set5 diags
-        annual_cycle_zt_data(parameter)
-        annual_cycle_zt_plot(parameter)
+        #annual_cycle_zt_data(parameter)
+        #annual_cycle_zt_plot(parameter)
         annual_cycle_zt_html(parameter)
         diurnal_cycle_zt_html(parameter)
 
     if diags_set == 'set4_diurnal_cycle':
-        diurnal_cycle_data(parameter)
-        diurnal_cycle_plot(parameter)
+        #diurnal_cycle_data(parameter)
+        #diurnal_cycle_plot(parameter)
         diurnal_cycle_html(parameter)
 
     if diags_set == 'set6_pdf_daily':
-        pdf_daily_data(parameter)
-        pdf_daily_plot(parameter)
+        #pdf_daily_data(parameter)
+        #pdf_daily_plot(parameter)
         pdf_daily_html(parameter)
+    
+diags_main_html(output_path, test_model)
 #
 ## Creat the main html page hosting all sets of diagnostics
 #write_html()

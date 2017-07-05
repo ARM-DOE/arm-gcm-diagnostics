@@ -67,7 +67,7 @@ def diurnal_cycle_data(parameter):
             try:
                 var = fin (variable,squeeze = 1)
                 test_var_dc = var_diurnal_cycle(var,season)
-                print test_var_dc
+                #print test_var_dc
 
             except:
                 print (variable+" not processed for " + test_model)
@@ -82,7 +82,7 @@ def diurnal_cycle_data(parameter):
               
         try:
             var = fin (variable)
-            print var.shape
+            #print var.shape
             var_dc = np.reshape(var,(12,24))
             for season in seasons:
                 if season == 'JJA':
@@ -92,7 +92,7 @@ def diurnal_cycle_data(parameter):
     
             if var.id == 'pr':
                 obs_var_dc = obs_var_dc*3600.*24.
-            print obs_var_dc 
+            #print obs_var_dc 
         except:
             print (variable+" not processed for obs")
         obs_var_season[j,:] = obs_var_dc

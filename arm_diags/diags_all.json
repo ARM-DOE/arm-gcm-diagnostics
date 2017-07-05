@@ -3,14 +3,32 @@
           {
       "diags_set": "set1_tables",
       "variables": ["tas","pr","clt","hurs","hfss","hfls","rlus","rlds","rsus","rsds","ps","prw"],
-      "ref_models": ["ACCESS1-0","ACCESS1-3", "CESM1-CAM5","CSIRO-Mk3-6-0", "CanAM4","FGOALS-g2","FGOALS-s2","GFDL-HIRAM-C360","GFDL-HIRAM-C180","GISS-E2-R","inmcm4", "MPI-ESM-LR", "MPI-ESM-MR", "NorESM1-M","TEST"],
+      "ref_models": ["ACCESS1-0","ACCESS1-3"],
       "season": ["ANN","DJF","MAM","JJA","SON"]
                 },
           {
       "diags_set": "set2_annual_cycle",
       "variables": ["tas","pr","clt","hurs","hfss","hfls","rlus","rlds","rsus","rsds","ps","prw"],
-      "ref_models": ["ACCESS1-0","ACCESS1-3", "CESM1-CAM5","CSIRO-Mk3-6-0", "CanAM4","FGOALS-g2","FGOALS-s2","GFDL-HIRAM-C360","GFDL-HIRAM-C180","GISS-E2-R","inmcm4", "MPI-ESM-LR", "MPI-ESM-MR", "NorESM1-M","TEST"],
+      "ref_models": ["ACCESS1-0","ACCESS1-3"],
       "season": ["J","F","M","A","M","J","J","A","S","O","N","D"]
+                },
+          {
+      "diags_set": "set3_annual_cycle_zt",
+      "variables": ["cl_p"],
+      "ref_models": ["TEST"],
+      "season": ["J","F","M","A","M","J","J","A","S","O","N","D"]
+                },
+          {
+      "diags_set": "set4_diurnal_cycle",
+      "variables": ["pr"],
+      "ref_models": ["MIROC5","CMCC-CM","inmcm4","CCSM4","GFDL-HIRAM-C180","GFDL-HIRAM-C360","FGOALS-s2","ACCESS1-0","ACCESS1-3"],
+      "season": ["JJA"]
+                },
+          {
+      "diags_set": "set6_pdf_daily",
+      "variables": ["pr"],
+      "ref_models": ["MIROC5","CMCC-CM","CCSM4","FGOALS-s2","ACCESS1-0","ACCESS1-3"],
+      "season": ["JJA"]
                 }
           ]
 
