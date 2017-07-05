@@ -71,42 +71,41 @@ for parameter in parameters:
     print diags_set
     # set1 diagnostics
     if diags_set == 'set1_tables':
-        #seasonal_mean_table(parameter) #Calculate seasonal mean climatology
+        seasonal_mean_table(parameter) #Calculate seasonal mean climatology
         seasonal_mean_table_html(parameter) #Generate html 
 
     if diags_set == 'set2_annual_cycle':
-        #annual_cycle_data(parameter)
-        #annual_cycle_line_plot(parameter)
-        #annual_cycle_taylor_diagram(parameter)
+        annual_cycle_data(parameter)
+        annual_cycle_line_plot(parameter)
+        annual_cycle_taylor_diagram(parameter)
         annual_cycle_html(parameter)
 
     if diags_set == 'set3_annual_cycle_zt': # this also include set5 diags
-        #annual_cycle_zt_data(parameter)
-        #annual_cycle_zt_plot(parameter)
+        annual_cycle_zt_data(parameter)
+        annual_cycle_zt_plot(parameter)
         annual_cycle_zt_html(parameter)
         diurnal_cycle_zt_html(parameter)
 
     if diags_set == 'set4_diurnal_cycle':
-        #diurnal_cycle_data(parameter)
-        #diurnal_cycle_plot(parameter)
+        diurnal_cycle_data(parameter)
+        diurnal_cycle_plot(parameter)
         diurnal_cycle_html(parameter)
 
     if diags_set == 'set6_pdf_daily':
-        #pdf_daily_data(parameter)
-        #pdf_daily_plot(parameter)
+        pdf_daily_data(parameter)
+        pdf_daily_plot(parameter)
         pdf_daily_html(parameter)
     
+#
+# Creat the main html page hosting all sets of diagnostics
 diags_main_html(output_path, test_model)
 #
-## Creat the main html page hosting all sets of diagnostics
-#write_html()
-#
-#print 'Html files saved in:'+basedir+'html/'
-#print 'Open Html file by (MacOS): open ' +basedir+'html/ARM_diag.html'
-#print 'Open Html file by (Linux): xdg-open ' +basedir+'html/ARM_diag.html'
-#
-#print 'Processes Completed!'
-#print '------------------     END    -------------------------'
+print 'Html files saved in:'+output_path+'/html/'
+print 'Open Html file by (MacOS): open ' +output_path+'/html/arm_diag.html'
+print 'Open Html file by (Linux): xdg-open ' +output_path+'/html/arm_diag.html'
+
+print 'Processes Completed!'
+print '------------------     END    -------------------------'
     
     
     
