@@ -39,6 +39,10 @@ To create conda enviroment::
 
     conda create -n arm_diags_env cdp cdutil genutil cdms2 numpy matplotlib scipy -c conda-forge -c uvcdat
 
+To activate the conda enviroment::
+    
+    source activate arm_diags_env
+
 To install the package, go into <Your directory>::
     
     python setup.py install
