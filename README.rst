@@ -43,7 +43,7 @@ To activate the conda enviroment::
     
     source activate arm_diags_env
 
-To install the package, go into <Your directory>::
+To install the package, go into <Your directory> (/arm-gcm-dignostics/)::
     
     python setup.py install
 
@@ -54,7 +54,9 @@ A test case has been set up for the users to run the package out-of-the-box. In 
 
  <Your directory>/arm_diags/observation
  <Your directory>/arm_diags/cmip
- <Your directory>/arm_diags/model, respectively.
+ <Your directory>/arm_diags/model
+
+Edit parameter file basicparameter.py to set 'base_path' to <Your directory>
 
 To run the package, simply type in the terminal the following::
    
