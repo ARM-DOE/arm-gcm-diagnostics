@@ -15,10 +15,10 @@ Important Links
 - Technical Report: https://github.com/ARM-DOE/arm-gcm-diagnostics/blob/master/ARM_gcm_diag_pkg_TechReport_v1.docx
 
 
-Citing
+References
 ======
 
-TBD
+Zhang, C., S. Xie, S. A. Klein, H.-Y. Ma, S. Tang, K. V. Weverberg, C. Morcrette, and J. Petch (submitted), CAUSES: Diagnosis of the summertime warm bias in CMIP5 climate models at the ARM Southern Great Plains site, J. Geophys. Res. Atmos.
 
 Install
 =======
