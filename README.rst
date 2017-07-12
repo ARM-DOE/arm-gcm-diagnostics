@@ -12,7 +12,7 @@ Important Links
 
 - Official source code repository: https://github.com/ARM-DOE/arm-gcm-diagnostics
 - ARM webpage: http://www.arm.gov/data/eval/123
-- Technical Report: https://github.com/ARM-DOE/arm-gcm-diagnostics/blob/master/ARM_gcm_diag_pkg_TechReport_v2.docx
+- Technical Report: https://github.com/ARM-DOE/arm-gcm-diagnostics/blob/master/ARM_gcm_diag_pkg_TechReport_v1.docx
 
 
 Citing
@@ -35,9 +35,13 @@ For obtaining codes::
 
     git clone https://github.com/ARM-DOE/arm-gcm-diagnostics/
     
+To create conda enviroment::
 
-(Below works for v0-alpha version, will be revised upon new release)
+    conda create -n arm_diags_env cdp cdutil genutil cdms2 numpy matplotlib scipy -c conda-forge -c uvcdat
 
+To install the package, go into <Your directory>::
+    
+    python setup.py install
 
 Testing
 =============
@@ -52,9 +56,26 @@ For Mac OS::
 
     open <Your Directory>/ARMDiag/html/ARM_diag.html
 
+For Linux::A working test case has been set up for the users to run the package out-of-the-box. In this case, all the observation, CMIP data, test data should be downloaded placed under directoris:: 
+
+ <Your directory>/arm_diags/observation
+ <Your directory>/ arm_diags /cmip
+ <Your directory>/ arm_diags /model, respectively.
+
+To run the package, simply type in the terminal the following::
+   
+  python arm_driver.py -p basicparameter.py
+
+To view the diagnostics results:
+
+For Mac OS::
+
+  open <Your directory>/arm_diags/case_name/html/ARM_diag.html
+
 For Linux::
 
-    xdg-open <Your Directory>/ARMDiag/html/ARM_diag.html
+   xdg-open <Your directory>/ arm_diags/case_name/html/ARM_diag.html
+
 
 Examples
 =============
@@ -70,11 +91,13 @@ In this release, the package provides 6 sets of diagnostics including:
 Set-up new case
 =================
 
-- Follow sample codes and data file name convention to generate model data and then place the processed data in model data directory: ARMDiag/model
-- Edit config.py to change model name accordingly (make sure the model name in config.gy matchs generated model data name)
+- Follow the cf convention to generate model data (in the same format as test data sets) and then place the processed data in model data directory <Your directory>/ arm_diags /model: 
+- Edit basicparameter.py to change 'test_data_set' to model name accordingly (make sure the model name matchs generated model netcdf data name )
+- Edit 'case_id' to create folder to save diagnostics results 
+- Edit 'base_path' to spedify location of the data
 - Run the package by typing::
 
-              python ARMDiag_driver.py
+              python arm_driver.py -p basicparameter.py
 
 
 
