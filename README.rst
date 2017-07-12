@@ -45,22 +45,12 @@ To install the package, go into <Your directory>::
 
 Testing
 =============
-A working prototype has been set up for the users to run the package out-of-the-box. In this case, all the observation and CMIP data are already placed under directoris: /ARMDiag/observation and /ARMDiag/cmip, respectively, in the format of comma-separated values (csv). The demo model data are placed under /ARMDiag/model.
 
-To run the package, simply type in the terminal the following::
-
-    python ARMDiag_driver.py
-
-To view the diagnostics results:
-For Mac OS::
-
-    open <Your Directory>/ARMDiag/html/ARM_diag.html
-
-For Linux::A working test case has been set up for the users to run the package out-of-the-box. In this case, all the observation, CMIP data, test data should be downloaded placed under directoris:: 
+A test case has been set up for the users to run the package out-of-the-box. In this case, all the observation, CMIP data, test data should be downloaded placed under directoris:: 
 
  <Your directory>/arm_diags/observation
- <Your directory>/ arm_diags /cmip
- <Your directory>/ arm_diags /model, respectively.
+ <Your directory>/arm_diags/cmip
+ <Your directory>/arm_diags/model, respectively.
 
 To run the package, simply type in the terminal the following::
    
