@@ -32,7 +32,6 @@ def var_pdf_daily(var, season, years):
 
         if var.id == 'pr':
             var_da_year[iy,:] = var_da_year[iy,:]*3600.*24.
-        print year
 #        except:
 #            print str(year) +' not Available!'
 #            var_da_year[iy,:] =  np.nan

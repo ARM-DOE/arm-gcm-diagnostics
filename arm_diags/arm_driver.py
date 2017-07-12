@@ -26,13 +26,15 @@ from src.create_htmls import diurnal_cycle_html
 from src.create_htmls import seasonal_mean_table_html
 from src.create_htmls import annual_cycle_html
 from src.create_htmls import pdf_daily_html
+from src.create_htmls import diags_main_html
 
 def make_parameters(basic_parameter):
-    #f_data = open('diags_sets.json').read()
+    f_data = open('diags_set1.json').read()
     #f_data = open('diags_set2.json').read()
     #f_data = open('diags_set3.json').read()
     #f_data = open('diags_set4.json').read()
-    f_data = open('diags_set6.json').read()
+    #f_data = open('diags_set6.json').read()
+    #f_data = open('diags_all.json').read()
     json_file = json.loads(f_data)
 
     parameters = []
@@ -64,6 +66,8 @@ if not os.path.exists(case_id):
 for parameter in parameters:
 
     diags_set = parameter.diags_set
+    output_path = parameter.output_path
+    test_model = parameter.test_data_set
     print diags_set
     # set1 diagnostics
     if diags_set == 'set1_tables':
@@ -91,16 +95,17 @@ for parameter in parameters:
         pdf_daily_data(parameter)
         pdf_daily_plot(parameter)
         pdf_daily_html(parameter)
+    
 #
-## Creat the main html page hosting all sets of diagnostics
-#write_html()
+# Creat the main html page hosting all sets of diagnostics
+diags_main_html(output_path, test_model)
 #
-#print 'Html files saved in:'+basedir+'html/'
-#print 'Open Html file by (MacOS): open ' +basedir+'html/ARM_diag.html'
-#print 'Open Html file by (Linux): xdg-open ' +basedir+'html/ARM_diag.html'
-#
-#print 'Processes Completed!'
-#print '------------------     END    -------------------------'
+print 'Html files saved in:'+output_path+'/html/'
+print 'Open Html file by (MacOS): open ' +output_path+'/html/arm_diag.html'
+print 'Open Html file by (Linux): xdg-open ' +output_path+'/html/arm_diag.html'
+
+print 'Processes Completed!'
+print '------------------     END    -------------------------'
     
     
     

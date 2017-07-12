@@ -1,5 +1,74 @@
 import csv
 from varid_dict import varid_longname
+import os
+
+def diags_main_html(output_path,test_model):
+    """Creat the main html page hosting all sets of diagnostics"""
+    #output_path = parameter.output_path
+    #test_model = parameter.test_data_set
+    os.chdir(output_path+'/html')
+    print os.getcwd()
+    f = open('arm_diag.html','w')
+    message = """<html>
+    <head>
+    <TITLE>ARM Diagnostics Plots</TITLE>
+    </head>
+    </table>
+    </b></font>
+    <p>
+    <b>ARM Metrics and Diagnostics Package</b>
+    <p>
+    <b>Model: """+test_model+"""</b>
+    <hr noshade size=2 size="100%">
+    <TABLE width='1550' >
+    <TR>
+    <TD>
+      <TH ALIGN=left VALIGN=top>
+      <font color=blue>Set</font>
+      <font color=blue>Description</font><br>
+    <p>
+      <font color=red>1</font> <A HREF="seasonal_mean_table.html">Tables</A> of DJF, MAM, JJA, SON and Annual Mean.<br>
+    <p>
+      <font color=red>2</font> <A HREF="annual_cycle.html">Line plots and Taylor diagrams</A> of Annual Cycle.<br>
+    <p>
+      <font color=red>3</font> <A HREF="annual_cycle_zt.html">Contour and Vertical profiles</A> of Annual Cycle.<br>
+    <p>
+      <font color=red>4</font> <A HREF="diurnal_cycle.html">Line and Harmonic Dail plots</A> of Diurnal Cycle.<br>
+    <p>
+      <font color=red>5</font> <A HREF="diurnal_cycle_zt.html">Contour plots</A> of Diurnal Cycle.<br>
+    <p>
+      <font color=red>6</font> <A HREF="pdf_daily.html">Line plots</A> of Probability Density Function.<br>
+    
+    </Table>
+
+    <p>
+    <p>
+    <Table>
+    <em>Click on Plot Type</em></b><p>
+      <A HREF="annual_cycle.html"><img src="../figures/pr_annual_cycle.png"  border=1 hspace=3 alt="Set 1" width="150" height="150"></a>
+      <A HREF="annual_cycle.html"><img src="../figures/pr_annual_cycle_taylor_diagram.png"  border=1 hspace=3 alt="Set 1" width="150" height="150"></a>
+      <A HREF="annual_cycle_zt.html"><img src="../figures/mod_cl_p_annual_cycle_clim.png"   border=1 hspace=3 alt="Set 3" width="150" height="150"></a>
+      <A HREF="DC_amip_line.html"><img src="../figures/ANN_cl_p_diff.png "   border=1 hspace=3 alt="Set 3" width="150" height="150"></a>
+      <A HREF="diurnal_cycle_zt.html"><img src="../figures/obs_cl_p_diurnal_clim.png"   border=1 hspace=3 alt="Set 3" width="150" height="150"></a>
+      <A HREF="pdf_daily.html"><img src="../figures/pr_JJA_pdf1_daily.png"   border=1 hspace=3 alt="Set 6" width="150" height="150"></a>
+    
+    </TH>
+    </TD>
+    
+    </TR>
+    </TABLE>
+    
+    </TD>
+    <Table>
+    <img src="../../misc/ARM_logo.png" >
+    </TABLE>
+    
+    
+    </html>"""
+
+    f.write(message)
+    f.close()
+    
 
 def seasonal_mean_table_html(parameter):
     """Create set 1 diag. html hosting the table summarizing DJF, MAM, JJA, SON,ANN mean climatology"""
@@ -99,7 +168,7 @@ def annual_cycle_zt_html(parameter):
     seasons=['ANN','DJF','MAM','JJA','SON']
     #for va_ind in range(len(vas)-2):# at this stage for cl_p only
     for j, variable in enumerate(variables):
-        htmlfile = open(output_path+'/html/AC_amip_contour.html',"w")
+        htmlfile = open(output_path+'/html/annual_cycle_zt.html',"w")
         htmlfile.write('<p><th><b>'+test_model+': Annual Cycle'+ '</b></th></p>')
         htmlfile.write('<table>')
         htmlfile.write('<TR><TH ALIGN=LEFT><BR><TH ALIGN=LEFT><font color=blue size=+1>Southern Great Plains (SGP)</font><TH><BR><TR>')
@@ -134,7 +203,7 @@ def diurnal_cycle_html(parameter):
     var_longname = [ varid_longname[x] for x in variables]
 
 
-    htmlfile = open(output_path+'/html/DC_amip_line_harmonicD.html',"w")
+    htmlfile = open(output_path+'/html/diurnal_cycle.html',"w")
     htmlfile.write('<p><th><b>'+test_model+': Diurnal Cycle'+ '</b></th></p>')
     htmlfile.write('<table>')
     htmlfile.write('<TR><TH ALIGN=LEFT><BR><TH ALIGN=LEFT><font color=blue size=+1>Southern Great Plains (SGP)</font><TH><BR><TR>')
@@ -145,7 +214,7 @@ def diurnal_cycle_html(parameter):
         htmlfile.write('<TH><BR>')
         htmlfile.write('<TR><TH ALIGN=LEFT>'+var_longname[j])
         for season in season:
-            two_figs='DC_amip_line_harmonicD_'+variable+'_'+season+'_2plots.html'
+            two_figs='diurnal_cycle_'+variable+'_'+season+'_2plots.html'
             htmlfile1 = open(output_path+'/html/'+two_figs,"w")
             fig1=output_path+'/figures/'+variable+'_'+season+'_diurnal_cycle.png'
             fig2=output_path+'/figures/'+variable+'_'+season+'_diurnal_cycle_harmonic_diagram.png'
@@ -163,7 +232,7 @@ def diurnal_cycle_zt_html(parameter):
 
     var_longname = [ varid_longname[x] for x in variables]
 
-    htmlfile = open(output_path+'/html/DC_amip_contour.html',"w")
+    htmlfile = open(output_path+'/html/diurnal_cycle_zt.html',"w")
     htmlfile.write('<p><th><b>'+test_model+': Diurnal Cycle'+ '</b></th></p>')
     htmlfile.write('<table>')
     htmlfile.write('<TR><TH ALIGN=LEFT><BR><TH ALIGN=LEFT><font color=blue size=+1>Southern Great Plains (SGP)</font><TH><BR><TR>')
@@ -192,7 +261,7 @@ def pdf_daily_html(parameter):
     var_longname = [ varid_longname[x] for x in variables]
 
 
-    htmlfile = open(output_path+'/html/Daily_amip_PDF.html',"w")
+    htmlfile = open(output_path+'/html/pdf_daily.html',"w")
     htmlfile.write('<p><th><b>'+test_model+': Probability Density Function Based on Daily Mean'+ '</b></th></p>')
     htmlfile.write('<table>')
     htmlfile.write('<TR><TH ALIGN=LEFT><BR><TH ALIGN=LEFT><font color=blue size=+1>Southern Great Plains (SGP)</font><TH><BR><TR>')
