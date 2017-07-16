@@ -52,8 +52,10 @@ def annual_cycle_zt_data(parameter):
 
     # Calculate for observational data
 #    obs_var_season=np.empty([len(variables),len(seasons)])*np.nan
-    obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag*diurnal*.nc')) #read in monthly test data
+    #obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag*diurnal*.nc')) #read in monthly test data
+    obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag_c1_ARSCL_ACRED_diurnal_climo*.nc')) #read in monthly test data
     print 'ARM data'
+    print obs_file
     fin = cdms2.open(obs_file[0])
     for j, variable in enumerate(variables): 
         try:

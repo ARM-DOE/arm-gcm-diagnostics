@@ -1,7 +1,7 @@
 
 test_data_set = 'test_data'        #name of the model, which should be included as the /model/test_data_xxxx.nc
 
-case_id = 'test_all'  #create folder to save diagnostics results 
+case_id = 'test_dir_name'  #create folder to save diagnostics results 
 
 # set input path 
 base_path = '/Users/zhang40/Documents/ARM_LLNL/repo/arm-gcm-diagnostics/arm_diags/'
