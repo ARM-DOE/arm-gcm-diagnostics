@@ -29,11 +29,11 @@ from src.create_htmls import pdf_daily_html
 from src.create_htmls import diags_main_html
 
 def make_parameters(basic_parameter):
-    #f_data = open('diags_set1.json').read()
-    #f_data = open('diags_set2.json').read()
-    #f_data = open('diags_set3.json').read()
-    #f_data = open('diags_set4.json').read()
-    #f_data = open('diags_set6.json').read()
+    #f_data = open('examples/diags_set1.json').read()
+    #f_data = open('examples/diags_set2.json').read()
+    #f_data = open('examples/diags_set3.json').read()
+    #f_data = open('examples/diags_set4.json').read()
+    #f_data = open('examples/diags_set6.json').read()
     f_data = open('diags_all.json').read()
     json_file = json.loads(f_data)
 

@@ -75,18 +75,22 @@ def diurnal_cycle_data(parameter):
 
     # Calculate for observational data
     obs_var_season=np.empty([len(variables),24])*np.nan
-    obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag_domain_diurnal*.nc')) #read in diurnal test data
+    #obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag_domain_diurnal*.nc')) #read in diurnal test data
+    obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag_c1_diurnal*.nc')) #read in diurnal test data
     print 'ARM data'
     fin = cdms2.open(obs_file[0])
     for j, variable in enumerate(variables): 
               
         try:
             var = fin (variable)
-            #print var.shape
+            print var.shape
             var_dc = np.reshape(var,(12,24))
+ 
+            print seasons,var_dc
             for season in seasons:
                 if season == 'JJA':
                     obs_var_dc = np.nanmean(var_dc[5:8,:],axis=0)
+
             if var.id == 'tas':
                 obs_var_dc = obs_var_dc-273.15
     
