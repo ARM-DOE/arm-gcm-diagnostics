@@ -14,6 +14,7 @@ class ARMParameter(cdp.cdp_parameter.CDPParameter):
 
         self.variables = ''
         self.season = ''
+        self.sites = ''
         self.regrid_tool = 'esmf'
         self.regrid_method = 'linear'
         self.output_file = 'output.png'

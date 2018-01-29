@@ -35,13 +35,15 @@ def seasonal_mean_table(parameter):
     obs_path = parameter.obs_path
     cmip_path = parameter.cmip_path
     output_path = parameter.output_path
+    sites = parameter.sites
    
     test_model = parameter.test_data_set 
     ref_models = parameter.ref_models
 
     # Calculate for test model
     test_var_season=np.empty([len(variables),len(seasons)])*np.nan
-    test_file = glob.glob(os.path.join(test_path,'*'+test_model+'*mo*.nc')) #read in monthly test data
+    test_file = glob.glob(os.path.join(test_path,'*'+test_model+'*mo*'+ sites[0]+'.nc')) #read in monthly test data
+    print test_file
     fin = cdms2.open(test_file[0])
     
     print 'test_model',test_model
@@ -57,7 +59,8 @@ def seasonal_mean_table(parameter):
 
     # Calculate for observational data
     obs_var_season=np.empty([len(variables),len(seasons)])*np.nan
-    obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag*monthly*.nc')) #read in monthly test data
+    obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag*monthly*'+ sites[0]+'.nc')) #read in monthly test data
+    print obs_file
     print 'ARM data'
     fin = cdms2.open(obs_file[0])
     for j, variable in enumerate(variables): 
@@ -75,7 +78,7 @@ def seasonal_mean_table(parameter):
     cmip_var_season=np.empty([len(ref_models),len(variables),len(seasons)])*np.nan
  
     for i, ref_model in enumerate(ref_models):
-         ref_file = glob.glob(os.path.join(cmip_path,'*'+ref_model+'*mo*.nc')) #read in monthly cmip data
+         ref_file = glob.glob(os.path.join(cmip_path,'*'+ref_model+'*mo*'+ sites[0]+'.nc')) #read in monthly cmip data
          print 'ref_model', ref_model
          if not ref_file :
              print (ref_model+" not found!") 
