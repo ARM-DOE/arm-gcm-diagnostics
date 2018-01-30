@@ -40,6 +40,7 @@ def make_parameters(basic_parameter):
 
     parameters = []
     for key in json_file:
+        print json_file[key],key
         for single_run in json_file[key]:
             p = copy.deepcopy(basic_parameter)
             for attr_name in single_run:

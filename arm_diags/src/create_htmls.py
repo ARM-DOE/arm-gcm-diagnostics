@@ -77,39 +77,41 @@ def seasonal_mean_table_html(parameter):
     seasons = parameter.season
     output_path = parameter.output_path
     test_model = parameter.test_data_set
+    sites = parameter.sites
     # Open the CSV file for reading
-    for season in seasons:
-        reader = csv.reader(open(output_path+'/metrics/seasonal_mean_table_'+season+'.csv'))
-        # Create the HTML file for output
-        htmlfile = open(output_path+'/html/seasonal_mean_table_'+season+'.html',"w+")
-        htmlfile.write('<p><th><b>'+test_model+': '+season+'. Mean'+ '</b></th></p>')
-        # initialize rownum variable
-        rownum = 0
-        # write <table> tag
-        htmlfile.write('<table>')
-        # generate table contents
-     
-        for row in reader: # Read a single row from the CSV file
-        
-         # write header row. assumes first row in csv contains header
-             if rownum == 0:
-                htmlfile.write('<tr>') # write <tr> tag
-                for column in row:
-                    htmlfile.write('<th>' + column +'</th>')
-                htmlfile.write('</tr>')
-        
-          #  write all other rows 
-             else:
-                htmlfile.write('<tr><div style="width: 50px" >')
-                #htmlfile.write('<tr>')    
-                for column in row:
-                    htmlfile.write('<td>' + column +'</td>')
-                #htmlfile.write('</tr>')
-                htmlfile.write('</div></tr>')
-             #increment row count 
-             rownum += 1
-      # write </table> tag
-        htmlfile.write('</table>') 
+    for site in sites:
+        for season in seasons:
+            reader = csv.reader(open(output_path+'/metrics/seasonal_mean_table_'+ season +'_' + site+'.csv'))
+            # Create the HTML file for output
+            htmlfile = open(output_path+'/html/seasonal_mean_table_'+season+'_'+site +'.html',"w+")
+            htmlfile.write('<p><th><b>'+test_model+': '+season+'. Mean'+ '</b></th></p>')
+            # initialize rownum variable
+            rownum = 0
+            # write <table> tag
+            htmlfile.write('<table>')
+            # generate table contents
+         
+            for row in reader: # Read a single row from the CSV file
+            
+             # write header row. assumes first row in csv contains header
+                 if rownum == 0:
+                    htmlfile.write('<tr>') # write <tr> tag
+                    for column in row:
+                        htmlfile.write('<th>' + column +'</th>')
+                    htmlfile.write('</tr>')
+            
+              #  write all other rows 
+                 else:
+                    htmlfile.write('<tr><div style="width: 50px" >')
+                    #htmlfile.write('<tr>')    
+                    for column in row:
+                        htmlfile.write('<td>' + column +'</td>')
+                    #htmlfile.write('</tr>')
+                    htmlfile.write('</div></tr>')
+                 #increment row count 
+                 rownum += 1
+          # write </table> tag
+            htmlfile.write('</table>') 
    
    ###############Main html
     
@@ -120,12 +122,21 @@ def seasonal_mean_table_html(parameter):
     htmlfile.write('<TH><BR>')
     htmlfile.write('<TR><TH ALIGN=LEFT>Annual and seasonal mean tables')
     htmlfile.write('<TH><BR>')
-    htmlfile.write('<TH ALIGN=LEFT><A HREF="seasonal_mean_table_ANN.html"> ANN</a>')
-    htmlfile.write('<TH ALIGN=LEFT><A HREF="seasonal_mean_table_DJF.html"> DJF</a>')
-    htmlfile.write('<TH ALIGN=LEFT><A HREF="seasonal_mean_table_MAM.html"> MAM</a>')
-    htmlfile.write('<TH ALIGN=LEFT><A HREF="seasonal_mean_table_JJA.html"> JJA</a>')
-    htmlfile.write('<TH ALIGN=LEFT><A HREF="seasonal_mean_table_SON.html"> SON</a>')
+    htmlfile.write('<TH ALIGN=LEFT><A HREF="seasonal_mean_table_ANN_sgp.html"> ANN</a>')
+    htmlfile.write('<TH ALIGN=LEFT><A HREF="seasonal_mean_table_DJF_sgp.html"> DJF</a>')
+    htmlfile.write('<TH ALIGN=LEFT><A HREF="seasonal_mean_table_MAM_sgp.html"> MAM</a>')
+    htmlfile.write('<TH ALIGN=LEFT><A HREF="seasonal_mean_table_JJA_sgp.html"> JJA</a>')
+    htmlfile.write('<TH ALIGN=LEFT><A HREF="seasonal_mean_table_SON_sgp.html"> SON</a>')
 
+    htmlfile.write('<TR><TH ALIGN=LEFT><BR><TH ALIGN=LEFT><font color=blue size=+1>North Slope of Alaska (NSA)</font><TH><BR><TR>')
+    htmlfile.write('<TH><BR>')
+    htmlfile.write('<TR><TH ALIGN=LEFT>Annual and seasonal mean tables')
+    htmlfile.write('<TH><BR>')
+    htmlfile.write('<TH ALIGN=LEFT><A HREF="seasonal_mean_table_ANN_nsa.html"> ANN</a>')
+    htmlfile.write('<TH ALIGN=LEFT><A HREF="seasonal_mean_table_DJF_nsa.html"> DJF</a>')
+    htmlfile.write('<TH ALIGN=LEFT><A HREF="seasonal_mean_table_MAM_nsa.html"> MAM</a>')
+    htmlfile.write('<TH ALIGN=LEFT><A HREF="seasonal_mean_table_JJA_nsa.html"> JJA</a>')
+    htmlfile.write('<TH ALIGN=LEFT><A HREF="seasonal_mean_table_SON_nsa.html"> SON</a>')
 
 
 
