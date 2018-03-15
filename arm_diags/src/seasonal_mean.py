@@ -83,6 +83,8 @@ def seasonal_mean_table(parameter):
                #tmp
                print np.nanmean(np.reshape(var, (4,3)),axis=1)
                obs_var_season[j,1:] = np.nanmean(np.reshape(var, (4,3)),axis=1)
+               if variable == 'tas':
+                   obs_var_season[j,1:] = obs_var_season[j,1:] -273.15
                obs_var_season[j,0] = np.nanmean(var,axis=0)
                 
                #var24 = np.concatenate((var,var),axis=0)

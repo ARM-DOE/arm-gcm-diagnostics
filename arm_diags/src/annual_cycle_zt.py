@@ -193,11 +193,11 @@ def annual_cycle_zt_plot(parameter):
             fig = plt.figure()# Create figure
             ax  =fig.add_axes([0.15, 0.15, 0.65, 0.75]) # Create axes
             if index==0:
-                title='obs_'+variable+'_annual_cycle_clim'
+                title='mod_'+variable+'_annual_cycle_clim'
                 im=ax.pcolormesh(y,x,cl_p[:,::-1], vmin=0, vmax=25)
             elif index==1:
                 im=ax.pcolormesh(y,x,cl_ob[:,::-1], vmin=0, vmax=25)
-                title='mod_'+variable+'_annual_cycle_clim'
+                title='obs_'+variable+'_annual_cycle_clim'
             elif index==2:
                 im=ax.pcolormesh(y,x,cl_p[:,::-1]-cl_ob[:,::-1], vmin=-10, vmax=10)
                 title='diff_'+variable+'_annual_cycle_clim'

@@ -127,6 +127,7 @@ def seasonal_mean_table_html(parameter):
     htmlfile.write('<TH ALIGN=LEFT><A HREF="seasonal_mean_table_MAM_sgp.html"> MAM</a>')
     htmlfile.write('<TH ALIGN=LEFT><A HREF="seasonal_mean_table_JJA_sgp.html"> JJA</a>')
     htmlfile.write('<TH ALIGN=LEFT><A HREF="seasonal_mean_table_SON_sgp.html"> SON</a>')
+    htmlfile.write('<tr><td><br/></td></tr>')
 
     htmlfile.write('<TR><TH ALIGN=LEFT><BR><TH ALIGN=LEFT><font color=blue size=+1>North Slope of Alaska (NSA)</font><TH><BR><TR>')
     htmlfile.write('<TH><BR>')
@@ -139,6 +140,36 @@ def seasonal_mean_table_html(parameter):
     htmlfile.write('<TH ALIGN=LEFT><A HREF="seasonal_mean_table_SON_nsa.html"> SON</a>')
 
 
+    htmlfile.write('<TR><TH ALIGN=LEFT><BR><TH ALIGN=LEFT><font color=blue size=+1>Tropical Western Pacific (TWP), Manus, Papua New Guinea</font><TH><BR><TR>')
+    htmlfile.write('<TH><BR>')
+    htmlfile.write('<TR><TH ALIGN=LEFT>Annual and seasonal mean tables')
+    htmlfile.write('<TH><BR>')
+    htmlfile.write('<TH ALIGN=LEFT><A HREF="seasonal_mean_table_ANN_twpc1.html"> ANN</a>')
+    htmlfile.write('<TH ALIGN=LEFT><A HREF="seasonal_mean_table_DJF_twpc1.html"> DJF</a>')
+    htmlfile.write('<TH ALIGN=LEFT><A HREF="seasonal_mean_table_MAM_twpc1.html"> MAM</a>')
+    htmlfile.write('<TH ALIGN=LEFT><A HREF="seasonal_mean_table_JJA_twpc1.html"> JJA</a>')
+    htmlfile.write('<TH ALIGN=LEFT><A HREF="seasonal_mean_table_SON_twpc1.html"> SON</a>')
+
+    htmlfile.write('<TR><TH ALIGN=LEFT><BR><TH ALIGN=LEFT><font color=blue size=+1>Tropical Western Pacific (TWP), Nauru Island</font><TH><BR><TR>')
+    htmlfile.write('<TH><BR>')
+    htmlfile.write('<TR><TH ALIGN=LEFT>Annual and seasonal mean tables')
+    htmlfile.write('<TH><BR>')
+    htmlfile.write('<TH ALIGN=LEFT><A HREF="seasonal_mean_table_ANN_twpc2.html"> ANN</a>')
+    htmlfile.write('<TH ALIGN=LEFT><A HREF="seasonal_mean_table_DJF_twpc2.html"> DJF</a>')
+    htmlfile.write('<TH ALIGN=LEFT><A HREF="seasonal_mean_table_MAM_twpc2.html"> MAM</a>')
+    htmlfile.write('<TH ALIGN=LEFT><A HREF="seasonal_mean_table_JJA_twpc2.html"> JJA</a>')
+    htmlfile.write('<TH ALIGN=LEFT><A HREF="seasonal_mean_table_SON_twpc2.html"> SON</a>')
+
+
+    htmlfile.write('<TR><TH ALIGN=LEFT><BR><TH ALIGN=LEFT><font color=blue size=+1>Tropical Western Pacific (TWP), Darwin, Australia</font><TH><BR><TR>')
+    htmlfile.write('<TH><BR>')
+    htmlfile.write('<TR><TH ALIGN=LEFT>Annual and seasonal mean tables')
+    htmlfile.write('<TH><BR>')
+    htmlfile.write('<TH ALIGN=LEFT><A HREF="seasonal_mean_table_ANN_twpc2.html"> ANN</a>')
+    htmlfile.write('<TH ALIGN=LEFT><A HREF="seasonal_mean_table_DJF_twpc2.html"> DJF</a>')
+    htmlfile.write('<TH ALIGN=LEFT><A HREF="seasonal_mean_table_MAM_twpc2.html"> MAM</a>')
+    htmlfile.write('<TH ALIGN=LEFT><A HREF="seasonal_mean_table_JJA_twpc2.html"> JJA</a>')
+    htmlfile.write('<TH ALIGN=LEFT><A HREF="seasonal_mean_table_SON_twpc2.html"> SON</a>')
 
 def annual_cycle_html(parameter):
     """Create set 2 diag. html hosting line plot and Taylor Diagram."""
@@ -146,12 +177,83 @@ def annual_cycle_html(parameter):
     output_path = parameter.output_path
     test_model = parameter.test_data_set
     variables = parameter.variables
+    sites = parameter.sites
+    # Open the CSV file for reading
 
     var_longname = [ varid_longname[x] for x in variables]
     htmlfile = open(output_path+'/html/annual_cycle.html',"w")
     htmlfile.write('<p><th><b>'+test_model+': Annual Cycle'+ '</b></th></p>')
     htmlfile.write('<table>')
     htmlfile.write('<TR><TH ALIGN=LEFT><BR><TH ALIGN=LEFT><font color=blue size=+1>Southern Great Plains (SGP)</font><TH><BR><TR>')
+    for j, variable in enumerate(variables):
+        # Create the HTML file for output
+        htmlfile.write('<TH><BR>')
+        htmlfile.write('<TR><TH ALIGN=LEFT>'+var_longname[j])
+        two_figs='annual_cycle_'+variable+'_2plots_sgp.html'
+        htmlfile1 = open(output_path+'/html/'+two_figs,"w")
+        fig1=output_path+'/figures/'+variable+'_annual_cycle_sgp.png'
+        fig2=output_path+'/figures/'+variable+'_annual_cycle_taylor_diagram_sgp.png'
+        htmlfile1.write('<div class="container"><div style="float:left"><img src='+fig1+' alt="Line" width="500" height="450"></div><div style="float:left"><img src='+fig2+' alt="Line" width="500" height="450"></div>')
+        htmlfile.write('<TH ALIGN=LEFT><A HREF='+two_figs+'>Line plot and Taylor Diagram.</a>')
+    htmlfile.write('<tr><td><br/></td></tr>')
+
+    htmlfile.write('<TR><TH ALIGN=LEFT><BR><TH ALIGN=LEFT><font color=blue size=+1>North Slope of Alaska (NSA)</font><TH><BR><TR>')
+    for j, variable in enumerate(variables):
+        # Create the HTML file for output
+        htmlfile.write('<TH><BR>')
+        htmlfile.write('<TR><TH ALIGN=LEFT>'+var_longname[j])
+        two_figs='annual_cycle_'+variable+'_2plots_nsa.html'
+        htmlfile1 = open(output_path+'/html/'+two_figs,"w")
+        fig1=output_path+'/figures/'+variable+'_annual_cycle_nsa.png'
+        fig2=output_path+'/figures/'+variable+'_annual_cycle_taylor_diagram_nsa.png'
+        htmlfile1.write('<div class="container"><div style="float:left"><img src='+fig1+' alt="Line" width="500" height="450"></div><div style="float:left"><img src='+fig2+' alt="Line" width="500" height="450"></div>')
+        htmlfile.write('<TH ALIGN=LEFT><A HREF='+two_figs+'>Line plot and Taylor Diagram.</a>')
+    htmlfile.write('<tr><td><br/></td></tr>')
+
+
+    htmlfile.write('<TR><TH ALIGN=LEFT><BR><TH ALIGN=LEFT><font color=blue size=+1>Tropical Western Pacific (TWP), Manus, Papua New Guinea</font><TH><BR><TR>')
+    for j, variable in enumerate(variables):
+        # Create the HTML file for output
+        htmlfile.write('<TH><BR>')
+        htmlfile.write('<TR><TH ALIGN=LEFT>'+var_longname[j])
+        two_figs='annual_cycle_'+variable+'_2plots_twpc1.html'
+        htmlfile1 = open(output_path+'/html/'+two_figs,"w")
+        fig1=output_path+'/figures/'+variable+'_annual_cycle_twpc1.png'
+        fig2=output_path+'/figures/'+variable+'_annual_cycle_taylor_diagram_twpc1.png'
+        htmlfile1.write('<div class="container"><div style="float:left"><img src='+fig1+' alt="Line" width="500" height="450"></div><div style="float:left"><img src='+fig2+' alt="Line" width="500" height="450"></div>')
+        htmlfile.write('<TH ALIGN=LEFT><A HREF='+two_figs+'>Line plot and Taylor Diagram.</a>')
+    htmlfile.write('<tr><td><br/></td></tr>')
+
+
+    htmlfile.write('<TR><TH ALIGN=LEFT><BR><TH ALIGN=LEFT><font color=blue size=+1>Tropical Western Pacific (TWP), Nauru Island</font><TH><BR><TR>')
+
+    for j, variable in enumerate(variables):
+        # Create the HTML file for output
+        htmlfile.write('<TH><BR>')
+        htmlfile.write('<TR><TH ALIGN=LEFT>'+var_longname[j])
+        two_figs='annual_cycle_'+variable+'_2plots_twpc2.html'
+        htmlfile1 = open(output_path+'/html/'+two_figs,"w")
+        fig1=output_path+'/figures/'+variable+'_annual_cycle_twpc2.png'
+        fig2=output_path+'/figures/'+variable+'_annual_cycle_taylor_diagram_twpc2.png'
+        htmlfile1.write('<div class="container"><div style="float:left"><img src='+fig1+' alt="Line" width="500" height="450"></div><div style="float:left"><img src='+fig2+' alt="Line" width="500" height="450"></div>')
+        htmlfile.write('<TH ALIGN=LEFT><A HREF='+two_figs+'>Line plot and Taylor Diagram.</a>')
+    htmlfile.write('<tr><td><br/></td></tr>')
+
+    htmlfile.write('<TR><TH ALIGN=LEFT><BR><TH ALIGN=LEFT><font color=blue size=+1>Tropical Western Pacific (TWP), Darwin, Australia</font><TH><BR><TR>')
+    for j, variable in enumerate(variables):
+        # Create the HTML file for output
+        htmlfile.write('<TH><BR>')
+        htmlfile.write('<TR><TH ALIGN=LEFT>'+var_longname[j])
+        two_figs='annual_cycle_'+variable+'_2plots_twpc3.html'
+        htmlfile1 = open(output_path+'/html/'+two_figs,"w")
+        fig1=output_path+'/figures/'+variable+'_annual_cycle_twpc3.png'
+        fig2=output_path+'/figures/'+variable+'_annual_cycle_taylor_diagram_twpc3.png'
+        htmlfile1.write('<div class="container"><div style="float:left"><img src='+fig1+' alt="Line" width="500" height="450"></div><div style="float:left"><img src='+fig2+' alt="Line" width="500" height="450"></div>')
+        htmlfile.write('<TH ALIGN=LEFT><A HREF='+two_figs+'>Line plot and Taylor Diagram.</a>')
+
+
+def annual_cycle_zt_html(parameter):
+    htmlfileiwrite('<TR><TH ALIGN=LEFT><BR><TH ALIGN=LEFT><font color=blue size=+1>Tropical Western Pacific (TWP), Nauru Island</font><TH><BR><TR>')
     for j, variable in enumerate(variables):
         # Create the HTML file for output
         htmlfile.write('<TH><BR>')
@@ -164,7 +266,6 @@ def annual_cycle_html(parameter):
         htmlfile.write('<TH ALIGN=LEFT><A HREF='+two_figs+'>Line plot and Taylor Diagram.</a>')
 
 
-def annual_cycle_zt_html(parameter):
     """ Create set 3 diag. html hosting contour and vertical profiles of annual cycle"""
 
     output_path = parameter.output_path
