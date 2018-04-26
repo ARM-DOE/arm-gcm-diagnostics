@@ -35,14 +35,13 @@ For obtaining codes::
 
     git clone https://github.com/ARM-DOE/arm-gcm-diagnostics/
     
-To create conda enviroment (For a minimum enviroment)::
+To create conda enviroment (for a minimum enviroment)::
     
     conda create -n arm_diags_env cdp=1.0.3 cdutil=2.10 genutil=2.10 cdms2=2.10 cdtime=2.10 numpy=1.12.1 matplotlib=2.0.2 scipy=0.19.1 -c conda-forge -c uvcdat
     
- Alternatively, to create an enviroment include complete uvcdat library (takes longer time to create):: 
+Alternatively, to create an enviroment include complete uvcdat library (takes longer time to create):: 
     
     conda create -n arm_diags_env cdp=1.0.3 uvcdat=2.10 numpy=1.12.1 matplotlib=2.0.2 scipy=0.19.1 -c conda-forge -c uvcdat/label/v2.10 -c uvcdat
-
 
 To activate the conda enviroment::
     
