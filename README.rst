@@ -91,8 +91,10 @@ In this release, the package provides 6 sets of diagnostics including:
 Set-up new case
 =================
 
-- Follow the CMIP convention to generate model data (in the same format as test data sets provided) and then place the processed data in model data directory <Your directory>/ arm_diags /model: 
-- Edit basicparameter.py to change 'test_data_set' to model name accordingly (make sure the model name matchs generated model netcdf data name )
+- To apply this package to any CMIP output provided within our dataset, just copy the model data from <Your directory>/ arm_diags /cmip to <Your directory>/ arm_diags /model.
+- To apply this package to your own model output. The input datasets should be saved under data directory <Your directory>/ arm_diags /model. The file name should follow the test data files provided and the data sets should follow the CMIP convention, so that the input files are readable by the software package.
+- Edit basicparameter.py as follows:
+- Change 'test_data_set' to the model name
 - Edit 'case_id' to create folder to save diagnostics results 
 - Edit 'base_path' to spedify location of the data
 - Run the package by typing::
@@ -103,10 +105,6 @@ Set-up new case
 
 Extensions and related software
 ===============================
-
-Within the package, we provide several code samples (in the directory ARMDiag/samples/) for the users to pre-process their model results. Below we provide example codes to process the monthly mean model data to be evaluated into form that can be read by the package, with the assumption that model results follows CMIP5 standard output regulation and the Ultrascale Visualization Climate Data Analysis Tools (UVCDAT) package is installed.
-
-To have UVCDAT installed please following steps provided from below link:
 
 * `UVCDAT <https://github.com/UV-CDAT/uvcdat/wiki/install>`_ : 
   Ultrascale Visualization Climate Data Analysis Tools.
