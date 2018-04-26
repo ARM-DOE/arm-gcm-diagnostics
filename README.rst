@@ -11,7 +11,7 @@ Important Links
 ===============
 
 - Official source code repository: https://github.com/ARM-DOE/arm-gcm-diagnostics
-- ARM webpage: http://www.arm.gov/data/eval/123  (v1 released July 2017)
+- ARM webpage: http://www.arm.gov/data/eval/123  (v1 data released September 2017)
 - Technical Report: https://github.com/ARM-DOE/arm-gcm-diagnostics/blob/master/ARM_gcm_diag_pkg_TechReport_v1.docx
 
 
@@ -35,9 +35,16 @@ For obtaining codes::
 
     git clone https://github.com/ARM-DOE/arm-gcm-diagnostics/
     
-To create conda enviroment::
+To create conda enviroment:
 
-    conda create -n arm_diags_env cdp=1.0.3 cdutil genutil cdms2 numpy matplotlib=2.0.2 scipy -c conda-forge -c uvcdat
+    For a minimum enviroment::
+    
+    conda create -n arm_diags_env cdp=1.0.3 cdutil=2.10 genutil=2.10 cdms2=2.10 cdtime=2.10 numpy=1.12.1 matplotlib=2.0.2 scipy=0.19.1 -c conda-forge -c uvcdat
+    
+    For an enviroment include complete uvcdat library (takes longer time to create):: 
+    
+    conda create -n arm_diags_env cdp=1.0.3 uvcdat=2.10 numpy=1.12.1 matplotlib=2.0.2 scipy=0.19.1 -c conda-forge -c uvcdat/label/v2.10 -c uvcdat
+
 
 To activate the conda enviroment::
     
