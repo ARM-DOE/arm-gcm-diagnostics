@@ -91,7 +91,7 @@ In this release, the package provides 6 sets of diagnostics including:
 Set-up new case
 =================
 
-- Follow the cf convention to generate model data (in the same format as test data sets) and then place the processed data in model data directory <Your directory>/ arm_diags /model: 
+- Follow the CMIP convention to generate model data (in the same format as test data sets provided) and then place the processed data in model data directory <Your directory>/ arm_diags /model: 
 - Edit basicparameter.py to change 'test_data_set' to model name accordingly (make sure the model name matchs generated model netcdf data name )
 - Edit 'case_id' to create folder to save diagnostics results 
 - Edit 'base_path' to spedify location of the data
