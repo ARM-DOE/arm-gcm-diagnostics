@@ -88,10 +88,12 @@ In this release, the package provides 6 sets of diagnostics including:
 - Contour plots of diurnal cycle for quantities with vertical distribution 
 - Line plots of Probability Density Functions using daily output
 
+For now, the diagnostics focus over SGP site. And in a later release we will include data and diagnostics for more ARM site.
+
 Set-up new case
 =================
 
-- To apply this package to any CMIP output provided within our dataset, just copy the model data from <Your directory>/ arm_diags /cmip to <Your directory>/ arm_diags /model.
+- To apply this package to any CMIP output provided within our dataset, just copy the CMIP model data from <Your directory>/ arm_diags /cmip to <Your directory>/ arm_diags /model.
 - To apply this package to your own model output. The input datasets should be saved under data directory <Your directory>/ arm_diags /model. The file name should follow the test data files provided and the data sets should follow the CMIP convention, so that the input files are readable by the software package.
 - Edit basicparameter.py as follows:
 - Change 'test_data_set' to the model name
