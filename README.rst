@@ -11,14 +11,14 @@ Important Links
 ===============
 
 - Official source code repository: https://github.com/ARM-DOE/arm-gcm-diagnostics
-- ARM webpage: http://www.arm.gov/data/eval/123  (v1 data will be released July 2017)
+- ARM webpage: http://www.arm.gov/data/eval/123  (v1 released July 2017)
 - Technical Report: https://github.com/ARM-DOE/arm-gcm-diagnostics/blob/master/ARM_gcm_diag_pkg_TechReport_v1.docx
 
 
 References
 ======
 
-Zhang, C., S. Xie, S. A. Klein, H.-Y. Ma, S. Tang, K. V. Weverberg, C. Morcrette, and J. Petch (submitted), CAUSES: Diagnosis of the summertime warm bias in CMIP5 climate models at the ARM Southern Great Plains site, J. Geophys. Res. Atmos.
+Zhang, C., S. Xie, S. A. Klein, H.-Y. Ma, S. Tang, K. V. Weverberg, C. Morcrette, and J. Petch (2018), CAUSES: Diagnosis of the summertime warm bias in CMIP5 climate models at the ARM Southern Great Plains site, Journal of Geophysical Research: Atmospheres, 123(6), doi:10.1002/2017JD027200.
 
 Install
 =======
@@ -37,7 +37,7 @@ For obtaining codes::
     
 To create conda enviroment::
 
-    conda create -n arm_diags_env cdp cdutil genutil cdms2 numpy matplotlib scipy -c conda-forge -c uvcdat
+    conda create -n arm_diags_env cdp=1.0.3 cdutil genutil cdms2 numpy matplotlib=2.0.2 scipy -c conda-forge -c uvcdat
 
 To activate the conda enviroment::
     
