@@ -42,11 +42,15 @@ def annual_cycle_data(parameter):
     fin = cdms2.open(test_file[0])
     
     print 'test_model',test_model
+    print test_file[0]
 
     for j, variable in enumerate(variables): 
+        print variable, seasons
         try:
             var = fin (variable)
+            print var.shape
             test_var_season[j, :] = var_annual_cycle(var, seasons)
+            print test_var_season.shape
 
         except:
             print (variable+" not processed for " + test_model)
@@ -56,6 +60,7 @@ def annual_cycle_data(parameter):
     obs_var_season=np.empty([len(variables),len(seasons)])*np.nan
     obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag*monthly*.nc')) #read in monthly test data
     print 'ARM data'
+    print obs_file[0]
     fin = cdms2.open(obs_file[0])
     for j, variable in enumerate(variables): 
               
