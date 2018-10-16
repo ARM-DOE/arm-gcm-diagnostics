@@ -253,19 +253,6 @@ def annual_cycle_html(parameter):
 
 
 def annual_cycle_zt_html(parameter):
-    htmlfileiwrite('<TR><TH ALIGN=LEFT><BR><TH ALIGN=LEFT><font color=blue size=+1>Tropical Western Pacific (TWP), Nauru Island</font><TH><BR><TR>')
-    for j, variable in enumerate(variables):
-        # Create the HTML file for output
-        htmlfile.write('<TH><BR>')
-        htmlfile.write('<TR><TH ALIGN=LEFT>'+var_longname[j])
-        two_figs='annual_cycle_'+variable+'_2plots.html'
-        htmlfile1 = open(output_path+'/html/'+two_figs,"w")
-        fig1=output_path+'/figures/'+variable+'_annual_cycle.png'
-        fig2=output_path+'/figures/'+variable+'_annual_cycle_taylor_diagram.png'
-        htmlfile1.write('<div class="container"><div style="float:left"><img src='+fig1+' alt="Line" width="500" height="450"></div><div style="float:left"><img src='+fig2+' alt="Line" width="500" height="450"></div>')
-        htmlfile.write('<TH ALIGN=LEFT><A HREF='+two_figs+'>Line plot and Taylor Diagram.</a>')
-
-
     """ Create set 3 diag. html hosting contour and vertical profiles of annual cycle"""
 
     output_path = parameter.output_path
@@ -288,16 +275,16 @@ def annual_cycle_zt_html(parameter):
         htmlfile.write('<TR><TH><BR><TH ALIGN=LEFT><font color=red >Contour plots</font><BR><TH ALIGN=LEFT><font color=red > Vertical profiles</font>')
 
         htmlfile.write('<TR><TH ALIGN=LEFT>'+var_longname[j])#+'('+vas_source[va_ind]+')')
-        fig_obs=output_path+'/figures/obs_'+variable+'_annual_cycle_clim.png'
-        fig_mod=output_path+'/figures/mod_'+variable+'_annual_cycle_clim.png'
-        fig_diff=output_path+'/figures/diff_'+variable+'_annual_cycle_clim.png'
+        fig_obs=output_path+'/figures/obs_'+variable+'_annual_cycle_clim_sgp.png'
+        fig_mod=output_path+'/figures/mod_'+variable+'_annual_cycle_clim_sgp.png'
+        fig_diff=output_path+'/figures/diff_'+variable+'_annual_cycle_clim_sgp.png'
         htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig_mod+'> Model</a>')
         htmlfile.write('<A HREF='+fig_obs+'> Obs.</a>')
         htmlfile.write('<A HREF='+fig_diff+'> Model-Obs.</a>')
         #htmlfile.write('<TH><BR>')
 
         for si in range(len(seasons)):
-           fig=output_path+'/figures/'+seasons[si]+'_'+variable+'_diff.png'
+           fig=output_path+'/figures/'+seasons[si]+'_'+variable+'_diff_sgp.png'
            if seasons[si]=='ANN':
                htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig+'> '+seasons[si]+'</a>')
            else:
@@ -305,6 +292,91 @@ def annual_cycle_zt_html(parameter):
                htmlfile.write('<A HREF='+fig+'> '+seasons[si]+'</a>')
 
 
+        htmlfile.write('<TR><TH ALIGN=LEFT><BR><TH ALIGN=LEFT><font color=blue size=+1>North Slope of Alaska (NSA)</font><TH><BR><TR>')
+        #htmlfile.write('<TH><BR>')
+        htmlfile.write('<TR><TH><BR><TH ALIGN=LEFT><font color=red >Contour plots</font><BR><TH ALIGN=LEFT><font color=red > Vertical profiles</font>')
+
+        htmlfile.write('<TR><TH ALIGN=LEFT>'+var_longname[j])#+'('+vas_source[va_ind]+')')
+        fig_obs=output_path+'/figures/obs_'+variable+'_annual_cycle_clim_nsa.png'
+        fig_mod=output_path+'/figures/mod_'+variable+'_annual_cycle_clim_nsa.png'
+        fig_diff=output_path+'/figures/diff_'+variable+'_annual_cycle_clim_nsa.png'
+        htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig_mod+'> Model</a>')
+        htmlfile.write('<A HREF='+fig_obs+'> Obs.</a>')
+        htmlfile.write('<A HREF='+fig_diff+'> Model-Obs.</a>')
+        #htmlfile.write('<TH><BR>')
+
+        for si in range(len(seasons)):
+           fig=output_path+'/figures/'+seasons[si]+'_'+variable+'_diff_nsa.png'
+           if seasons[si]=='ANN':
+               htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig+'> '+seasons[si]+'</a>')
+           else:
+
+               htmlfile.write('<A HREF='+fig+'> '+seasons[si]+'</a>')
+
+
+        htmlfile.write('<TR><TH ALIGN=LEFT><BR><TH ALIGN=LEFT><font color=blue size=+1>Tropical Western Pacific (TWP), Manus, Papua New Guinea</font><TH><BR><TR>')
+        #htmlfile.write('<TH><BR>')
+        htmlfile.write('<TR><TH><BR><TH ALIGN=LEFT><font color=red >Contour plots</font><BR><TH ALIGN=LEFT><font color=red > Vertical profiles</font>')
+
+        htmlfile.write('<TR><TH ALIGN=LEFT>'+var_longname[j])#+'('+vas_source[va_ind]+')')
+        fig_obs=output_path+'/figures/obs_'+variable+'_annual_cycle_clim_twpc1.png'
+        fig_mod=output_path+'/figures/mod_'+variable+'_annual_cycle_clim_twpc1.png'
+        fig_diff=output_path+'/figures/diff_'+variable+'_annual_cycle_clim_twpc1.png'
+        htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig_mod+'> Model</a>')
+        htmlfile.write('<A HREF='+fig_obs+'> Obs.</a>')
+        htmlfile.write('<A HREF='+fig_diff+'> Model-Obs.</a>')
+        #htmlfile.write('<TH><BR>')
+
+        for si in range(len(seasons)):
+           fig=output_path+'/figures/'+seasons[si]+'_'+variable+'_diff_twpc1.png'
+           if seasons[si]=='ANN':
+               htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig+'> '+seasons[si]+'</a>')
+           else:
+
+               htmlfile.write('<A HREF='+fig+'> '+seasons[si]+'</a>')
+
+
+        htmlfile.write('<TR><TH ALIGN=LEFT><BR><TH ALIGN=LEFT><font color=blue size=+1>Tropical Western Pacific (TWP), Nauru Island</font><TH><BR><TR>')
+        #htmlfile.write('<TH><BR>')
+        htmlfile.write('<TR><TH><BR><TH ALIGN=LEFT><font color=red >Contour plots</font><BR><TH ALIGN=LEFT><font color=red > Vertical profiles</font>')
+
+        htmlfile.write('<TR><TH ALIGN=LEFT>'+var_longname[j])#+'('+vas_source[va_ind]+')')
+        fig_obs=output_path+'/figures/obs_'+variable+'_annual_cycle_clim_twpc2.png'
+        fig_mod=output_path+'/figures/mod_'+variable+'_annual_cycle_clim_twpc2.png'
+        fig_diff=output_path+'/figures/diff_'+variable+'_annual_cycle_clim_twpc2.png'
+        htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig_mod+'> Model</a>')
+        htmlfile.write('<A HREF='+fig_obs+'> Obs.</a>')
+        htmlfile.write('<A HREF='+fig_diff+'> Model-Obs.</a>')
+        #htmlfile.write('<TH><BR>')
+
+        for si in range(len(seasons)):
+           fig=output_path+'/figures/'+seasons[si]+'_'+variable+'_diff_twpc2.png'
+           if seasons[si]=='ANN':
+               htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig+'> '+seasons[si]+'</a>')
+           else:
+
+               htmlfile.write('<A HREF='+fig+'> '+seasons[si]+'</a>')
+
+        htmlfile.write('<TR><TH ALIGN=LEFT><BR><TH ALIGN=LEFT><font color=blue size=+1>Tropical Western Pacific (TWP), Darwin, Australia</font><TH><BR><TR>')
+        #htmlfile.write('<TH><BR>')
+        htmlfile.write('<TR><TH><BR><TH ALIGN=LEFT><font color=red >Contour plots</font><BR><TH ALIGN=LEFT><font color=red > Vertical profiles</font>')
+
+        htmlfile.write('<TR><TH ALIGN=LEFT>'+var_longname[j])#+'('+vas_source[va_ind]+')')
+        fig_obs=output_path+'/figures/obs_'+variable+'_annual_cycle_clim_twpc3.png'
+        fig_mod=output_path+'/figures/mod_'+variable+'_annual_cycle_clim_twpc3.png'
+        fig_diff=output_path+'/figures/diff_'+variable+'_annual_cycle_clim_twpc3.png'
+        htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig_mod+'> Model</a>')
+        htmlfile.write('<A HREF='+fig_obs+'> Obs.</a>')
+        htmlfile.write('<A HREF='+fig_diff+'> Model-Obs.</a>')
+        #htmlfile.write('<TH><BR>')
+
+        for si in range(len(seasons)):
+           fig=output_path+'/figures/'+seasons[si]+'_'+variable+'_diff_twpc3.png'
+           if seasons[si]=='ANN':
+               htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig+'> '+seasons[si]+'</a>')
+           else:
+
+               htmlfile.write('<A HREF='+fig+'> '+seasons[si]+'</a>')
 def diurnal_cycle_html(parameter):
     """Create set 4 diag. html hosting line and harmonic dial diagram for diurnal cycle of precipitation"""
     output_path = parameter.output_path
