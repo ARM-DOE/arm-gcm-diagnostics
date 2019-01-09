@@ -434,6 +434,65 @@ def diurnal_cycle_zt_html(parameter):
         htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig_mod+'> Model</a>')
         htmlfile.write('<A HREF='+fig_obs+'> Obs.</a>')
 
+    htmlfile.write('<TR><TH ALIGN=LEFT><BR><TH ALIGN=LEFT><font color=blue size=+1>North Slope of Alaska (NSA)</font><TH><BR><TR>')
+    htmlfile.write('<TR><TH><BR><TH ALIGN=LEFT><font color=red >Monthly Mean</font><BR><TH ALIGN=LEFT><font color=red > Annual Mean</font>')
+
+    for j, variable in enumerate(variables):
+    #for va_ind in range(len(vas)-2):# at this stage for cl_p only
+        htmlfile.write('<TR><TH ALIGN=LEFT>'+var_longname[j])#+'('+vas_source[va_ind]+')')
+        fig_obs=output_path+'/figures/obs_'+variable+'_diurnal_clim.png'
+        fig_mod=output_path+'/figures/mod_'+variable+'_diurnal_clim.png'
+        fig_obs_mon=output_path+'/figures/obs_'+variable+'_mon_diurnal_clim.png'
+        fig_mod_mon=output_path+'/figures/mod_'+variable+'_mon_diurnal_clim.png'
+        htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig_mod_mon+'> Model</a>')
+        htmlfile.write('<A HREF='+fig_obs_mon+'> Obs.</a>')
+        htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig_mod+'> Model</a>')
+        htmlfile.write('<A HREF='+fig_obs+'> Obs.</a>')
+
+    htmlfile.write('<TR><TH ALIGN=LEFT><BR><TH ALIGN=LEFT><font color=blue size=+1>Tropical Western Pacific (TWP), Manus, Papua New Guinea</font><TH><BR><TR>')
+    htmlfile.write('<TR><TH><BR><TH ALIGN=LEFT><font color=red >Monthly Mean</font><BR><TH ALIGN=LEFT><font color=red > Annual Mean</font>')
+
+    for j, variable in enumerate(variables):
+    #for va_ind in range(len(vas)-2):# at this stage for cl_p only
+        htmlfile.write('<TR><TH ALIGN=LEFT>'+var_longname[j])#+'('+vas_source[va_ind]+')')
+        fig_obs=output_path+'/figures/obs_'+variable+'_diurnal_clim.png'
+        fig_mod=output_path+'/figures/mod_'+variable+'_diurnal_clim.png'
+        fig_obs_mon=output_path+'/figures/obs_'+variable+'_mon_diurnal_clim.png'
+        fig_mod_mon=output_path+'/figures/mod_'+variable+'_mon_diurnal_clim.png'
+        htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig_mod_mon+'> Model</a>')
+        htmlfile.write('<A HREF='+fig_obs_mon+'> Obs.</a>')
+        htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig_mod+'> Model</a>')
+        htmlfile.write('<A HREF='+fig_obs+'> Obs.</a>')
+
+    htmlfile.write('<TR><TH ALIGN=LEFT><BR><TH ALIGN=LEFT><font color=blue size=+1>Tropical Western Pacific (TWP), Nauru Island</font><TH><BR><TR>')
+    htmlfile.write('<TR><TH><BR><TH ALIGN=LEFT><font color=red >Monthly Mean</font><BR><TH ALIGN=LEFT><font color=red > Annual Mean</font>')
+
+    for j, variable in enumerate(variables):
+    #for va_ind in range(len(vas)-2):# at this stage for cl_p only
+        htmlfile.write('<TR><TH ALIGN=LEFT>'+var_longname[j])#+'('+vas_source[va_ind]+')')
+        fig_obs=output_path+'/figures/obs_'+variable+'_diurnal_clim.png'
+        fig_mod=output_path+'/figures/mod_'+variable+'_diurnal_clim.png'
+        fig_obs_mon=output_path+'/figures/obs_'+variable+'_mon_diurnal_clim.png'
+        fig_mod_mon=output_path+'/figures/mod_'+variable+'_mon_diurnal_clim.png'
+        htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig_mod_mon+'> Model</a>')
+        htmlfile.write('<A HREF='+fig_obs_mon+'> Obs.</a>')
+        htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig_mod+'> Model</a>')
+        htmlfile.write('<A HREF='+fig_obs+'> Obs.</a>')
+
+    htmlfile.write('<TR><TH ALIGN=LEFT><BR><TH ALIGN=LEFT><font color=blue size=+1>Tropical Western Pacific (TWP), Darwin, Australia</font><TH><BR><TR>')
+    htmlfile.write('<TR><TH><BR><TH ALIGN=LEFT><font color=red >Monthly Mean</font><BR><TH ALIGN=LEFT><font color=red > Annual Mean</font>')
+
+    for j, variable in enumerate(variables):
+    #for va_ind in range(len(vas)-2):# at this stage for cl_p only
+        htmlfile.write('<TR><TH ALIGN=LEFT>'+var_longname[j])#+'('+vas_source[va_ind]+')')
+        fig_obs=output_path+'/figures/obs_'+variable+'_diurnal_clim.png'
+        fig_mod=output_path+'/figures/mod_'+variable+'_diurnal_clim.png'
+        fig_obs_mon=output_path+'/figures/obs_'+variable+'_mon_diurnal_clim.png'
+        fig_mod_mon=output_path+'/figures/mod_'+variable+'_mon_diurnal_clim.png'
+        htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig_mod_mon+'> Model</a>')
+        htmlfile.write('<A HREF='+fig_obs_mon+'> Obs.</a>')
+        htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig_mod+'> Model</a>')
+        htmlfile.write('<A HREF='+fig_obs+'> Obs.</a>')
 def pdf_daily_html(parameter):
     """Create set 6 diag. html hosting line plots of precipitation pdfs"""
 
