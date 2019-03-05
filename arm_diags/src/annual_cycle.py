@@ -60,19 +60,6 @@ def annual_cycle_data(parameter):
     # Calculate for observational data
     obs_var_season=np.empty([len(variables),len(seasons)])*np.nan
     print 'ARM data'
-<<<<<<< HEAD
-    print obs_file[0]
-    fin = cdms2.open(obs_file[0])
-    for j, variable in enumerate(variables): 
-              
-        try:
-            var = fin (variable)
-            obs_var_season[j, :] = var_annual_cycle(var, seasons)
-
-        except:
-            print (variable+" not processed for obs")
-    fin.close()
-=======
     if sites[0] == 'sgp':
         obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag*monthly_stat_'+ sites[0]+'.nc')) #read in monthly test data
         fin = cdms2.open(obs_file[0])
@@ -104,7 +91,6 @@ def annual_cycle_data(parameter):
             except:
                 print (variable+" not processed for obs")
         fin.close()
->>>>>>> 9735a951e95ab7af7d2496715c6205065e4f2c31
   
     # Calculate cmip model seasonal mean climatology
     cmip_var_season=np.empty([len(ref_models),len(variables),len(seasons)])*np.nan

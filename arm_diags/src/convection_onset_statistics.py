@@ -60,7 +60,7 @@ import scipy.io
 import matplotlib.pyplot as mp
 import matplotlib.cm as cm
 
-def convective_onset_statistics(cwv, precip,test):
+def convection_onset_statistics(cwv, precip,test, output_path,sites):
 # Create CWV bins
     number_of_bins = 28 # default = 28
     cwv_max = 70 # default = 70 (in mm)
@@ -207,5 +207,5 @@ def convective_onset_statistics(cwv, precip,test):
     mp.tight_layout()
     # save figure
     #mp.savefig('conv_diagnostics_example_kas_new.pdf', transparent=True, bbox_inches='tight')
-    mp.savefig('conv_diagnostics_Nauru_'+test+'.pdf', transparent=True, bbox_inches='tight')
+    mp.savefig(output_path +'/figures/conv_diagnostics_'+test+'_'+sites[0]+'.png', transparent=True, bbox_inches='tight')
 

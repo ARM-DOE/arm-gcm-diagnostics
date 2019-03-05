@@ -39,6 +39,8 @@ def diags_main_html(output_path,test_model):
       <font color=red>5</font> <A HREF="diurnal_cycle_zt.html">Contour plots</A> of Diurnal Cycle.<br>
     <p>
       <font color=red>6</font> <A HREF="pdf_daily.html">Line plots</A> of Probability Density Function.<br>
+    <p>
+      <font color=red>7</font> <A HREF="convection_onset.html">Basic diagnostics plots</A> for Convection Onset.<br>
     
     </Table>
 
@@ -320,4 +322,34 @@ def pdf_daily_html(parameter):
             fig2=output_path+'/figures/'+variable+'_'+season+'_pdf2_daily.png'
             htmlfile1.write('<div class="container"><div style="float:left"><img src='+fig1+' alt="Line" width="550" height="500"></div><div style="float:left"><img src='+fig2+' alt="Line" width="550" height="500"></div>')
             htmlfile.write('<TD><A HREF='+two_figs+'>'+season+'.</a></TD>')
+
+
+def convection_onset_html(parameter):
+    """Create set 5 diag. html hosting contour plots of diurnal cycle"""
+    output_path = parameter.output_path
+    test_model = parameter.test_data_set
+
+    title_to_file = OrderedDict()
+#    title_to_file['Southern Great Plains (SGP)'] = 'sgp'
+#    title_to_file['North Slope of Alaska (NSA)'] = 'nsa'
+#    title_to_file['Tropical Western Pacific (TWP), Manus, Papua New Guinea'] = 'twpc1'
+    title_to_file['Tropical Western Pacific (TWP), Nauru Island'] = 'twpc2'
+    title_to_file['Tropical Western Pacific (TWP), Manus, Papua New Guinea'] = 'twpc1'
+#    title_to_file['Tropical Western Pacific (TWP), Darwin, Australia'] = 'twpc3'
+
+    htmlfile = open(output_path+'/html/convection_onset.html',"w")
+    htmlfile.write('<p><th><b>'+test_model+': Convection Onset'+ '</b></th></p>')
+    htmlfile.write('<table>')
+    for title in title_to_file:
+        title_name = title_to_file[title]
+        htmlfile.write('<TR><TH ALIGN=LEFT><BR><TH ALIGN=LEFT><font color=blue size=+1>{}</font><TH><BR><TR>'.format(title))
+        htmlfile.write('<TR><TH><BR><TH ALIGN=LEFT><font color=black >convection onset diagnostics</font><BR><TH ALIGN=LEFT><font color=red ></font>')
+
+        two_figs='convection_onset_'+title_name+'_2plots.html'
+        htmlfile1 = open(output_path+'/html/'+two_figs,"w")
+        fig1=output_path+'/figures/conv_diagnostics_CNRM-CM5_{}.png'.format(title_name)
+        fig2=output_path+'/figures/conv_diagnostics_sondes_{}.png'.format(title_name)
+        print fig1,fig2
+        htmlfile1.write('<div class="container"><div style="float:left"><img src='+fig1+' alt="Line" width="700" height="200"></div><div style="float:left"><img src='+fig2+' alt="Line" width="700" height="200"></div>')
+        htmlfile.write('<TD><A HREF='+two_figs+'>'+'model vs. obs'+'</a></TD>')
 
