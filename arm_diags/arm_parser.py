@@ -97,6 +97,13 @@ class ARMParser(cdp.cdp_parser.CDPParser):
             required=False)
 
         self.add_argument(
+            '--sites',
+            type=str,
+            dest='sites',
+            help='sites to be evaluated',
+            required=False)
+
+        self.add_argument(
             '--plev',
             type=float,
             dest='plev',
