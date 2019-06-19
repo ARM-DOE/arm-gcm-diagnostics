@@ -76,12 +76,12 @@ def seasonal_mean_table(parameter):
         print obs_file
         fin = cdms2.open(obs_file[0]) 
         for j, variable in enumerate(variables): 
-            #try:
+            try:
                var = fin (variable) 
                print var.shape
                
                #tmp
-               print np.nanmean(np.reshape(var, (4,3)),axis=1)
+               #print np.nanmean(np.reshape(var, (4,3)),axis=1)
                obs_var_season[j,1:] = np.nanmean(np.reshape(var, (4,3)),axis=1)
                if variable == 'tas':
                    obs_var_season[j,1:] = obs_var_season[j,1:] -273.15
@@ -90,12 +90,12 @@ def seasonal_mean_table(parameter):
                if variable == 'prw':
                    obs_var_season[j,1:] = obs_var_season[j,1:] * 10.0
                obs_var_season[j,0] = np.nanmean(obs_var_season[j,1:])
-               print obs_var_season
+               #print obs_var_season
                 
                #var24 = np.concatenate((var,var),axis=0)
                
-            #except:
-            #    print (variable+" not processed for obs")
+            except:
+                print (variable+" not processed for obs")
         fin.close() 
          
    

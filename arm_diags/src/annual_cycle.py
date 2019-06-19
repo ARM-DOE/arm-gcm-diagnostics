@@ -13,7 +13,7 @@ def var_annual_cycle(var, seasons):
     "Calculate annual cycle climatology of each variable"
     var_season_data = np.empty([len(seasons)])*np.nan
     cdutil.setTimeBoundsMonthly(var)
-    var_season_data = cdutil.ANNUALCYCLE.climatology(var).squeeze()
+    var_season_data = cdutil.ANNUALCYCLE.climatology(var)(squeeze=1)
     # convert units
     if var.id == 'tas':
         var_season_data = var_season_data-273.15
