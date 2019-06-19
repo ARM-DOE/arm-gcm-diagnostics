@@ -25,8 +25,7 @@ def diags_main_html(output_path,test_model):
     <TR>
     <TD>
       <TH ALIGN=left VALIGN=top>
-      <font color=blue>Set</font>
-      <font color=blue>Description</font><br>
+      <font color=blue>Basic Diagnostics Sets</font><br>
     <p>
       <font color=red>1</font> <A HREF="seasonal_mean_table.html">Tables</A> of DJF, MAM, JJA, SON and Annual Mean.<br>
     <p>
@@ -40,7 +39,11 @@ def diags_main_html(output_path,test_model):
     <p>
       <font color=red>6</font> <A HREF="pdf_daily.html">Line plots</A> of Probability Density Function.<br>
     <p>
-      <font color=red>7</font> <A HREF="convection_onset.html">Basic diagnostics plots</A> for Convection Onset.<br>
+
+    <TD>
+      <TH ALIGN=left>
+      <font color=blue>Process-oriented Diagnostics Sets</font><br>
+      <font color=red>1</font> <A HREF="convection_onset.html">Basic diagnostics plots</A> for Convection Onset.<br>
     
     </Table>
 

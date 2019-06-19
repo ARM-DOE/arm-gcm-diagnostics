@@ -39,9 +39,9 @@ def make_parameters(basic_parameter):
     #f_data = open('diags_all.json').read()
     #f_data = open('test_set3.json').read()
     #f_data = open('test_set12.json').read()
-    f_data = open('test_diurnal.json').read()
+    #f_data = open('test_diurnal.json').read()
     #f_data = open('test_set.json').read()
-    #f_data = open('test_convection_onset.json').read()
+    f_data = open('test_convection_onset.json').read()
     json_file = json.loads(f_data)
 
     parameters = []
@@ -106,7 +106,7 @@ for parameter in parameters:
 
 
     if diags_set == 'set7_convection_onset':
-        convection_onset(parameter)
+        #convection_onset(parameter)
         convection_onset_html(parameter)
     
 #
