@@ -8,7 +8,7 @@ import csv
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import grid
 from varid_dict import varid_longname
-from cdtime import *
+import cdtime
 
 def var_pdf_daily(var, season, years):
     "Calculate diurnal cycle climatology of each variable"
@@ -22,8 +22,8 @@ def var_pdf_daily(var, season, years):
         mo0 = 3
     var_da_year = np.empty([len(years),90])*np.nan
     for iy,year in enumerate(years):
-        t1 = comptime(year,mo0,01)
-        t2 = t1.add(90,Days)
+        t1 = cdtime.comptime(year,mo0,01)
+        t2 = t1.add(90,cdtime.Days)
 #        try:
         var_yr =  var(time=(t1,t2,'co'))
         var_da_year[iy,:]= var_yr

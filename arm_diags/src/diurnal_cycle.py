@@ -8,7 +8,7 @@ import csv
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import grid
 from varid_dict import varid_longname
-from cdtime import *
+import cdtime
 from scipy.optimize import curve_fit
 
 def var_diurnal_cycle(var, season):
@@ -24,8 +24,8 @@ def var_diurnal_cycle(var, season):
     years = range(1979,2006)         
     var_dc_year = np.empty([len(years),8])*np.nan
     for iy,year in enumerate(years):
-        t1 = comptime(year,mo0,01)
-        t2 = t1.add(90,Days)
+        t1 = cdtime.comptime(year,mo0,01)
+        t2 = t1.add(90,cdtime.Days)
 #        try:
         var_yr =  var(time=(t1,t2,'co'))
         var_dc_year[iy,:]= np.nanmean(np.reshape(var_yr,(90,8)), axis=0)
@@ -67,11 +67,11 @@ def diurnal_cycle_data(parameter):
             try:
                 var = fin (variable,squeeze = 1)
                 test_var_dc = var_diurnal_cycle(var,season)
-                #print test_var_dc
+                print test_var_dc
 
             except:
                 print (variable+" not processed for " + test_model)
-            test_var_season[j,:] = test_var_dc
+        test_var_season[j,:] = test_var_dc
 
     # Calculate for observational data
     obs_var_season=np.empty([len(variables),24])*np.nan
@@ -183,6 +183,7 @@ def diurnal_cycle_plot(parameter):
     
             # plotting test model
             ann_mean=np.mean(test_data[:])
+            print(test_data,'**********')
             popt, pcov = curve_fit(func24, xax_3hr, test_data ,p0=(1.0,0.2))
             p1_mod = popt[0]
             p2_mod = popt[1]
