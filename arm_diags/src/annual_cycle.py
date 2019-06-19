@@ -79,8 +79,13 @@ def annual_cycle_data(parameter):
 
                #tmp
                obs_var_season[j,:] = var
+               print variable
                if variable == 'tas':
                    obs_var_season[j,:] = obs_var_season[j,:] -273.15
+               if variable == 'pr':
+                   obs_var_season[j,:] = obs_var_season[j,:] * 24.0
+               if variable == 'prw':
+                   obs_var_season[j,:] = obs_var_season[j,:] * 10.0
 
                #var24 = np.concatenate((var,var),axis=0)
 

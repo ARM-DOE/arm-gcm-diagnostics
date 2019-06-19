@@ -34,9 +34,9 @@ def make_parameters(basic_parameter):
     #f_data = open('examples/diags_set3.json').read()
     #f_data = open('examples/diags_set4.json').read()
     #f_data = open('examples/diags_set6.json').read()
-    f_data = open('diags_all.json').read()
+    #f_data = open('diags_all.json').read()
     #f_data = open('test_set3.json').read()
-    #f_data = open('test_set12.json').read()
+    f_data = open('test_set12.json').read()
     #f_data = open('test_set.json').read()
     json_file = json.loads(f_data)
 
