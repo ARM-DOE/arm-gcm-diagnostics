@@ -46,11 +46,11 @@ def diags_main_html(output_path,test_model):
     <p>
     <Table>
     <em>Click on Plot Type</em></b><p>
-      <A HREF="annual_cycle.html"><img src="../figures/pr_annual_cycle.png"  border=1 hspace=3 alt="Set 1" width="150" height="150"></a>
-      <A HREF="annual_cycle.html"><img src="../figures/pr_annual_cycle_taylor_diagram.png"  border=1 hspace=3 alt="Set 1" width="150" height="150"></a>
-      <A HREF="annual_cycle_zt.html"><img src="../figures/mod_cl_p_annual_cycle_clim.png"   border=1 hspace=3 alt="Set 3" width="150" height="150"></a>
-      <A HREF="DC_amip_line.html"><img src="../figures/ANN_cl_p_diff.png "   border=1 hspace=3 alt="Set 3" width="150" height="150"></a>
-      <A HREF="diurnal_cycle_zt.html"><img src="../figures/obs_cl_p_diurnal_clim.png"   border=1 hspace=3 alt="Set 3" width="150" height="150"></a>
+      <A HREF="annual_cycle.html"><img src="../figures/pr_annual_cycle_sgp.png"  border=1 hspace=3 alt="Set 1" width="150" height="150"></a>
+      <A HREF="annual_cycle.html"><img src="../figures/pr_annual_cycle_taylor_diagram_sgp.png"  border=1 hspace=3 alt="Set 1" width="150" height="150"></a>
+      <A HREF="annual_cycle_zt.html"><img src="../figures/mod_cl_p_annual_cycle_clim_sgp.png"   border=1 hspace=3 alt="Set 3" width="150" height="150"></a>
+      <A HREF="DC_amip_line.html"><img src="../figures/ANN_cl_p_diff_sgp.png "   border=1 hspace=3 alt="Set 3" width="150" height="150"></a>
+      <A HREF="diurnal_cycle_zt.html"><img src="../figures/obs_cl_p_diurnal_clim_sgp.png"   border=1 hspace=3 alt="Set 3" width="150" height="150"></a>
       <A HREF="pdf_daily.html"><img src="../figures/pr_JJA_pdf1_daily.png"   border=1 hspace=3 alt="Set 6" width="150" height="150"></a>
     
     </TH>

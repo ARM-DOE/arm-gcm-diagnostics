@@ -8,7 +8,7 @@ import csv
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import grid
 from varid_dict import varid_longname
-from cdtime import *
+import cdtime
 from scipy.optimize import curve_fit
 
 def var_diurnal_cycle(var, season):
@@ -24,8 +24,8 @@ def var_diurnal_cycle(var, season):
     years = range(1979,2006)         
     var_dc_year = np.empty([len(years),8])*np.nan
     for iy,year in enumerate(years):
-        t1 = comptime(year,mo0,01)
-        t2 = t1.add(90,Days)
+        t1 = cdtime.comptime(year,mo0,01)
+        t2 = t1.add(90,cdtime.Days)
 #        try:
         var_yr =  var(time=(t1,t2,'co'))
         var_dc_year[iy,:]= np.nanmean(np.reshape(var_yr,(90,8)), axis=0)
@@ -59,6 +59,7 @@ def diurnal_cycle_data(parameter):
     test_var_season=np.empty([len(variables),8])*np.nan
     test_file = glob.glob(os.path.join(test_path,'*'+test_model+'*3hr*.nc')) #read in 3hr test data
     fin = cdms2.open(test_file[0])
+    test_var_dc = np.empty([8])*np.nan
     
     print 'test_model',test_model
 
@@ -67,7 +68,7 @@ def diurnal_cycle_data(parameter):
             try:
                 var = fin (variable,squeeze = 1)
                 test_var_dc = var_diurnal_cycle(var,season)
-                #print test_var_dc
+                print test_var_dc
 
             except:
                 print (variable+" not processed for " + test_model)
