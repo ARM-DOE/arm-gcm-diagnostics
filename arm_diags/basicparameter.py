@@ -3,6 +3,7 @@ test_data_set = 'test_data'        #name of the model, which should be included 
 
 case_id = 'test_multiple'  #create folder to save diagnostics results 
 
+
 # set input path 
 base_path = '/Users/zhang40/Documents/ARM_LLNL/repo/arm-gcm-diagnostics/arm_diags/'
 
