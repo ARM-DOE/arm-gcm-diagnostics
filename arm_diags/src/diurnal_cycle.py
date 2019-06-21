@@ -59,6 +59,7 @@ def diurnal_cycle_data(parameter):
     test_var_season=np.empty([len(variables),8])*np.nan
     test_file = glob.glob(os.path.join(test_path,'*'+test_model+'*3hr*.nc')) #read in 3hr test data
     fin = cdms2.open(test_file[0])
+    test_var_dc = np.empty([8])*np.nan
     
     print 'test_model',test_model
 
@@ -71,7 +72,7 @@ def diurnal_cycle_data(parameter):
 
             except:
                 print (variable+" not processed for " + test_model)
-        test_var_season[j,:] = test_var_dc
+            test_var_season[j,:] = test_var_dc
 
     # Calculate for observational data
     obs_var_season=np.empty([len(variables),24])*np.nan
@@ -183,7 +184,6 @@ def diurnal_cycle_plot(parameter):
     
             # plotting test model
             ann_mean=np.mean(test_data[:])
-            print(test_data,'**********')
             popt, pcov = curve_fit(func24, xax_3hr, test_data ,p0=(1.0,0.2))
             p1_mod = popt[0]
             p2_mod = popt[1]
