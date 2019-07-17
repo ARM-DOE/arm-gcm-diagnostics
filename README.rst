@@ -39,10 +39,6 @@ To create conda enviroment (for a minimum enviroment)::
     
     conda create -n arm_diags_env_py2 cdp=1.0.3 cdutil cdms2 libcdms matplotlib scipy python=2 -c conda-forge -c uvcdat
     
-Alternatively, to create an enviroment include complete uvcdat library (takes longer time to create):: 
-    
-    conda create -n arm_diags_env_py2 cdp=1.0.3 uvcdat numpy matplotlib scipy python=2  -c conda-forge -c uvcdat
-
 To activate the conda enviroment::
     
     source activate arm_diags_env
