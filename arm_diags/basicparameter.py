@@ -14,6 +14,6 @@ obs_path = base_path+'observation'
 cmip_path =  base_path+'cmip'
 
 # set output path
-output_path = base_path+case_id
+output_path = case_id
 
 
