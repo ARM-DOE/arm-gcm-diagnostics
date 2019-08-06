@@ -7,6 +7,7 @@ import glob
 import os
 import scipy.io
 
+#this is only for testing 
 #Read in Obs data
 file_path = '/Users/zhang40/Documents/ARM_LLNL/ConvectionMetrics_UCLA/shared_ARM_diagnostics/Nauru_data/'
 precip_filename = 'precip_nauru_1hravg_matchedtosondes_Apr2001_Aug2006.mat'
