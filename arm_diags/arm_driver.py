@@ -20,12 +20,14 @@ from src.diurnal_cycle import diurnal_cycle_data
 from src.diurnal_cycle import diurnal_cycle_plot
 from src.pdf_daily import pdf_daily_data
 from src.pdf_daily import pdf_daily_plot
+from src.convection_onset_driver import convection_onset
 from src.create_htmls import annual_cycle_zt_html
 from src.create_htmls import diurnal_cycle_zt_html
 from src.create_htmls import diurnal_cycle_html
 from src.create_htmls import seasonal_mean_table_html
 from src.create_htmls import annual_cycle_html
 from src.create_htmls import pdf_daily_html
+from src.create_htmls import convection_onset_html
 from src.create_htmls import diags_main_html
 
 def make_parameters(basic_parameter):
@@ -34,7 +36,9 @@ def make_parameters(basic_parameter):
     #f_data = open('examples/diags_set3.json').read()
     #f_data = open('examples/diags_set4.json').read()
     #f_data = open('examples/diags_set6.json').read()
-    f_data = open('diags_all_multisites.json').read()
+    #f_data = open('diags_all_multisites.json').read()
+    f_data = open('test_convection_onset.json').read()
+    
     json_file = json.loads(f_data)
 
     parameters = []
@@ -96,6 +100,10 @@ for parameter in parameters:
         pdf_daily_data(parameter)
         pdf_daily_plot(parameter)
         pdf_daily_html(parameter)
+
+    if diags_set == 'set7_convection_onset':
+        convection_onset(parameter)
+        convection_onset_html(parameter)
     
 #
 # Creat the main html page hosting all sets of diagnostics
