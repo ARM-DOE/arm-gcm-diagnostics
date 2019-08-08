@@ -145,6 +145,8 @@ def convection_onset_statistics(cwv, precip,test, output_path,sites):
     # create figure canvas
     fig = mp.figure(figsize=(8,2.5))
 
+    print('pr_binned_mean',pr_binned_mean)
+
     # create figure 1
     ax1 = fig.add_subplot(131)
     ax1.set_xlim(25,72)

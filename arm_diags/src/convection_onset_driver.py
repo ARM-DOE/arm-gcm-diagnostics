@@ -21,32 +21,35 @@ def convection_onset(parameter):
     sites = parameter.sites
    
     test_model = parameter.test_data_set 
-    ref_models = parameter.ref_models
+    #ref_models = parameter.ref_models
     
     #Read in observation data
     for index, site in enumerate(sites):
-        pr_prw = []
-        for va in vas:
-            filename = glob.glob(os.path.join(file_path,'ARMdiag_'+va+'_1hr_*_'+site))
+        for va in variables:
+            filename = glob.glob(os.path.join(obs_path,'ARMdiag_'+va+'_1hr_*_'+site))
             print(filename)
             with open(filename[0]) as f:
                 content = f.readlines()
             content = [float(x.strip()) for x in content]
             pr = np.squeeze(content)
-            pr = pr[~np.isnan(pr)]
-            pr_prw.append(pr)
-            print(pr_prw)
-        convection_onset_statistics(cwv, precip,'ARM',output_path, sites)
+            #pr = pr[~np.isnan(pr)]
+            if va == 'pr':
+                precip = pr
+            if va == 'prw':
+                prw = pr
+           
+        convection_onset_statistics(prw, precip,'ARM',output_path, sites)
     
     pr_prw_mod = []
-    for va in vas:
-        filename = glob.glob(os.path.join(basedir+'*'+va+'_cfSites_'+models[imod]+'*'))[0]
+    for va in variables:
+        print(test_path)
+        filename = glob.glob(os.path.join(test_path, '*'+va+'_cfSites_'+test_model+'*'+site+'.nc'))[0]
         f_in=cdms2.open(filename)
         pr=f_in(va)#,time=('1979-01-01','1979-12-31')) #Read in the variable 
         if va == 'pr':
             pr = pr *3600.           #'kg m-2 s-1' to 'mm/hr'
         pr_prw_mod.append(pr)
-        convection_onset_statistics(cwv, precip,'model',output_path, sites)
+    convection_onset_statistics(pr_prw_mod[1], pr_prw_mod[0],'model',output_path, sites)
  
            
             
