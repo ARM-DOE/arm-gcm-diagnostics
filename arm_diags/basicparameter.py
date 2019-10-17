@@ -1,7 +1,7 @@
 
-test_data_set = 'test_data'        #name of the model, which should be included as the /model/test_data_xxxx.nc
+test_data_set = 'CNRM-CM5'        #name of the model, which should be included as the /model/test_data_xxxx.nc
 
-case_id = 'test_multiple'  #create folder to save diagnostics results 
+case_id = 'test_multiple_cheng'  #create folder to save diagnostics results 
 
 
 # set input path 
@@ -14,6 +14,6 @@ obs_path = base_path+'observation2'
 cmip_path =  base_path+'cmip2'
 
 # set output path
-output_path = base_path+'case_id'
+output_path = '/Users/zhang40/Downloads/'+case_id
 
 

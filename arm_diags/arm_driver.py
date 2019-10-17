@@ -60,13 +60,14 @@ basic_parameter = parser.get_parameter()
 parameters = make_parameters(basic_parameter)
 
 case_id =  basic_parameter.case_id
+output_path = basic_parameter.output_path
 
 # Generate new case folder given case_id:
-if not os.path.exists(case_id):
-    os.makedirs(case_id)
-    os.makedirs(os.path.join(case_id,'html'))
-    os.makedirs(os.path.join(case_id,'figures'))
-    os.makedirs(os.path.join(case_id,'metrics'))
+if not os.path.exists(os.path.join(output_path)):
+    os.makedirs(output_path)
+    os.makedirs(os.path.join(output_path,'html'))
+    os.makedirs(os.path.join(output_path,'figures'))
+    os.makedirs(os.path.join(output_path,'metrics'))
 
 # Loop through diagnostic sets prespecified from diags_sets.json
 for parameter in parameters:
