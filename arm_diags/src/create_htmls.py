@@ -339,6 +339,8 @@ def convection_onset_html(parameter):
     title_to_file['Tropical Western Pacific (TWP), Manus, Papua New Guinea'] = 'twpc1'
     title_to_file['Tropical Western Pacific (TWP), Nauru Island'] = 'twpc2'
     title_to_file['Tropical Western Pacific (TWP), Darwin, Australia'] = 'twpc3'
+    title_to_file['Niamey ARM Mobile Facility'] = 'nim'
+   
 
     htmlfile = open(output_path+'/html/convection_onset.html',"w")
     htmlfile.write('<p><th><b>'+test_model+': Convection Onset'+ '</b></th></p>')
@@ -350,8 +352,7 @@ def convection_onset_html(parameter):
 
         two_figs='convection_onset_'+title_name+'_2plots.html'
         htmlfile1 = open(output_path+'/html/'+two_figs,"w")
-        fig1=output_path+'/figures/conv_diagnostics_model_{}.png'.format(title_name)
+        fig1=output_path+'/figures/conv_diagnostics_{}_{}.png'.format(test_model, title_name)
         fig2=output_path+'/figures/conv_diagnostics_ARM_{}.png'.format(title_name)
-        print fig1,fig2
         htmlfile1.write('<div class="container"><div style="float:left"><img src='+fig1+' alt="Line" width="700" height="200"></div><div style="float:left"><img src='+fig2+' alt="Line" width="700" height="200"></div>')
         htmlfile.write('<TD><A HREF='+two_figs+'>'+'model vs. obs'+'</a></TD>')

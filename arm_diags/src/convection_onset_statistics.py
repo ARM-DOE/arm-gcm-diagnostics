@@ -145,7 +145,6 @@ def convection_onset_statistics(cwv, precip,test, output_path,sites):
     # create figure canvas
     fig = mp.figure(figsize=(8,2.5))
 
-    print('pr_binned_mean',pr_binned_mean)
 
     # create figure 1
     ax1 = fig.add_subplot(131)
@@ -160,7 +159,7 @@ def convection_onset_statistics(cwv, precip,test, output_path,sites):
     ax1.scatter(bin_center, pr_binned_mean, edgecolor='none', facecolor=scatter_colors, s=marker_size, clip_on=False, zorder=3)
     ax1.set_ylabel('Precip (mm hr $^-$ $^1$)', fontsize=axes_fontsize)
     ax1.set_xlabel('CWV (mm)', fontsize=axes_fontsize)
-    ax1.text(0.05, 0.95, 'Nauru', transform=ax1.transAxes, fontsize=12, verticalalignment='top')
+    ax1.text(0.05, 0.95, sites[0], transform=ax1.transAxes, fontsize=12, verticalalignment='top')
     ax1.text(0.05, 0.85, test, transform=ax1.transAxes, fontsize=12, verticalalignment='top')
     #ax1.grid()
     ax1.set_axisbelow(True)

@@ -19,6 +19,11 @@
       "diags_set": "set7_convection_onset",
       "variables": ["pr", "prw"],
       "sites": ["sgp"]
+                },
+          {
+      "diags_set": "set7_convection_onset",
+      "variables": ["pr", "prw"],
+      "sites": ["nim"]
                 }
           ]
 }
