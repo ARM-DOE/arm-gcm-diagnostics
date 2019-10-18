@@ -1,0 +1,10 @@
+{
+        "arm_diags": [
+          {
+      "diags_set": "set7_convection_onset",
+      "variables": ["pr", "prw"],
+      "sites": ["twpc1"]
+                }
+          ]
+}
+

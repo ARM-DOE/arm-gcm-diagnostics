@@ -5,7 +5,8 @@ case_id = 'test_multiple_cheng'  #create folder to save diagnostics results
 
 
 # set input path 
-base_path = '/Users/zhang40/Documents/ARM_LLNL/repo/arm-gcm-diagnostics/arm_diags/'
+#base_path = '/Users/zhang40/Documents/ARM_LLNL/repo/arm-gcm-diagnostics/arm_diags/'
+base_path = '/Users/zhang40/Downloads/v2_data_for_cheng/'
 
 test_data_path = base_path+'model2'
 
