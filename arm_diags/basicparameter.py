@@ -9,7 +9,7 @@ case_id = 'test_multiple_cheng'  #create folder to save diagnostics results
 #base_path = '/Users/zhang40/Downloads/v2_data_for_cheng/'
 base_path = '/Users/tao4/Documents/ARM_Infrastructure/arm-gcm-diagnostics/v2_data_for_cheng/'
 
-test_data_path = base_path+'model'
+test_data_path = base_path+'model2'
 
 obs_path = base_path+'observation2'
 
