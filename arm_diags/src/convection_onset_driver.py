@@ -53,12 +53,12 @@ def convection_onset(parameter):
            print('var_shape',va,var.shape)
            if va == 'pr':
                precip = var *24.      #'mm/s' to 'mm/hr'
-                   #print(precip[0:100])
-                   #print(max(precip))
+               #print(precip[0:100])
+               #print(max(precip))
                precip[precip<-900] = np.nan
            if va == 'prw':
                prw = var
-               print(prw[0:100])
+               #print(prw[0:100])
                prw[prw<-900] = np.nan
            f_in.close()
         convection_onset_statistics(prw, precip,'ARM',output_path, sites)
