@@ -21,6 +21,7 @@ from src.diurnal_cycle import diurnal_cycle_plot
 from src.pdf_daily import pdf_daily_data
 from src.pdf_daily import pdf_daily_plot
 from src.convection_onset_driver import convection_onset
+#from src.convection_onset_driver_todd import convection_onset
 from src.create_htmls import annual_cycle_zt_html
 from src.create_htmls import diurnal_cycle_zt_html
 from src.create_htmls import diurnal_cycle_html
@@ -37,8 +38,8 @@ def make_parameters(basic_parameter):
     #f_data = open('examples/diags_set4.json').read()
     #f_data = open('examples/diags_set6.json').read()
     #f_data = open('diags_all_multisites.json').read()
-    #f_data = open('examples/test_convection_onset.json').read()
-    f_data = open('examples/test_convection_onset_short.json').read()
+    f_data = open('examples/test_convection_onset.json').read()
+    #f_data = open('examples/test_convection_onset_short.json').read()
     
     json_file = json.loads(f_data)
 
@@ -75,7 +76,7 @@ for parameter in parameters:
     diags_set = parameter.diags_set
     output_path = parameter.output_path
     test_model = parameter.test_data_set
-    print diags_set
+    #print diags_set
     # set1 diagnostics
     if diags_set == 'set1_tables':
         seasonal_mean_table(parameter) #Calculate seasonal mean climatology

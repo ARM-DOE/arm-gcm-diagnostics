@@ -63,34 +63,37 @@ import matplotlib.cm as cm
 
 mp.rcParams.update({'mathtext.default': 'regular'}) # use helvetica in default plot
 
-def convection_onset_statistics(cwv, precip,test, output_path,sites):
+def convection_onset_statistics(precip_threshold,cwv_max,cwv_min,bin_width,cwv,precip,test,output_path,sites,sitename):
     
     # Create CWV bins
-    number_of_bins = 28 # default = 28
-    cwv_max = 70 # default = 70 (in mm)
-    cwv_min = 28 # default = 28 (in mm)
-    bin_width = 1.5 # default = 1.5
+    #number_of_bins = 38 # default = 28
+    #cwv_max = 85 # default = 70 (in mm)
+    #cwv_min = 28 # default = 28 (in mm)
+    #bin_width = 1.5 # default = 1.5
+    number_of_bins = int(np.ceil((cwv_max-cwv_min)/bin_width))
+    #print('cwv_max',cwv_max)
+    #print(number_of_bins)
     bin_center = np.arange((cwv_min+(bin_width/2)), (cwv_max-(bin_width/2))+bin_width, bin_width)
     #print('bin_center',bin_center,'bin_width',bin_width)
     if len(bin_center)!=number_of_bins:
         bin_center = np.arange((cwv_min+(bin_width/2)), (cwv_max-(bin_width/2)), bin_width)
 
     # Define precip threshold
-    precip_threshold = 0.5 # default 0.5 (in mm/hr)
+    #precip_threshold = 0.5 # default 0.5 (in mm/hr)
     avg_interval = 1 # averaged within 1 hr
     # Define variables for binning
     bin_index = np.zeros([number_of_bins,cwv.size])
     precip_binned = np.empty([number_of_bins,cwv.size]) * np.nan
     precip_counts = np.zeros([number_of_bins,cwv.size])
 
-    
+    np.warnings.filterwarnings('ignore')
     # Bin the data by CWV value as specified above
     for i in range (0,number_of_bins):
         tmp1 = np.where(cwv > cwv_min+(i*bin_width))
         bin_index[i,tmp1] = 1
         tmp2 = np.where(cwv > cwv_min+(i*bin_width)+bin_width)
         bin_index[i,tmp2] = 0
-        
+
     for i in range (0,number_of_bins):
         tmp1 = np.where(bin_index[i,:]==1)
         precip_binned[i,tmp1] = precip[tmp1]
@@ -171,12 +174,16 @@ def convection_onset_statistics(cwv, precip,test, output_path,sites):
     ax1 = fig.add_subplot(131)
     xulim = 5*np.ceil(np.max(np.round(bin_center+bin_width/2))/5)
     xllim = 5*np.floor(np.min(np.round(bin_center-bin_width/2))/5)
-    ax1.set_xlim(xllim,xulim)
-    ax1.set_xticks(np.arange(np.ceil(xllim/10)*10,np.ceil(xulim/10)*10,10))
-
+    ax1.set_xlim(xllim-10,xulim+15)
+    ax1.set_ylim(0,5)
+    ax1.set_xticks(np.arange(np.ceil(xllim/10)*10-10,np.ceil(xulim/10)*10+15,15))
+    #print(np.arange(np.ceil(xllim/10)*10-10,np.ceil(xulim/10)*10+15,15))
+    #print(np.ceil(xllim/10)*10)
+    #print(np.ceil(xulim/10)*10)
     ulim = np.nanmax(pr_binned_mean)
-    ax1.set_yticks(np.arange(0,np.ceil(ulim)))
-
+    #print('max precip',ulim)
+    #ax1.set_yticks(np.arange(0,np.ceil(ulim)))
+    ax1.set_yticks(np.arange(0,5))
     #ax1.set_xlim(25,72)
     #ax1.set_ylim(0,6)
     #ax1.set_xticks([30,40,50,60,70])
@@ -184,6 +191,8 @@ def convection_onset_statistics(cwv, precip,test, output_path,sites):
     ax1.tick_params(labelsize=axes_fontsize)
     ax1.tick_params(axis='x', pad=10)
     error = [errorbar_precip,errorbar_precip]
+    #print(bin_center.shape)
+    #print(pr_binned_mean.shape)
     ax1.errorbar(bin_center, pr_binned_mean, xerr=0, yerr=error, ls='none', color='black')
     ax1.scatter(bin_center, pr_binned_mean, edgecolor='none', facecolor=scatter_colors, s=marker_size, clip_on=False, zorder=3)
     ax1.set_ylabel('Precip (mm/hr)', fontsize=axes_fontsize)
@@ -197,8 +206,8 @@ def convection_onset_statistics(cwv, precip,test, output_path,sites):
     ax2 = fig.add_subplot(132)
     xulim = 5*np.ceil(np.max(np.round(bin_center+bin_width/2))/5)
     xllim = 5*np.floor(np.min(np.round(bin_center-bin_width/2))/5)
-    ax2.set_xlim(xllim,xulim)
-    ax2.set_xticks(np.arange(np.ceil(xllim/10)*10,np.ceil(xulim/10)*10,10))
+    ax2.set_xlim(xllim-10,xulim+15)
+    ax2.set_xticks(np.arange(np.ceil(xllim/10)*10-10,np.ceil(xulim/10)*10+15,15))
     #ax2.set_xlim(25,72)
     ax2.set_ylim(0,1)
     #ax2.set_xticks([30,40,50,60,70])
@@ -218,13 +227,15 @@ def convection_onset_statistics(cwv, precip,test, output_path,sites):
   
     xulim = 5*np.ceil(np.max(np.round(bin_center+bin_width/2))/5)
     xllim = 5*np.floor(np.min(np.round(bin_center-bin_width/2))/5)
-    ax3.set_xlim(xllim,xulim)
-    ax3.set_xticks(np.arange(np.ceil(xllim/10)*10,np.ceil(xulim/10)*10,10))
+    ax3.set_xlim(xllim-10,xulim+15)
+    ax3.set_xticks(np.arange(np.ceil(xllim/10)*10-10,np.ceil(xulim/10)*10+15,15))
     
-    low_lim = np.floor(np.log10(np.min(freq_precipitating_points[freq_precipitating_points>0])))
+    #low_lim = np.floor(np.log10(np.min(freq_precipitating_points[freq_precipitating_points>0])))
+    low_lim = -6.0
     up_lim = np.ceil(np.log10(np.max(freq_cwv)))
     ax3.set_ylim(10**low_lim,100)
- 
+    #print('low_lim',low_lim)
+    #print('y_min',10**low_lim)
     #ax3.set_ylim(5e-1, 5e5)
     #ax3.set_xlim(25,72)
     #ax3.set_xticks([30,40,50,60,70])
@@ -256,7 +267,7 @@ def convection_onset_statistics(cwv, precip,test, output_path,sites):
 
     # set layout to tight (so that space between figures is minimized)
     mp.tight_layout()
-    mp.suptitle(test+' Averaged over ' + str(avg_interval) + ' hrs',y=1.08,fontweight='bold')
+    mp.suptitle(test+' at '+sitename+' Averaged over ' + str(avg_interval) + ' hrs',y=1.08,fontweight='bold')
 
     # save figure
     #mp.savefig('conv_diagnostics_example_kas_new.pdf', transparent=True, bbox_inches='tight')

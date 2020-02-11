@@ -339,7 +339,7 @@ def convection_onset_html(parameter):
     title_to_file['Tropical Western Pacific (TWP), Manus, Papua New Guinea'] = 'twpc1'
     title_to_file['Tropical Western Pacific (TWP), Nauru Island'] = 'twpc2'
     title_to_file['Tropical Western Pacific (TWP), Darwin, Australia'] = 'twpc3'
-    title_to_file['Niamey ARM Mobile Facility'] = 'nim'
+    #    title_to_file['Niamey ARM Mobile Facility'] = 'nim'
    
 
     htmlfile = open(output_path+'/html/convection_onset.html',"w")
