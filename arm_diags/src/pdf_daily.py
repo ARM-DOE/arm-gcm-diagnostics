@@ -58,40 +58,37 @@ def pdf_daily_data(parameter):
     test_file = glob.glob(os.path.join(test_path,'*'+test_model+'*_da_*.nc')) #read in 3hr test data
     fin = cdms2.open(test_file[0])
     
-    print 'test_model',test_model
+    print('test_model',test_model)
 
     for j, variable in enumerate(variables): 
         for season in seasons:
             try:
                 var = fin (variable,squeeze = 1)
                 test_var_da = var_pdf_daily(var,season,years)
-                print test_var_da
 
             except:
-                print (variable+" not processed for " + test_model)
+                print(variable+" not processed for " + test_model)
             test_var_season[j,:] = test_var_da
 
     # Calculate for observational data
     years_obs = range(1999,2012)
     obs_var_season=np.empty([len(variables),len(years_obs)*90])*np.nan
     obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag*daily*.nc')) #read in diurnal test data
-    print 'ARM data'
+    print('ARM data')
     fin = cdms2.open(obs_file[0])
     for j, variable in enumerate(variables): 
               
         try:
             var = fin (variable)
-            print var.shape
             for season in seasons:
                 try:
                     var = fin (variable,squeeze = 1)
                     obs_var_da = var_pdf_daily(var,season,years_obs)
-                    print obs_var_da
     
                 except:
-                    print (variable+" not processed for obs")
+                    print(variable+" not processed for obs")
         except:
-            print (variable+" not processed for obs")
+            print(variable+" not processed for obs")
         obs_var_season[j,:] = obs_var_da
 
     # Calculate cmip model seasonal mean climatology
@@ -99,9 +96,9 @@ def pdf_daily_data(parameter):
  
     for i, ref_model in enumerate(ref_models):
          ref_file = glob.glob(os.path.join(cmip_path,'*'+ref_model+'*_da_*.nc')) #read in monthly cmip data
-         print 'ref_model', ref_model
+         print('ref_model', ref_model)
          if not ref_file :
-             print (ref_model+" not found!") 
+             print(ref_model+" not found!") 
          else:
              fin = cdms2.open(ref_file[0])
          
@@ -112,7 +109,7 @@ def pdf_daily_data(parameter):
                          cmip_var_season[i, j, :] = var_pdf_daily(var, season,years)
 
                      except:
-                         print (variable+" not processed for " + ref_model)
+                         print(variable+" not processed for " + ref_model)
              fin.close()  
     # Calculate multi-model mean
     mmm_var_season =  np.nanmean(cmip_var_season,axis=0)

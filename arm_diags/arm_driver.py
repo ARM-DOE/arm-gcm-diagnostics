@@ -37,15 +37,15 @@ def make_parameters(basic_parameter):
     #f_data = open('examples/diags_set3.json').read()
     #f_data = open('examples/diags_set4.json').read()
     #f_data = open('examples/diags_set6.json').read()
-    #f_data = open('diags_all_multisites.json').read()
-    f_data = open('examples/test_convection_onset.json').read()
+    f_data = open('diags_all_multisites.json').read()
+    #f_data = open('examples/test_convection_onset.json').read()
     #f_data = open('examples/test_convection_onset_short.json').read()
     
     json_file = json.loads(f_data)
 
     parameters = []
     for key in json_file:
-        print json_file[key],key
+        print(json_file[key],key)
         for single_run in json_file[key]:
             p = copy.deepcopy(basic_parameter)
             for attr_name in single_run:

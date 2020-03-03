@@ -42,24 +42,20 @@ def annual_cycle_data(parameter):
     test_file = glob.glob(os.path.join(test_path,'*'+test_model+'*mo*' + sites[0]+'.nc' )) #read in monthly test data
     fin = cdms2.open(test_file[0])
     
-    print 'test_model',test_model
-    print test_file[0]
+    print('test_model',test_model)
 
     for j, variable in enumerate(variables): 
-        print variable, seasons
         try:
             var = fin (variable)
-            print var.shape
             test_var_season[j, :] = var_annual_cycle(var, seasons)
-            print test_var_season.shape
 
         except:
-            print (variable+" not processed for " + test_model)
+            print(variable+" not processed for " + test_model)
     fin.close()
 
     # Calculate for observational data
     obs_var_season=np.empty([len(variables),len(seasons)])*np.nan
-    print 'ARM data'
+    print('ARM data')
     if sites[0] == 'sgp':
         obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag*monthly_stat_'+ sites[0]+'.nc')) #read in monthly test data
         fin = cdms2.open(obs_file[0])
@@ -70,20 +66,17 @@ def annual_cycle_data(parameter):
                 obs_var_season[j, :] = var_annual_cycle(var, seasons)
 
             except:
-                print (variable+" not processed for obs")
+                print(variable+" not processed for obs")
         fin.close()
     else:
         obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag*monthly_climo*'+ sites[0]+'.nc')) #read in monthly test data
-        print obs_file
         fin = cdms2.open(obs_file[0])
         for j, variable in enumerate(variables):
             try:
                var = fin (variable)
-               print var.shape
 
                #tmp
                obs_var_season[j,:] = var
-               print variable
                if variable == 'tas':
                    obs_var_season[j,:] = obs_var_season[j,:] -273.15
                if variable == 'pr':
@@ -94,7 +87,7 @@ def annual_cycle_data(parameter):
                #var24 = np.concatenate((var,var),axis=0)
 
             except:
-                print (variable+" not processed for obs")
+                print(variable+" not processed for obs")
         fin.close()
   
     # Calculate cmip model seasonal mean climatology
@@ -102,9 +95,9 @@ def annual_cycle_data(parameter):
  
     for i, ref_model in enumerate(ref_models):
          ref_file = glob.glob(os.path.join(cmip_path,'*'+ref_model+'*mo*'+ sites[0]+'.nc')) #read in monthly cmip data
-         print 'ref_model', ref_model
+         print('ref_model', ref_model)
          if not ref_file :
-             print (ref_model+" not found!") 
+             print(ref_model+" not found!") 
          else:
              fin = cdms2.open(ref_file[0])
          
@@ -114,7 +107,7 @@ def annual_cycle_data(parameter):
                      cmip_var_season[i, j, :] = var_annual_cycle(var, seasons)
 
                  except:
-                     print (variable+" not processed for " + ref_model)
+                     print(variable+" not processed for " + ref_model)
              fin.close()  
     # Calculate multi-model mean
     mmm_var_season =  np.nanmean(cmip_var_season,axis=0)
@@ -226,7 +219,7 @@ def annual_cycle_taylor_diagram(parameter):
             fig.savefig(output_path+'/figures/'+variable+'_annual_cycle_taylor_diagram_'+sites[0]+'.png')
             plt.close('all')
         except:    
-            print ('Taylor diagram not generated for' +variable)
+            print('Taylor diagram not generated for' +variable)
 
     
     

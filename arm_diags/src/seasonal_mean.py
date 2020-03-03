@@ -45,7 +45,7 @@ def seasonal_mean_table(parameter):
     test_file = glob.glob(os.path.join(test_path,'*'+test_model+'*mo*'+ sites[0]+'.nc')) #read in monthly test data
     fin = cdms2.open(test_file[0])
     
-    print 'test_model',test_model
+    print('test_model',test_model)
 
     for j, variable in enumerate(variables): 
         try:
@@ -53,15 +53,14 @@ def seasonal_mean_table(parameter):
             test_var_season[j, :] = var_seasons(var, seasons)
 
         except:
-            print (variable+" not processed for " + test_model)
+            print(variable+" not processed for " + test_model)
     fin.close()
 
     # Calculate for observational data
     obs_var_season=np.empty([len(variables),len(seasons)])*np.nan
-    print 'ARM data'
+    print('ARM data')
     if sites[0] == 'sgp':
         obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag*monthly_stat_'+ sites[0]+'.nc')) #read in monthly test data
-        print obs_file
         fin = cdms2.open(obs_file[0])
         for j, variable in enumerate(variables): 
             try:
@@ -69,19 +68,16 @@ def seasonal_mean_table(parameter):
                 obs_var_season[j, :] = var_seasons(var, seasons)
     
             except:
-                print (variable+" not processed for obs")
+                print(variable+" not processed for obs")
         fin.close()
     else:
         obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag*monthly_climo*'+ sites[0]+'.nc')) #read in monthly test data
-        print obs_file
         fin = cdms2.open(obs_file[0]) 
         for j, variable in enumerate(variables): 
             try:
                var = fin (variable) 
-               print var.shape
                
                #tmp
-               #print np.nanmean(np.reshape(var, (4,3)),axis=1)
                obs_var_season[j,1:] = np.nanmean(np.reshape(var, (4,3)),axis=1)
                if variable == 'tas':
                    obs_var_season[j,1:] = obs_var_season[j,1:] -273.15
@@ -90,12 +86,11 @@ def seasonal_mean_table(parameter):
                if variable == 'prw':
                    obs_var_season[j,1:] = obs_var_season[j,1:] * 10.0
                obs_var_season[j,0] = np.nanmean(obs_var_season[j,1:])
-               #print obs_var_season
                 
                #var24 = np.concatenate((var,var),axis=0)
                
             except:
-                print (variable+" not processed for obs")
+                print(variable+" not processed for obs")
         fin.close() 
          
    
@@ -105,9 +100,9 @@ def seasonal_mean_table(parameter):
  
     for i, ref_model in enumerate(ref_models):
          ref_file = glob.glob(os.path.join(cmip_path,'*'+ref_model+'*mo*'+ sites[0]+'.nc')) #read in monthly cmip data
-         print 'ref_model', ref_model
+         print('ref_model', ref_model)
          if not ref_file :
-             print (ref_model+" not found!") 
+             print(ref_model+" not found!") 
          else:
              fin = cdms2.open(ref_file[0])
          
@@ -117,7 +112,7 @@ def seasonal_mean_table(parameter):
                      cmip_var_season[i, j, :] = var_seasons(var, seasons)
 
                  except:
-                     print (variable+" not processed for " + ref_model)
+                     print(variable+" not processed for " + ref_model)
              fin.close()  
     # Calculate multi-model mean
     mmm_var_season =  np.nanmean(cmip_var_season,axis=0)

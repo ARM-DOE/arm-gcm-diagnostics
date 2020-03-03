@@ -116,11 +116,27 @@
       "variables": ["pr"],
       "ref_models": ["MIROC5","CMCC-CM","CCSM4","FGOALS-s2","ACCESS1-0","ACCESS1-3"],
       "season": ["JJA"]
+                },
+          {
+      "diags_set": "set7_convection_onset",
+      "variables": ["pr", "prw"],
+      "sites": ["twpc1"]
+                },
+          {
+      "diags_set": "set7_convection_onset",
+      "variables": ["pr", "prw"],
+      "sites": ["twpc2"]
+                },
+          {
+      "diags_set": "set7_convection_onset",
+      "variables": ["pr", "prw"],
+      "sites": ["twpc3"]
+                },
+          {
+      "diags_set": "set7_convection_onset",
+      "variables": ["pr", "prw"],
+      "sites": ["sgp"]
                 }
-
-
-
           ]
-
 }
 

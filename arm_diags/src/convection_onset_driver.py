@@ -52,6 +52,7 @@ def convection_onset(parameter):
             sitename = 'SGP'
     
         for va in variables:
+            print(glob.glob(os.path.join(obs_path,'ARMdiag_'+va+'_1hr_*_'+site+'.nc')))
             filename = glob.glob(os.path.join(obs_path,'ARMdiag_'+va+'_1hr_*_'+site+'.nc'))[0]
             #print(filename)
             f_in=cdms2.open(filename)
@@ -78,46 +79,3 @@ def convection_onset(parameter):
             pr_prw_mod.append(pr)
     convection_onset_statistics(precip_threshold,cwv_max,cwv_min,bin_width,pr_prw_mod[1],pr_prw_mod[0],test_model,output_path,sites,sitename)
  
-#    #Read in model data
-#    
-#    #models = ['CNRM-CM5']
-#    ##models = ['CNRM-CM5','CanAM4','bcc-csm1-1']
-#    #vas = ['pr','prw']
-#    #basedir='/Users/zhang40/Documents/cfSite/' #Kathleen, you will only need to change this..
-#    #output_path = parameter.output_path
-#    #sites = parameter.sites
-#
-#    #for imod in range(len(models)):
-#    #    #Read in Precipitation 
-#    #    filename = glob.glob(os.path.join(basedir+'*'+vas[0]+'_cfSites_'+models[imod]+'*'))[0]
-#    #    f_in=cdms2.open(filename)
-#    #    pr=f_in(vas[0],time=('1979-01-01','1979-12-31')) #Read in the variable 
-#
-#    #    #Read in CWV
-#    #    filename = glob.glob(os.path.join(basedir+'*'+vas[1]+'_cfSites_'+models[imod]+'*'))[0]
-#    #    f_in=cdms2.open(filename)
-#    #    prw=f_in(vas[1],time=('1979-01-01','1979-12-31')) 
-#
-#    #    #Nauru ARM site 31
-#    #    pr_site=pr[:,30]*3600.           #'kg m-2 s-1' to 'mm/hr'
-#    #    prw_site=prw[:,30]               #'kg m-2' to 'mm'
-#
-#        #Call calculation and plotting function 
-#        convection_onset_statistics(prw_site, pr_site,models[imod], output_path, sites)
-#    ##
-#
-#    #Read in Obs data
-#    file_path = '/Users/zhang40/Documents/ARM_LLNL/ConvectionMetrics_UCLA/shared_ARM_diagnostics/Nauru_data/'
-#    precip_filename = 'precip_nauru_1hravg_matchedtosondes_Apr2001_Aug2006.mat'
-#    cwv_filename = 'cwv_nauru_sondes_Apr2001_Aug2006.mat'
-#
-#    precip_file1 = scipy.io.loadmat(file_path + precip_filename)
-#    cwv_file1 = scipy.io.loadmat(file_path + cwv_filename)
-#    #precip_file1 = scipy.io.loadmat(precip_filename)
-#    #cwv_file1 = scipy.io.loadmat(cwv_filename)
-#
-#    cwv = cwv_file1['cwv_nauru_sondes_Apr2001_Aug2006']
-#    precip = precip_file1['precip_nauru_1hravg_matchedtosondes_Apr2001_Aug2006']
-#    cwv = np.squeeze(cwv)
-#    precip = np.squeeze(precip)
-#    convection_onset_statistics(cwv, precip,'sondes',output_path, sites)
