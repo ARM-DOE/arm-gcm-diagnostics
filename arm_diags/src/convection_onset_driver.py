@@ -52,8 +52,9 @@ def convection_onset(parameter):
             sitename = 'SGP'
     
         for va in variables:
-            print(glob.glob(os.path.join(obs_path,'ARMdiag_'+va+'_1hr_*_'+site+'.nc')))
+            #print(glob.glob(os.path.join(obs_path,'ARMdiag_'+va+'_1hr_*_'+site+'.nc')))
             filename = glob.glob(os.path.join(obs_path,'ARMdiag_'+va+'_1hr_*_'+site+'.nc'))[0]
+            
             #print(filename)
             f_in=cdms2.open(filename)
             var=f_in(va)
@@ -71,8 +72,10 @@ def convection_onset(parameter):
 
         pr_prw_mod = []
         for va in variables:
-            filename = glob.glob(os.path.join(test_path, '*'+va+'_cfSites_'+test_model+'*'+site+'.nc'))[0]
-            f_in=cdms2.open(filename)
+            filename = glob.glob(os.path.join(test_path, '*'+va+'_cfSites_'+test_model+'*'+site+'.nc'))
+            if len(filename) == 0:
+               raise RuntimeError('No sub daily data for test model were found.')
+            f_in=cdms2.open(filename[0])
             pr=f_in(va)#,time=('1979-01-01','1979-12-31')) #Read in the variable
             if va == 'pr':
                 pr = pr *3600.           #'kg m-2 s-1' to 'mm/hr'

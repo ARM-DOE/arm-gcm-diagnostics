@@ -26,6 +26,10 @@ def annual_cycle_zt_data(parameter):
     month = seasons#['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
 #    test_var_season=np.empty([len(variables),len(seasons)])*np.nan
     test_file = glob.glob(os.path.join(test_path,'*'+test_model+'*diurnal*'+ sites[0]+'.nc')) #read in monthly test data
+
+    if len(test_file) == 0:
+       raise RuntimeError('No monthly data for test model were found.')
+
     fin = cdms2.open(test_file[0])
     print('test_model',test_model)
     for j, variable in enumerate(variables): 
