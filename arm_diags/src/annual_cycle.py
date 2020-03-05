@@ -40,6 +40,10 @@ def annual_cycle_data(parameter):
     # Calculate for test model
     test_var_season=np.empty([len(variables),len(seasons)])*np.nan
     test_file = glob.glob(os.path.join(test_path,'*'+test_model+'*mo*' + sites[0]+'.nc' )) #read in monthly test data
+
+    if len(test_file) == 0:
+       raise RuntimeError('No monthly data for test model were found.')
+
     fin = cdms2.open(test_file[0])
     
     print('test_model',test_model)

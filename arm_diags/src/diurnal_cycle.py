@@ -58,6 +58,10 @@ def diurnal_cycle_data(parameter):
     
     test_var_season=np.empty([len(variables),8])*np.nan
     test_file = glob.glob(os.path.join(test_path,'*'+test_model+'*3hr*.nc')) #read in 3hr test data
+
+    if len(test_file) == 0:
+       raise RuntimeError('No diurnal data for test model were found.')
+
     fin = cdms2.open(test_file[0])
     test_var_dc = np.empty([8])*np.nan
     

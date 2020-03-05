@@ -55,7 +55,9 @@ def pdf_daily_data(parameter):
     years = range(1979,2006)        #a total of 27 years 
     
     test_var_season=np.empty([len(variables),len(years)*90])*np.nan
-    test_file = glob.glob(os.path.join(test_path,'*'+test_model+'*_da_*.nc')) #read in 3hr test data
+    test_file = glob.glob(os.path.join(test_path,'*'+test_model+'*_da_*.nc')) #read in test data
+    if len(test_file) == 0:
+       raise RuntimeError('No daily data for test model were found.')
     fin = cdms2.open(test_file[0])
     
     print('test_model',test_model)
