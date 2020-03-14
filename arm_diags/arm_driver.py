@@ -20,7 +20,7 @@ from src.convection_onset_driver import convection_onset
 from src.create_htmls import annual_cycle_zt_html,diurnal_cycle_zt_html,diurnal_cycle_html,seasonal_mean_table_html,annual_cycle_html,pdf_daily_html,convection_onset_html,diags_main_html
 
 def make_parameters(basic_parameter):
-    #f_data = open('examples/diags_set1.json').read()
+    #f_data = open('examples/diags_set3.json').read()
     f_data = open('diags_all_multisites.json').read()
     #f_data = open('examples/test_convection_onset.json').read()
     #f_data = open('examples/test_convection_onset_short.json').read()
@@ -77,6 +77,7 @@ for parameter in parameters:
             annual_cycle_line_plot(parameter)
             annual_cycle_taylor_diagram(parameter)
             annual_cycle_html(parameter)
+            html_count += 1
         except:
             pass
 
@@ -86,6 +87,7 @@ for parameter in parameters:
             annual_cycle_zt_plot(parameter)
             annual_cycle_zt_html(parameter)
             diurnal_cycle_zt_html(parameter)
+            html_count += 1
         except:
             pass
 
@@ -94,6 +96,7 @@ for parameter in parameters:
             diurnal_cycle_data(parameter)
             diurnal_cycle_plot(parameter)
             diurnal_cycle_html(parameter)
+            html_count += 1
         except:
             pass
 
@@ -102,6 +105,7 @@ for parameter in parameters:
             pdf_daily_data(parameter)
             pdf_daily_plot(parameter)
             pdf_daily_html(parameter)
+            html_count += 1
         except:
             pass
 
@@ -109,6 +113,7 @@ for parameter in parameters:
         try:
             convection_onset(parameter)
             convection_onset_html(parameter)
+            html_count += 1
         except:
             pass
     

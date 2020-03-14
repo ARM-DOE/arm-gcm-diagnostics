@@ -40,6 +40,7 @@ def annual_cycle_data(parameter):
     # Calculate for test model
     test_var_season=np.empty([len(variables),len(seasons)])*np.nan
     test_file = glob.glob(os.path.join(test_path,'*'+test_model+'*mo*' + sites[0]+'.nc' )) #read in monthly test data
+    print(test_file)
 
     if len(test_file) == 0:
        raise RuntimeError('No monthly data for test model were found.')
@@ -50,11 +51,12 @@ def annual_cycle_data(parameter):
 
     for j, variable in enumerate(variables): 
         try:
-            var = fin (variable)
+            var = fin(variable)
             test_var_season[j, :] = var_annual_cycle(var, seasons)
 
         except:
             print(variable+" not processed for " + test_model)
+       
     fin.close()
 
     # Calculate for observational data
@@ -66,7 +68,7 @@ def annual_cycle_data(parameter):
         for j, variable in enumerate(variables): 
                   
             try:
-                var = fin (variable)
+                var = fin(variable)
                 obs_var_season[j, :] = var_annual_cycle(var, seasons)
 
             except:
@@ -77,7 +79,7 @@ def annual_cycle_data(parameter):
         fin = cdms2.open(obs_file[0])
         for j, variable in enumerate(variables):
             try:
-               var = fin (variable)
+               var = fin(variable)
 
                #tmp
                obs_var_season[j,:] = var
@@ -107,7 +109,7 @@ def annual_cycle_data(parameter):
          
              for j, variable in enumerate(variables): 
                  try:
-                     var = fin (variable)
+                     var = fin(variable)
                      cmip_var_season[i, j, :] = var_annual_cycle(var, seasons)
 
                  except:

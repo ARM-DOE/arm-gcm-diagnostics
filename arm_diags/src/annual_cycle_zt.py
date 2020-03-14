@@ -151,8 +151,8 @@ def annual_cycle_zt_plot(parameter):
                      xx=np.linspace(100,1000,37)
                      x,y=np.meshgrid(xx,yy)
                      obs_data_con=np.concatenate((obs_data[imon,:,:],obs_data[imon,:,:]),axis=0)#6 hour GMT to Local time
-                     #im=axs[imon].pcolormesh(y,x,obs_data_con[6:30,::-1], vmin=0, vmax=25)
-                     im=axs[imon].pcolormesh(y,x,obs_data_con[:24,::-1], vmin=0, vmax=25)
+                     im=axs[imon].pcolormesh(y,x,obs_data_con[6:30,::-1], vmin=0, vmax=25)
+                     #im=axs[imon].pcolormesh(y,x,obs_data_con[:24,::-1], vmin=0, vmax=25)
                      plt.xlim([0,23])
                      xax =  np.arange (0,24,3)
                      my_xticks = ['0','3','6','9','12','15','18','21']
