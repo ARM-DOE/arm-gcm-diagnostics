@@ -11,7 +11,7 @@ Important Links
 ===============
 
 - Official source code repository: https://github.com/ARM-DOE/arm-gcm-diagnostics
-- ARM webpage: http://www.arm.gov/data/eval/123  (v1 data released September 2017)
+- ARM webpage: http://www.arm.gov/data/eval/123  (v2 data are under ARM data review, will soon available March/April 2020)
 - Technical Report: https://github.com/ARM-DOE/arm-gcm-diagnostics/blob/master/ARM_gcm_diag_pkg_TechReport_v1.docx
 
 
