@@ -8,6 +8,7 @@ import csv
 import matplotlib.pyplot as plt
 from varid_dict import varid_longname
 from taylor_diagram import TaylorDiagram
+from utils import climo
 
 def var_annual_cycle(var, seasons):
     "Calculate annual cycle climatology of each variable"
@@ -52,7 +53,9 @@ def annual_cycle_data(parameter):
     for j, variable in enumerate(variables): 
         try:
             var = fin(variable)
-            test_var_season[j, :] = var_annual_cycle(var, seasons)
+            #test_var_season[j, :] = var_annual_cycle(var, seasons)
+            test_var_season[j, :] = climo(var, 'ANNUALCYCLE')
+            print('after', test_var_season[j, :])
 
         except:
             print(variable+" not processed for " + test_model)
@@ -66,10 +69,10 @@ def annual_cycle_data(parameter):
         obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag*monthly_stat_'+ sites[0]+'.nc')) #read in monthly test data
         fin = cdms2.open(obs_file[0])
         for j, variable in enumerate(variables): 
-                  
             try:
                 var = fin(variable)
-                obs_var_season[j, :] = var_annual_cycle(var, seasons)
+                #obs_var_season[j, :] = var_annual_cycle(var, seasons)
+                obs_var_season[j, :] = climo(var, 'ANNUALCYCLE')
 
             except:
                 print(variable+" not processed for obs")
@@ -110,7 +113,9 @@ def annual_cycle_data(parameter):
              for j, variable in enumerate(variables): 
                  try:
                      var = fin(variable)
-                     cmip_var_season[i, j, :] = var_annual_cycle(var, seasons)
+                     #cmip_var_season[i, j, :] = var_annual_cycle(var, seasons)
+                     cmip_var_season[i, j, :] = climo(var, 'ANNUALCYCLE')
+                     print(ref_model,cmip_var_season[i, j, :])
 
                  except:
                      print(variable+" not processed for " + ref_model)
