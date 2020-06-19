@@ -5,6 +5,7 @@ import cdutil
 import numpy as np
 import csv
 from varid_dict import varid_longname
+from utils import climo
 
 def var_seasons(var, seasons):
     "Calculate seasonal climatology of each variable"
@@ -53,7 +54,8 @@ def seasonal_mean_table(parameter):
     for j, variable in enumerate(variables): 
         try:
             var = fin (variable)
-            test_var_season[j, :] = var_seasons(var, seasons)
+            #test_var_season[j, :] = var_seasons(var, seasons)
+            test_var_season[j, :] = climo(var, seasons)
 
         except:
             print(variable+" not processed for " + test_model)
@@ -68,7 +70,8 @@ def seasonal_mean_table(parameter):
         for j, variable in enumerate(variables): 
             try:
                 var = fin (variable)
-                obs_var_season[j, :] = var_seasons(var, seasons)
+                #obs_var_season[j, :] = var_seasons(var, seasons)
+                obs_var_season[j, :] = climo(var, seasons)
     
             except:
                 print(variable+" not processed for obs")
@@ -112,7 +115,8 @@ def seasonal_mean_table(parameter):
              for j, variable in enumerate(variables): 
                  try:
                      var = fin (variable)
-                     cmip_var_season[i, j, :] = var_seasons(var, seasons)
+                     #cmip_var_season[i, j, :] = var_seasons(var, seasons)
+                     cmip_var_season[i, j, :] = climo(var, seasons)
 
                  except:
                      print(variable+" not processed for " + ref_model)
