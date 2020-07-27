@@ -41,7 +41,7 @@ To create conda enviroment (for a minimum enviroment)::
     
 To activate the conda enviroment::
     
-    source activate arm_diags_env
+    conda activate arm_diags_env
 
 To install the package, go into <Your directory> (/arm-gcm-dignostics/)::
     
