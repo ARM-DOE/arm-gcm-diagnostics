@@ -31,7 +31,7 @@ For downloading data:
 - Following the Data Directory link on that page, it will lead to the area that the data files are placed. A short registration is required if you do not already have an ARM account.
 - DOI for the citation of the data is 10.5439/1282169
 
-For obtaining codes::
+For obtaining source code::
 
     git clone https://github.com/ARM-DOE/arm-gcm-diagnostics/
     
