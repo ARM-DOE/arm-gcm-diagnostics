@@ -1,3 +1,4 @@
+# file functional with Python3  
 from setuptools import find_packages,setup
 
 setup(name='arm_diags',
