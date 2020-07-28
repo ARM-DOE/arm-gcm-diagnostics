@@ -58,7 +58,7 @@ class ARMParameter(cdp.cdp_parameter.CDPParameter):
 #            print 'reference_data_path is needed! Define it in the parameter file or in the command line using --reference_data_path'
 #            quit()
         if self.test_data_path == '':
-            print 'test_data_path is needed! Define it in the parameter file or in the command line using --test_data_path'
+            print('test_data_path is needed! Define it in the parameter file or in the command line using --test_data_path')
             quit()
         '''
         if self.reference_data_set == '':
