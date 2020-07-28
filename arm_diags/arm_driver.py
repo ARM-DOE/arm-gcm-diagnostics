@@ -1,3 +1,4 @@
+# Python3 
 #!/usr/bin/env python
 import json
 import copy
@@ -6,18 +7,18 @@ import cdutil
 import genutil
 import cdms2
 import MV2
-import arm_parser
+from . import arm_parser
 import glob
 import os
 import fnmatch
-from src.seasonal_mean import seasonal_mean_table
-from src.annual_cycle import annual_cycle_data, annual_cycle_line_plot, annual_cycle_taylor_diagram
-from src.annual_cycle_zt import annual_cycle_zt_data,annual_cycle_zt_plot
-from src.diurnal_cycle import diurnal_cycle_data,diurnal_cycle_plot
-from src.pdf_daily import pdf_daily_data, pdf_daily_plot
-from src.convection_onset_driver import convection_onset
+from .src.seasonal_mean import seasonal_mean_table
+from .src.annual_cycle import annual_cycle_data, annual_cycle_line_plot, annual_cycle_taylor_diagram
+from .src.annual_cycle_zt import annual_cycle_zt_data,annual_cycle_zt_plot
+from .src.diurnal_cycle import diurnal_cycle_data,diurnal_cycle_plot
+from .src.pdf_daily import pdf_daily_data, pdf_daily_plot
+from .src.convection_onset_driver import convection_onset
 #from src.convection_onset_driver_todd import convection_onset
-from src.create_htmls import annual_cycle_zt_html,diurnal_cycle_zt_html,diurnal_cycle_html,seasonal_mean_table_html,annual_cycle_html,pdf_daily_html,convection_onset_html,diags_main_html
+from .src.create_htmls import annual_cycle_zt_html,diurnal_cycle_zt_html,diurnal_cycle_html,seasonal_mean_table_html,annual_cycle_html,pdf_daily_html,convection_onset_html,diags_main_html
 
 def make_parameters(basic_parameter):
     #f_data = open('examples/diags_set3.json').read()
@@ -29,7 +30,7 @@ def make_parameters(basic_parameter):
 
     parameters = []
     for key in json_file:
-        print(json_file[key],key)
+        print((json_file[key],key))
         for single_run in json_file[key]:
             p = copy.deepcopy(basic_parameter)
             for attr_name in single_run:
@@ -122,20 +123,13 @@ if html_count >= 1:
 # Creat the main html page hosting all sets of diagnostics
     diags_main_html(output_path, test_model)
     #
-    print('Html files saved in:'+output_path+'/html/')
-    print('Open Html file by (MacOS): open ' +output_path+'/html/arm_diag.html')
-    print('Open Html file by (Linux): xdg-open ' +output_path+'/html/arm_diag.html')
+    print(('Html files saved in:'+output_path+'/html/'))
+    print(('Open Html file by (MacOS): open ' +output_path+'/html/arm_diag.html'))
+    print(('Open Html file by (Linux): xdg-open ' +output_path+'/html/arm_diag.html'))
     
     print('Processes Completed!')
     print('------------------     END    -------------------------')
 else:
     print('No diagnostic set was run and no html was generated')
     
-    
-    
-    
-
-
-
-
-
+   
