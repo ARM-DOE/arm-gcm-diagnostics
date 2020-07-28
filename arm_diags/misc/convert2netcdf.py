@@ -17,9 +17,9 @@ cwv_file1 = scipy.io.loadmat(file_path + cwv_filename)
 #precip_file1 = scipy.io.loadmat(precip_filename)
 #cwv_file1 = scipy.io.loadmat(cwv_filename)
 
-print cwv_file1
+print(cwv_file1)
 cwv = cwv_file1['cwv_nauru_sondes_Apr2001_Aug2006']
-print cwv.shape
+print(cwv.shape)
 precip = precip_file1['precip_nauru_1hravg_matchedtosondes_Apr2001_Aug2006']
 cwv = np.squeeze(cwv)
 precip = np.squeeze(precip)
@@ -29,7 +29,7 @@ precip = np.squeeze(precip)
 out_file = cdms2.open('prw_nauru_sondes_Apr2001_Aug2006.nc','w')
 start = "2001-04-01 00:00:00"
 nTimes = cwv.shape[0]
-time = cdms2.createAxis(range(nTimes))
+time = cdms2.createAxis(list(range(nTimes)))
 time.units = "hours since {}".format(start)
 time.designateTime()
 time.id = 'time'
@@ -46,7 +46,7 @@ out_file.write(data)
 out_file = cdms2.open('pr_nauru_matchedtosondes_Apr2001_Aug2006.nc','w')
 start = "2001-04-01 00:00:00"
 nTimes = precip.shape[0]
-time = cdms2.createAxis(range(nTimes))
+time = cdms2.createAxis(list(range(nTimes)))
 time.units = "hours since {}".format(start)
 time.designateTime()
 time.id = 'time'
