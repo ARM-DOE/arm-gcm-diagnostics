@@ -7,7 +7,7 @@ import cdutil
 import genutil
 import cdms2
 import MV2
-from . import arm_parser
+import arm_parser
 import glob
 import os
 import fnmatch
