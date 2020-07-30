@@ -6,9 +6,9 @@ import numpy as np
 from numpy import genfromtxt
 import csv
 import matplotlib.pyplot as plt
-from .varid_dict import varid_longname
-from .taylor_diagram import TaylorDiagram
-from .utils import climo
+from varid_dict import varid_longname
+from taylor_diagram import TaylorDiagram
+from utils import climo
 
 def var_annual_cycle(var, seasons):
     "Calculate annual cycle climatology of each variable"
