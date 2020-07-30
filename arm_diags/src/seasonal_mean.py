@@ -4,8 +4,8 @@ import cdms2
 import cdutil
 import numpy as np
 import csv
-from .varid_dict import varid_longname
-from .utils import climo
+from varid_dict import varid_longname
+from utils import climo
 
 def var_seasons(var, seasons):
     "Calculate seasonal climatology of each variable"
