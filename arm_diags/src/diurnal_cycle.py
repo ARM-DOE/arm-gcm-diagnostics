@@ -7,7 +7,7 @@ from numpy import genfromtxt
 import csv
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import grid
-from .varid_dict import varid_longname
+from varid_dict import varid_longname
 import cdtime
 from scipy.optimize import curve_fit
 
