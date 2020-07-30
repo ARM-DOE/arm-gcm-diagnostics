@@ -6,7 +6,7 @@ import numpy as np
 from numpy import genfromtxt
 import csv
 import matplotlib.pyplot as plt
-from .varid_dict import varid_longname
+from varid_dict import varid_longname
 
 
 def annual_cycle_zt_data(parameter):
