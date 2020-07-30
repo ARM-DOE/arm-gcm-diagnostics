@@ -1,4 +1,4 @@
-import cdp.cdp_parameter.CDPParameter
+import cdp.cdp_parameter
 
 
 class ARMParameter(cdp.cdp_parameter.CDPParameter):
