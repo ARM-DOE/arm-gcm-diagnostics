@@ -37,7 +37,7 @@ For obtaining source code::
     
 To create conda enviroment (for a minimum enviroment)::
     
-    conda create -n arm_diags_env_py3 cdp=1.6.0 cdutil cdms2 libcdms matplotlib scipy python=3 -c conda-forge -c uvcdat
+    conda create -n arm_diags_env_py3 cdp cdutil cdms2 libcdms matplotlib scipy python=3 -c conda-forge -c cdat/label/v82
     
 To activate the conda enviroment::
     
