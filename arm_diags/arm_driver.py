@@ -10,13 +10,13 @@ import MV2
 import glob
 import os
 import fnmatch
-from . import arm_parser
-from src.seasonal_mean import seasonal_mean_table
-from src.annual_cycle import annual_cycle_data, annual_cycle_line_plot, annual_cycle_taylor_diagram
-from src.annual_cycle_zt import annual_cycle_zt_data,annual_cycle_zt_plot
-from src.diurnal_cycle import diurnal_cycle_data,diurnal_cycle_plot
-from src.pdf_daily import pdf_daily_data, pdf_daily_plot
-from src.convection_onset_driver import convection_onset
+from arm_diags import arm_parser # from . import arm_parser
+from src.seasonal_mean import seasonal_mean_table # .src
+from src.annual_cycle import annual_cycle_data, annual_cycle_line_plot, annual_cycle_taylor_diagram #.src
+from src.annual_cycle_zt import annual_cycle_zt_data,annual_cycle_zt_plot #.src
+from src.diurnal_cycle import diurnal_cycle_data,diurnal_cycle_plot #.src
+from src.pdf_daily import pdf_daily_data, pdf_daily_plot #.src
+from src.convection_onset_driver import convection_onset #.src
 #from src.convection_onset_driver_todd import convection_onset
 from src.create_htmls import annual_cycle_zt_html,diurnal_cycle_zt_html,diurnal_cycle_html,seasonal_mean_table_html,annual_cycle_html,pdf_daily_html,convection_onset_html,diags_main_html
 
