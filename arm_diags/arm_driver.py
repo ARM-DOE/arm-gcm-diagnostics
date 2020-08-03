@@ -7,10 +7,10 @@ import cdutil
 import genutil
 import cdms2
 import MV2
-import arm_parser
 import glob
 import os
 import fnmatch
+from . import arm_parser
 from src.seasonal_mean import seasonal_mean_table
 from src.annual_cycle import annual_cycle_data, annual_cycle_line_plot, annual_cycle_taylor_diagram
 from src.annual_cycle_zt import annual_cycle_zt_data,annual_cycle_zt_plot
