@@ -19,7 +19,7 @@ cwv_file1 = scipy.io.loadmat(file_path + cwv_filename)
 
 print(cwv_file1)
 cwv = cwv_file1['cwv_nauru_sondes_Apr2001_Aug2006']
-print(cwv.shape)
+print((cwv.shape))
 precip = precip_file1['precip_nauru_1hravg_matchedtosondes_Apr2001_Aug2006']
 cwv = np.squeeze(cwv)
 precip = np.squeeze(precip)
