@@ -1,6 +1,6 @@
 import ast
 import cdp.cdp_parser
-from arm_parameter
+from . import arm_parameter
 
 
 class ARMParser(cdp.cdp_parser.CDPParser):
