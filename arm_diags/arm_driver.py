@@ -42,7 +42,7 @@ def make_parameters(basic_parameter):
 # 1. basicparameter.py
 # 2. diags_sets.json
 parser = arm_parser.ARMParser()
-basic_parameter = parser.get_parameter()
+basic_parameter = parser.get_cmdline_parameters()
 parameters = make_parameters(basic_parameter)
 
 case_id =  basic_parameter.case_id
