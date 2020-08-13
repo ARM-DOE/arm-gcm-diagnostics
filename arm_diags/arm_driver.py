@@ -1,4 +1,3 @@
-# Python3 
 #!/usr/bin/env python
 import json
 import copy
@@ -10,14 +9,14 @@ import MV2
 import glob
 import os
 import fnmatch
-from arm_diags import arm_parser # from . import arm_parser
+from arm_diags import arm_parser # from . import arm_parser 
 from src.seasonal_mean import seasonal_mean_table # .src
-from src.annual_cycle import annual_cycle_data, annual_cycle_line_plot, annual_cycle_taylor_diagram #.src
-from src.annual_cycle_zt import annual_cycle_zt_data,annual_cycle_zt_plot #.src
-from src.diurnal_cycle import diurnal_cycle_data,diurnal_cycle_plot #.src
-from src.pdf_daily import pdf_daily_data, pdf_daily_plot #.src
-from src.convection_onset_driver import convection_onset #.src
-# from src.convection_onset_driver_todd import convection_onset
+from src.annual_cycle import annual_cycle_data, annual_cycle_line_plot, annual_cycle_taylor_diagram # .src
+from src.annual_cycle_zt import annual_cycle_zt_data,annual_cycle_zt_plot # .src
+from src.diurnal_cycle import diurnal_cycle_data,diurnal_cycle_plot # .src
+from src.pdf_daily import pdf_daily_data, pdf_daily_plot # .src
+from src.convection_onset_driver import convection_onset # .src
+#from src.convection_onset_driver_todd import convection_onset
 from src.create_htmls import annual_cycle_zt_html,diurnal_cycle_zt_html,diurnal_cycle_html,seasonal_mean_table_html,annual_cycle_html,pdf_daily_html,convection_onset_html,diags_main_html
 
 def make_parameters(basic_parameter):
@@ -34,7 +33,8 @@ def make_parameters(basic_parameter):
         for single_run in json_file[key]:
             p = copy.deepcopy(basic_parameter)
             for attr_name in single_run:
-                setattr(p, attr_name, single_run[attr_name])
+                for i in range(len(p)):
+                    setattr(p[i], attr_name, single_run[attr_name])
             parameters.append(p)
     return parameters
 
@@ -42,11 +42,10 @@ def make_parameters(basic_parameter):
 # 1. basicparameter.py
 # 2. diags_sets.json
 parser = arm_parser.ARMParser()
-basic_parameter = parser.get_cmdline_parameters()
+basic_parameter = parser.get_parameters()
 parameters = make_parameters(basic_parameter)
-
-case_id =  basic_parameter.case_id
-output_path = basic_parameter.output_path
+case_id =  basic_parameter[0].case_id
+output_path = basic_parameter[0].output_path
 
 # Generate new case folder given case_id:
 if not os.path.exists(os.path.join(output_path)):
@@ -132,4 +131,6 @@ if html_count >= 1:
 else:
     print('No diagnostic set was run and no html was generated')
     
-   
+    
+    
+    
