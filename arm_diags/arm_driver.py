@@ -33,8 +33,7 @@ def make_parameters(basic_parameter):
         for single_run in json_file[key]:
             p = copy.deepcopy(basic_parameter)
             for attr_name in single_run:
-                for i in range(len(p)):
-                    setattr(p[i], attr_name, single_run[attr_name])
+                setattr(p[0], attr_name, single_run[attr_name])
             parameters.append(p)
     return parameters
 
@@ -45,7 +44,7 @@ parser = arm_parser.ARMParser()
 basic_parameter = parser.get_parameters()
 parameters = make_parameters(basic_parameter)
 case_id =  basic_parameter[0].case_id
-output_path = basic_parameter[0].output_path
+output_path = "/path/to/output/arm-gcm-diagnostics/"
 
 # Generate new case folder given case_id:
 if not os.path.exists(os.path.join(output_path)):
@@ -56,8 +55,8 @@ if not os.path.exists(os.path.join(output_path)):
 
 # Loop through diagnostic sets prespecified from diags_sets.json
 html_count = 0
-for parameter in parameters:
-
+for i in parameters:
+    parameter = i[0]
     diags_set = parameter.diags_set
     output_path = parameter.output_path
     test_model = parameter.test_data_set
@@ -131,6 +130,6 @@ if html_count >= 1:
 else:
     print('No diagnostic set was run and no html was generated')
     
-    
-    
-    
+
+
+
