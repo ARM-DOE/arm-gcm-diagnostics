@@ -44,6 +44,7 @@ def make_parameters(basic_parameter):
 parser = arm_parser.ARMParser()
 basic_parameter = parser.get_parameters()
 parameters = make_parameters(basic_parameter)
+
 case_id =  basic_parameter[0].case_id
 output_path = "/home/ben/arm-gcm-diagnostics/"
 
