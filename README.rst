@@ -60,7 +60,7 @@ Edit parameter file basicparameter.py to set 'base_path' to <Your directory>
 
 To run the package, simply type in the terminal the following::
    
-  python arm_driver.py -p basicparameter.py
+  python3 arm_driver.py -p basicparameter.py
 
 To view the diagnostics results:
 
