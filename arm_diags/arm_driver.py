@@ -40,11 +40,12 @@ def make_parameters(basic_parameter):
 # Read in specification files, including those from:
 # 1. basicparameter.py
 # 2. diags_sets.json
+
 parser = arm_parser.ARMParser()
 basic_parameter = parser.get_parameters()
 parameters = make_parameters(basic_parameter)
 case_id =  basic_parameter[0].case_id
-output_path = "/path/to/output/arm-gcm-diagnostics/"
+output_path = "/home/ben/arm-gcm-diagnostics/"
 
 # Generate new case folder given case_id:
 if not os.path.exists(os.path.join(output_path)):
@@ -128,8 +129,5 @@ if html_count >= 1:
     print('Processes Completed!')
     print('------------------     END    -------------------------')
 else:
-    print('No diagnostic set was run and no html was generated')
+    print('Unable to process data. No diagnostic set was run and no html was generated!')
     
-
-
-
