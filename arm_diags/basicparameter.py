@@ -1,5 +1,5 @@
 #Fully Functional with Python3
-test_data_set = 'test_data'        #name of the model, which should be included as the /model/test_data_xxxx.nc
+test_data_set = 'test_data'        # name of the model, which should be included as the /model/test_data_xxxx.nc
 case_id = 'your_result_folder_name'
 
 # Set input path, where the model, observational and cmip data are located.
