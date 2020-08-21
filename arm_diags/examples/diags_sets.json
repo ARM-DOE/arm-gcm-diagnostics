@@ -1,0 +1,12 @@
+{
+        "arm_diags": [
+          {
+      "diags_set": "set1_tables",
+      "variables": ["tas","pr","clt","hurs","hfss","hfls","rlus","rlds","rsus","rsds","ps","prw"],
+      "ref_models": ["ACCESS1-0","TEST"],
+      "season": ["ANN","DJF","MAM","JJA","SON"]
+                }
+          ]
+
+}
+

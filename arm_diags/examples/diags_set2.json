@@ -1,0 +1,13 @@
+{
+        "arm_diags": [
+          {
+      "diags_set": "set2_annual_cycle",
+      "variables": ["tas","pr","clt","hurs","hfss","hfls","rlus","rlds","rsus","rsds","ps","prw","mrsos","od550aer"],
+      "ref_models": ["ACCESS1-0","ACCESS1-3", "CESM1-CAM5","CSIRO-Mk3-6-0", "CanAM4","FGOALS-g2","FGOALS-s2","GFDL-HIRAM-C360","GFDL-HIRAM-C180","GISS-E2-R","inmcm4", "MPI-ESM-LR", "MPI-ESM-MR", "NorESM1-M","TEST"],
+      "sites":["sgp"],
+      "season": ["J","F","M","A","M","J","J","A","S","O","N","D"]
+                }
+          ]
+
+}
+
