@@ -33,7 +33,7 @@ def make_parameters(basic_parameter):
         for single_run in json_file[key]:
             p = copy.deepcopy(basic_parameter)
             for attr_name in single_run:
-                setattr(p[0], attr_name, single_run[attr_name])
+                setattr(p, attr_name, single_run[attr_name])
             parameters.append(p)
     return parameters
 
@@ -42,15 +42,14 @@ def make_parameters(basic_parameter):
 # 2. diags_sets.json
 
 parser = arm_parser.ARMParser()
-basic_parameter = parser.get_parameters()
+#basic_parameter = parser.get_parameter()
+#basic_parameter = parser.get_parameters()
+basic_parameter = parser.get_orig_parameters(argparse_vals_only=False)
 parameters = make_parameters(basic_parameter)
 
-print('**Python_3_Attributes**')
-print(basic_parameter[0].__dict__) # Lists attributes  
-print('***********')
 
-case_id =  basic_parameter[0].case_id
-output_path = "/home/ben/arm-gcm-diagnostics/"  
+case_id =  basic_parameter.case_id
+output_path = basic_parameter.output_path
 
 # Generate new case folder given case_id:
 if not os.path.exists(os.path.join(output_path)):
@@ -61,8 +60,7 @@ if not os.path.exists(os.path.join(output_path)):
 
 # Loop through diagnostic sets prespecified from diags_sets.json
 html_count = 0
-for i in parameters:
-    parameter = i[0]
+for parameter in parameters:
     diags_set = parameter.diags_set
     output_path = parameter.output_path
     test_model = parameter.test_data_set
