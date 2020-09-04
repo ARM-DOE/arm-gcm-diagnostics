@@ -1,5 +1,5 @@
 import csv
-from varid_dict import varid_longname
+from .varid_dict import varid_longname
 import os
 from collections import OrderedDict
 
@@ -8,7 +8,7 @@ def diags_main_html(output_path,test_model):
     #output_path = parameter.output_path
     #test_model = parameter.test_data_set
     os.chdir(output_path+'/html')
-    print os.getcwd()
+    print((os.getcwd()))
     f = open('arm_diag.html','w')
     message = """<html>
     <head>

@@ -1,20 +1,21 @@
 import ast
 import cdp.cdp_parser
-import arm_parameter
+from arm_diags import arm_parameter     # from . import arm_parameter
 
 
 class ARMParser(cdp.cdp_parser.CDPParser):
     def __init__(self, *args, **kwargs):
         super(ARMParser, self).__init__(arm_parameter.ARMParameter, *args, **kwargs)
 
-    def load_default_args(self):
+    def load_default_args(self, *args):
         # this has '-p' and '--parameter' reserved
         super(ARMParser, self).load_default_args()
 
-        self.add_argument(
+
+         self.add_argument(
             '-p', '--parameters',
             type=str,
-            dest='parameter',
+            dest='parameters',
             help='Path to the user-defined parameter file',
             required=False)
 

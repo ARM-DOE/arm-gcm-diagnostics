@@ -6,7 +6,7 @@ import numpy as np
 from numpy import genfromtxt
 import csv
 import matplotlib.pyplot as plt
-from varid_dict import varid_longname
+from .varid_dict import varid_longname
 
 
 def annual_cycle_zt_data(parameter):
@@ -31,7 +31,7 @@ def annual_cycle_zt_data(parameter):
        raise RuntimeError('No monthly data for test model were found.')
 
     fin = cdms2.open(test_file[0])
-    print('test_model',test_model)
+    print(('test_model',test_model))
     for j, variable in enumerate(variables): 
         try:
             if variable == 'cl' or variable == 'cl_p':
@@ -50,7 +50,7 @@ def annual_cycle_zt_data(parameter):
                     np.savetxt(outfile, data_slice, fmt='%-7.2f')
                     mon_id=mon_id+1
         except:
-            print(variable+" not processed for " + test_model)
+            print((variable+" not processed for " + test_model))
 
     fin.close()
     
@@ -63,7 +63,7 @@ def annual_cycle_zt_data(parameter):
     else:
         obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag_*_diurnal_climo_'+ sites[0]+'*.nc')) 
 
-    print('ARM data', sites[0])
+    print(('ARM data', sites[0]))
     fin = cdms2.open(obs_file[0])
     for j, variable in enumerate(variables): 
         try:
@@ -85,7 +85,7 @@ def annual_cycle_zt_data(parameter):
     
     
         except:
-            print(variable+" not processed for obs")
+            print((variable+" not processed for obs"))
     fin.close()
 #    else:
 #        obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag_domain_monthly_climo_'+ sites[0]+'*.nc')) #read in monthly test data

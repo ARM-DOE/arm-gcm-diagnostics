@@ -6,9 +6,9 @@ import numpy as np
 from numpy import genfromtxt
 import csv
 import matplotlib.pyplot as plt
-from varid_dict import varid_longname
-from taylor_diagram import TaylorDiagram
-from utils import climo
+from .varid_dict import varid_longname
+from .taylor_diagram import TaylorDiagram
+from .utils import climo
 
 def var_annual_cycle(var, seasons):
     "Calculate annual cycle climatology of each variable"
@@ -48,17 +48,17 @@ def annual_cycle_data(parameter):
 
     fin = cdms2.open(test_file[0])
     
-    print('test_model',test_model)
+    print(('test_model',test_model))
 
     for j, variable in enumerate(variables): 
         try:
             var = fin(variable)
             #test_var_season[j, :] = var_annual_cycle(var, seasons)
             test_var_season[j, :] = climo(var, 'ANNUALCYCLE')
-            print('after', test_var_season[j, :])
+            print(('after', test_var_season[j, :]))
 
         except:
-            print(variable+" not processed for " + test_model)
+            print((variable+" not processed for " + test_model))
        
     fin.close()
 
@@ -75,7 +75,7 @@ def annual_cycle_data(parameter):
                 obs_var_season[j, :] = climo(var, 'ANNUALCYCLE')
 
             except:
-                print(variable+" not processed for obs")
+                print((variable+" not processed for obs"))
         fin.close()
     else:
         obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag*monthly_climo*'+ sites[0]+'.nc')) #read in monthly test data
@@ -96,7 +96,7 @@ def annual_cycle_data(parameter):
                #var24 = np.concatenate((var,var),axis=0)
 
             except:
-                print(variable+" not processed for obs")
+                print((variable+" not processed for obs"))
         fin.close()
   
     # Calculate cmip model seasonal mean climatology
@@ -104,9 +104,9 @@ def annual_cycle_data(parameter):
  
     for i, ref_model in enumerate(ref_models):
          ref_file = glob.glob(os.path.join(cmip_path,'*'+ref_model+'*mo*'+ sites[0]+'.nc')) #read in monthly cmip data
-         print('ref_model', ref_model)
+         print(('ref_model', ref_model))
          if not ref_file :
-             print(ref_model+" not found!") 
+             print((ref_model+" not found!")) 
          else:
              fin = cdms2.open(ref_file[0])
          
@@ -115,10 +115,10 @@ def annual_cycle_data(parameter):
                      var = fin(variable)
                      #cmip_var_season[i, j, :] = var_annual_cycle(var, seasons)
                      cmip_var_season[i, j, :] = climo(var, 'ANNUALCYCLE')
-                     print(ref_model,cmip_var_season[i, j, :])
+                     print((ref_model,cmip_var_season[i, j, :]))
 
                  except:
-                     print(variable+" not processed for " + ref_model)
+                     print((variable+" not processed for " + ref_model))
              fin.close()  
     # Calculate multi-model mean
     mmm_var_season =  np.nanmean(cmip_var_season,axis=0)
@@ -230,7 +230,7 @@ def annual_cycle_taylor_diagram(parameter):
             fig.savefig(output_path+'/figures/'+variable+'_annual_cycle_taylor_diagram_'+sites[0]+'.png')
             plt.close('all')
         except:    
-            print('Taylor diagram not generated for' +variable)
+            print(('Taylor diagram not generated for' +variable))
 
     
     
