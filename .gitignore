@@ -2,6 +2,8 @@
 arm_diags/model/*
 arm_diags/observation/*
 arm_diags/cmip/*
+arm_diags/build/*
+arm_diags/dist/*
 
 # exception to the rule
 !arm_diags/model/.gitkeep 

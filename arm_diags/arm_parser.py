@@ -7,12 +7,12 @@ class ARMParser(cdp.cdp_parser.CDPParser):
     def __init__(self, *args, **kwargs):
         super(ARMParser, self).__init__(arm_parameter.ARMParameter, *args, **kwargs)
 
-    def load_default_args(self, *args):
+    #def load_default_args(self, *args):
+    def load_default_args(self, files=[]):
         # this has '-p' and '--parameter' reserved
-        super(ARMParser, self).load_default_args()
+        super(ARMParser, self).load_default_args(files)
 
-
-         self.add_argument(
+        self.add_argument(
             '-p', '--parameters',
             type=str,
             dest='parameters',
