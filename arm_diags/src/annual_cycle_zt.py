@@ -41,7 +41,7 @@ def annual_cycle_zt_data(parameter):
             var[var>100]=np.nan
             var_2d = np.reshape(var,(12,8,37))
     
-            with file(output_path+'/metrics/'+variable+'_test_diurnal_climo_'+ sites[0]+'.csv', 'w') as outfile:
+            with open(output_path+'/metrics/'+variable+'_test_diurnal_climo_'+ sites[0]+'.csv', 'w') as outfile:
                 outfile.write('# Array shape: {0}'.format(var_2d.shape)+' as (month, hours, vertical levels)\n')
                 mon_id=0
                 for data_slice in var_2d:
@@ -74,7 +74,7 @@ def annual_cycle_zt_data(parameter):
 #            print var_2d.shape
             var_2d = np.reshape(var,(12,24,37))
     
-            with file(output_path+'/metrics/'+variable+'_obs_diurnal_climo_'+ sites[0]+'.csv', 'w') as outfile:
+            with open(output_path+'/metrics/'+variable+'_obs_diurnal_climo_'+ sites[0]+'.csv', 'w') as outfile:
                 outfile.write('# Array shape: {0}'.format(var_2d.shape)+' as (month, hours, vertical levels)\n')
                 mon_id=0
                 for data_slice in var_2d:
