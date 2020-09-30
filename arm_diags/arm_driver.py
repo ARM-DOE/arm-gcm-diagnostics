@@ -22,6 +22,7 @@ from src.create_htmls import annual_cycle_zt_html,diurnal_cycle_zt_html,diurnal_
 def make_parameters(basic_parameter):
     #f_data = open('examples/diags_set3.json').read()
     f_data = open('diags_all_multisites.json').read()
+    #f_data = open('examples/test_convection_onset.json').read()
     
     json_file = json.loads(f_data)
 
