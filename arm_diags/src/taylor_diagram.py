@@ -38,7 +38,7 @@ class TaylorDiagram(object):
         rlocs = np.concatenate((np.arange(10)/10.,[0.95,0.99]))
         tlocs = np.arccos(rlocs)        # Conversion to polar angles
         gl1 = GF.FixedLocator(tlocs)    # Positions
-        tf1 = GF.DictFormatter(dict(zip(tlocs, map(str,rlocs))))
+        tf1 = GF.DictFormatter(dict(list(zip(tlocs, list(map(str,rlocs))))))
 
         # Standard deviation axis extent
         self.smin = 0.0

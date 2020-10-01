@@ -193,7 +193,8 @@ def convection_onset_statistics(precip_threshold,cwv_max,cwv_min,bin_width,cwv,p
     error = [errorbar_precip,errorbar_precip]
     #print(bin_center.shape)
     #print(pr_binned_mean.shape)
-    ax1.errorbar(bin_center, pr_binned_mean, xerr=0, yerr=error, ls='none', color='black')
+    #ax1.errorbar(bin_center, pr_binned_mean, xerr=0, yerr=np.asarray(error), ls='none', color='black')
+    ax1.errorbar(bin_center, pr_binned_mean, xerr=0, yerr=errorbar_precip.squeeze(), ls='none', color='black')
     ax1.scatter(bin_center, pr_binned_mean, edgecolor='none', facecolor=scatter_colors, s=marker_size, clip_on=False, zorder=3)
     ax1.set_ylabel('Precip (mm/hr)', fontsize=axes_fontsize)
     ax1.set_xlabel('CWV (mm)', fontsize=axes_fontsize)
@@ -249,7 +250,7 @@ def convection_onset_statistics(precip_threshold,cwv_max,cwv_min,bin_width,cwv,p
     
     #pdf_precipitating_points[pdf_precipitating_points==0] = np.nan
     error = [errorbar_precip_points,errorbar_precip_points]
-    ax3.errorbar(bin_center, freq_precipitating_points, xerr=0, yerr=error, ls='none', color='black')
+    ax3.errorbar(bin_center, freq_precipitating_points, xerr=0, yerr=errorbar_precip_points.squeeze(), ls='none', color='black')
     ax3.scatter(bin_center, freq_cwv, color='b', label='all')
     ax3.scatter(bin_center, freq_precipitating_points, edgecolor='none', facecolor='steelblue', s=marker_size, clip_on=False, zorder=3, label='precip $>$ 0.5 mm/hr ')
     #ax3.scatter(bin_center, pdf_cwv, marker='x', color='0', label='all')

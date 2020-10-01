@@ -7,7 +7,7 @@ from numpy import genfromtxt
 import csv
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import grid
-from varid_dict import varid_longname
+from .varid_dict import varid_longname
 import cdtime
 from scipy.optimize import curve_fit
 
@@ -21,10 +21,10 @@ def var_diurnal_cycle(var, season):
         mo0 = 12
     if season == 'MAM': 
         mo0 = 3
-    years = range(1979,2006)         
+    years = list(range(1979,2006))         
     var_dc_year = np.empty([len(years),8])*np.nan
     for iy,year in enumerate(years):
-        t1 = cdtime.comptime(year,mo0,01)
+        t1 = cdtime.comptime(year,mo0,0o1)
         t2 = t1.add(90,cdtime.Days)
 #        try:
         var_yr =  var(time=(t1,t2,'co'))
@@ -65,7 +65,7 @@ def diurnal_cycle_data(parameter):
     fin = cdms2.open(test_file[0])
     test_var_dc = np.empty([8])*np.nan
     
-    print('test_model',test_model)
+    print(('test_model',test_model))
 
     for j, variable in enumerate(variables): 
         for season in seasons:
@@ -74,7 +74,7 @@ def diurnal_cycle_data(parameter):
                 test_var_dc = var_diurnal_cycle(var,season)
 
             except:
-                print(variable+" not processed for " + test_model)
+                print((variable+" not processed for " + test_model))
             test_var_season[j,:] = test_var_dc
 
     # Calculate for observational data
@@ -100,7 +100,7 @@ def diurnal_cycle_data(parameter):
             if var.id == 'pr':
                 obs_var_dc = obs_var_dc*3600.*24.
         except:
-            print(variable+" not processed for obs")
+            print((variable+" not processed for obs"))
         obs_var_season[j,:] = obs_var_dc
 
     # Calculate cmip model seasonal mean climatology
@@ -108,9 +108,9 @@ def diurnal_cycle_data(parameter):
  
     for i, ref_model in enumerate(ref_models):
          ref_file = glob.glob(os.path.join(cmip_path,'*'+ref_model+'*3hr*.nc')) #read in monthly cmip data
-         print('ref_model', ref_model)
+         print(('ref_model', ref_model))
          if not ref_file :
-             print(ref_model+" not found!") 
+             print((ref_model+" not found!")) 
          else:
              fin = cdms2.open(ref_file[0])
          
@@ -121,7 +121,7 @@ def diurnal_cycle_data(parameter):
                          cmip_var_season[i, j, :] = var_diurnal_cycle(var, season)
 
                      except:
-                         print(variable+" not processed for " + ref_model)
+                         print((variable+" not processed for " + ref_model))
              fin.close()  
     # Calculate multi-model mean
     mmm_var_season =  np.nanmean(cmip_var_season,axis=0)

@@ -6,16 +6,16 @@ import cdutil
 import genutil
 import cdms2
 import MV2
-import arm_parser
 import glob
 import os
 import fnmatch
-from src.seasonal_mean import seasonal_mean_table
-from src.annual_cycle import annual_cycle_data, annual_cycle_line_plot, annual_cycle_taylor_diagram
-from src.annual_cycle_zt import annual_cycle_zt_data,annual_cycle_zt_plot
-from src.diurnal_cycle import diurnal_cycle_data,diurnal_cycle_plot
-from src.pdf_daily import pdf_daily_data, pdf_daily_plot
-from src.convection_onset_driver import convection_onset
+from arm_diags import arm_parser # from . import arm_parser 
+from src.seasonal_mean import seasonal_mean_table # .src
+from src.annual_cycle import annual_cycle_data, annual_cycle_line_plot, annual_cycle_taylor_diagram # .src
+from src.annual_cycle_zt import annual_cycle_zt_data,annual_cycle_zt_plot # .src
+from src.diurnal_cycle import diurnal_cycle_data,diurnal_cycle_plot # .src
+from src.pdf_daily import pdf_daily_data, pdf_daily_plot # .src
+from src.convection_onset_driver import convection_onset # .src
 #from src.convection_onset_driver_todd import convection_onset
 from src.create_htmls import annual_cycle_zt_html,diurnal_cycle_zt_html,diurnal_cycle_html,seasonal_mean_table_html,annual_cycle_html,pdf_daily_html,convection_onset_html,diags_main_html
 
@@ -23,13 +23,12 @@ def make_parameters(basic_parameter):
     #f_data = open('examples/diags_set3.json').read()
     f_data = open('diags_all_multisites.json').read()
     #f_data = open('examples/test_convection_onset.json').read()
-    #f_data = open('examples/test_convection_onset_short.json').read()
     
     json_file = json.loads(f_data)
 
-    parameters = []
+    parameters = [] 
     for key in json_file:
-        print(json_file[key],key)
+        print((json_file[key],key))
         for single_run in json_file[key]:
             p = copy.deepcopy(basic_parameter)
             for attr_name in single_run:
@@ -40,9 +39,12 @@ def make_parameters(basic_parameter):
 # Read in specification files, including those from:
 # 1. basicparameter.py
 # 2. diags_sets.json
+
 parser = arm_parser.ARMParser()
-basic_parameter = parser.get_parameter()
+basic_parameter = parser.get_orig_parameters(argparse_vals_only=False)
+#basic_parameter = parser.get_parameters()
 parameters = make_parameters(basic_parameter)
+
 
 case_id =  basic_parameter.case_id
 output_path = basic_parameter.output_path
@@ -57,7 +59,6 @@ if not os.path.exists(os.path.join(output_path)):
 # Loop through diagnostic sets prespecified from diags_sets.json
 html_count = 0
 for parameter in parameters:
-
     diags_set = parameter.diags_set
     output_path = parameter.output_path
     test_model = parameter.test_data_set
@@ -122,20 +123,12 @@ if html_count >= 1:
 # Creat the main html page hosting all sets of diagnostics
     diags_main_html(output_path, test_model)
     #
-    print('Html files saved in:'+output_path+'/html/')
-    print('Open Html file by (MacOS): open ' +output_path+'/html/arm_diag.html')
-    print('Open Html file by (Linux): xdg-open ' +output_path+'/html/arm_diag.html')
+    print(('Html files saved in:'+output_path+'/html/'))
+    print(('Open Html file by (MacOS): open ' +output_path+'/html/arm_diag.html'))
+    print(('Open Html file by (Linux): xdg-open ' +output_path+'/html/arm_diag.html'))
     
     print('Processes Completed!')
     print('------------------     END    -------------------------')
 else:
-    print('No diagnostic set was run and no html was generated')
+    print('Unable to process data. No diagnostic set was run and no html was generated!')
     
-    
-    
-    
-
-
-
-
-
