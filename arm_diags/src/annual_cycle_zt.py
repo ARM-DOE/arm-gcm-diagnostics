@@ -21,11 +21,17 @@ def annual_cycle_zt_data(parameter):
    
     test_model = parameter.test_data_set 
     ref_models = parameter.ref_models
+    arm_name = parameter.arm_filename
 
     # Calculate for test model
     month = seasons#['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
 #    test_var_season=np.empty([len(variables),len(seasons)])*np.nan
-    test_file = glob.glob(os.path.join(test_path,'*'+test_model+'*diurnal*'+ sites[0]+'.nc')) #read in monthly test data
+    if not arm_name:
+        test_file = glob.glob(os.path.join(test_path,'*'+test_model+'*diurnal*'+ sites[0]+'.nc')) #read in monthly test data
+    else:
+        test_model = ''.join(e for e in test_model if e.isalnum()).lower()
+        print(test_path,test_model,sites[0][:3]+test_model+'diurnalclim' + sites[0][3:5].upper())
+        test_file = glob.glob(os.path.join(test_path,sites[0][:3]+test_model+'diurnalclim' + sites[0][3:5].upper()+'*.nc' ))
 
     if len(test_file) == 0:
        raise RuntimeError('No monthly data for test model were found.')
@@ -58,10 +64,17 @@ def annual_cycle_zt_data(parameter):
     # Calculate for observational data
     if sites[0] == 'sgp':
     #    obs_var_season=np.empty([len(variables),len(seasons)])*np.nan
-        obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag_c1_diurnal_climo_'+ sites[0]+'*.nc')) #read in monthly test data
+        if not arm_name:
+            obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag_c1_diurnal_climo_'+ sites[0]+'*.nc')) #read in monthly test data
+        else:
+            obs_file = glob.glob(os.path.join(obs_path,'sgparmdiagsmondiurnalclimC1.c1.nc'))
         #obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag_c1_ARSCL_ACRED_diurnal_climo*.nc')) #read in monthly test data
     else:
-        obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag_*_diurnal_climo_'+ sites[0]+'*.nc')) 
+        
+        if not arm_name:
+            obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag_*_diurnal_climo_'+ sites[0]+'*.nc')) 
+        else:
+            obs_file = glob.glob(os.path.join(obs_path,sites[0][:3]+'armdiagsmondiurnalclim' + sites[0][3:5].up()+'*.nc'))
 
     print(('ARM data', sites[0]))
     fin = cdms2.open(obs_file[0])

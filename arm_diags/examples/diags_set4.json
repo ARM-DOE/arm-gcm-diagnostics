@@ -3,7 +3,7 @@
           {
       "diags_set": "set4_diurnal_cycle",
       "variables": ["pr"],
-      "ref_models": ["MIROC5","CMCC-CM","inmcm4","CCSM4","GFDL-HIRAM-C180","GFDL-HIRAM-C360","FGOALS-s2","ACCESS1-0","ACCESS1-3"],
+      "ref_models": ["MIROC5","inmcm4","CCSM4","FGOALS-s2","ACCESS1-0","ACCESS1-3","bcccsm11", "bcccsm11m", "bnuesm", "fgoalsg2","fgoalss2","ipslcm5alr","ipslcm5amr"],
       "sites":["sgp"],
       "season": ["JJA"]
                 }
