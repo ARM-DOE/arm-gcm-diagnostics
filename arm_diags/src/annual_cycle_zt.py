@@ -74,7 +74,7 @@ def annual_cycle_zt_data(parameter):
         if not arm_name:
             obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag_*_diurnal_climo_'+ sites[0]+'*.nc')) 
         else:
-            obs_file = glob.glob(os.path.join(obs_path,sites[0][:3]+'armdiagsmondiurnalclim' + sites[0][3:5].up()+'*.nc'))
+            obs_file = glob.glob(os.path.join(obs_path,sites[0][:3]+'armdiagsmondiurnalclim' + sites[0][3:5].upper()+'*.nc'))
 
     print(('ARM data', sites[0]))
     fin = cdms2.open(obs_file[0])

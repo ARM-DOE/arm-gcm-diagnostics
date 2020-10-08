@@ -50,7 +50,6 @@ def seasonal_mean_table(parameter):
         test_file = glob.glob(os.path.join(test_path,'*'+test_model+'*mo*'+ sites[0]+'.nc')) #read in monthly test data
     else:
         test_model = ''.join(e for e in test_model if e.isalnum()).lower()
-        print(test_path,test_model,sites[0][:3]+test_model+'mon' + sites[0][3:5].upper())
         test_file = glob.glob(os.path.join(test_path,sites[0][:3]+test_model+'mon' + sites[0][3:5].upper()+'*.nc' )) #read in monthly test data
     print('test_file',test_file)
 
@@ -95,7 +94,8 @@ def seasonal_mean_table(parameter):
         if not arm_name:
             obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag*monthly_climo*'+ sites[0]+'.nc')) #read in monthly test data
         else:
-            obs_file = glob.glob(os.path.join(obs_path,sites[0][:3]+'armdiagsmonclim' + sites[0][3:5].up()+'*.nc'))
+            obs_file = glob.glob(os.path.join(obs_path,sites[0][:3]+'armdiagsmonclim' + sites[0][3:5].upper()+'*.nc'))
+        print(obs_file)
 
         fin = cdms2.open(obs_file[0]) 
         for j, variable in enumerate(variables): 
@@ -158,7 +158,7 @@ def seasonal_mean_table(parameter):
         for j, variable in enumerate(variables):
             table_data[j,k,:] = (round(test_var_season[j,k],3), round(obs_var_season[j,k],3),round(test_var_season[j,k]-obs_var_season[j,k],3),round(mmm_var_season[j,k],3))
            
-        with open (output_path+'/metrics/seasonal_mean_table_'+season+'_'+sites[0]+'.csv','w') as f1:
+        with open(output_path+'/metrics/seasonal_mean_table_'+season+'_'+sites[0]+'.csv','w') as f1:
             writer=csv.writer(f1, delimiter=',',lineterminator='\n', quoting=csv.QUOTE_NONE)
             writer.writerow(header)
             #use tuple to generate csv 
