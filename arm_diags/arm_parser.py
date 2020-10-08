@@ -191,3 +191,12 @@ class ARMParser(cdp.cdp_parser.CDPParser):
             dest='diff_colormap',
             help='Colormap for the bottom graph',
             required=False)
+
+
+        self.add_argument(
+            '--arm_filename',
+            dest='arm_filename',
+            help='Using files with ARM naming convention.',
+            action='store_const',
+            const=True,
+            required=False)

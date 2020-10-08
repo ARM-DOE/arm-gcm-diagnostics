@@ -38,10 +38,18 @@ def annual_cycle_data(parameter):
     test_model = parameter.test_data_set 
     ref_models = parameter.ref_models
 
+    arm_name = parameter.arm_filename
+
     # Calculate for test model
     test_var_season=np.empty([len(variables),len(seasons)])*np.nan
-    test_file = glob.glob(os.path.join(test_path,'*'+test_model+'*mo*' + sites[0]+'.nc' )) #read in monthly test data
-    print(test_file)
+    if not arm_name:
+        test_file = glob.glob(os.path.join(test_path,'*'+test_model+'*mo*' + sites[0]+'.nc' )) #read in monthly test data
+    else:
+        test_model = ''.join(e for e in test_model if e.isalnum()).lower()
+        print(test_path,test_model,sites[0][:3]+test_model+'mon' + sites[0][3:5].upper())
+        test_file = glob.glob(os.path.join(test_path,sites[0][:3]+test_model+'mon' + sites[0][3:5].upper()+'*.nc' )) #read in monthly test data
+    print('test_file',test_file)
+        
 
     if len(test_file) == 0:
        raise RuntimeError('No monthly data for test model were found.')
@@ -66,7 +74,11 @@ def annual_cycle_data(parameter):
     obs_var_season=np.empty([len(variables),len(seasons)])*np.nan
     print('ARM data')
     if sites[0] == 'sgp':
-        obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag*monthly_stat_'+ sites[0]+'.nc')) #read in monthly test data
+        if not arm_name:
+            obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag*monthly_stat_'+ sites[0]+'.nc')) #read in monthly test data
+        else:
+            obs_file = glob.glob(os.path.join(obs_path,'sgparmdiagsmonC1.c1.nc'))#read in monthly test data
+        print('obs_file',obs_file)
         fin = cdms2.open(obs_file[0])
         for j, variable in enumerate(variables): 
             try:
@@ -78,7 +90,10 @@ def annual_cycle_data(parameter):
                 print((variable+" not processed for obs"))
         fin.close()
     else:
-        obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag*monthly_climo*'+ sites[0]+'.nc')) #read in monthly test data
+        if not arm_name:
+            obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag*monthly_climo*'+ sites[0]+'.nc')) #read in monthly test data
+        else:
+            obs_file = glob.glob(os.path.join(obs_path,sites[0][:3]+'armdiagsmonclim' + sites[0][3:5].upper()+'*.nc')) 
         fin = cdms2.open(obs_file[0])
         for j, variable in enumerate(variables):
             try:
@@ -103,7 +118,13 @@ def annual_cycle_data(parameter):
     cmip_var_season=np.empty([len(ref_models),len(variables),len(seasons)])*np.nan
  
     for i, ref_model in enumerate(ref_models):
-         ref_file = glob.glob(os.path.join(cmip_path,'*'+ref_model+'*mo*'+ sites[0]+'.nc')) #read in monthly cmip data
+         
+         if not arm_name:
+             ref_file = glob.glob(os.path.join(cmip_path,'*'+ref_model+'*mo*'+ sites[0]+'.nc')) #read in monthly cmip data
+         else:
+             ref_model = 'cmip5'+''.join(e for e in ref_model if e.isalnum()).lower()
+             ref_file = glob.glob(os.path.join(cmip_path,sites[0][:3]+ref_model+'mon' + sites[0][3:5].upper()+'*.nc' )) #read in monthly test data
+             print('ref_file',ref_file, ref_model,sites[0][:3]+ref_model+'mon' + sites[0][3:5].upper())
          print(('ref_model', ref_model))
          if not ref_file :
              print((ref_model+" not found!")) 

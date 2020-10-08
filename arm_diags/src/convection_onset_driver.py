@@ -20,8 +20,11 @@ def convection_onset(parameter):
     cmip_path = parameter.cmip_path
     output_path = parameter.output_path
     sites = parameter.sites
+    
    
     test_model = parameter.test_data_set 
+ 
+    arm_name = parameter.arm_filename
     #ref_models = parameter.ref_models
     
     #Read in observation data
@@ -53,12 +56,16 @@ def convection_onset(parameter):
     
         for va in variables:
             #print(glob.glob(os.path.join(obs_path,'ARMdiag_'+va+'_1hr_*_'+site+'.nc')))
-            filename = glob.glob(os.path.join(obs_path,'ARMdiag_'+va+'_1hr_*_'+site+'.nc'))[0]
             
-            #print(filename)
+            if not arm_name:
+                filename = glob.glob(os.path.join(obs_path,'ARMdiag_'+va+'_1hr_*_'+site+'.nc'))[0]
+            else:
+                filename = glob.glob(os.path.join(obs_path,site[:3]+'armdiags1hr' + site[3:5].upper()+'*.nc'))[0]
+            
+            print(filename)
             f_in=cdms2.open(filename)
             var=f_in(va)
-            #print('var_shape',va,var.shape)
+            print('var_shape',va,var.shape)
             if va == 'pr':
                 precip = var
                 precip[precip<-900] = np.nan
@@ -69,10 +76,19 @@ def convection_onset(parameter):
                 #print('Max PRW:',max(prw))
             f_in.close()
         convection_onset_statistics(precip_threshold,cwv_max,cwv_min,bin_width,prw, precip,'ARM',output_path,sites,sitename)
-
+       
+        #Process model results
+        print('Start model')
         pr_prw_mod = []
         for va in variables:
-            filename = glob.glob(os.path.join(test_path, '*'+va+'_cfSites_'+test_model+'*'+site+'.nc'))
+            
+            if not arm_name:
+                filename = glob.glob(os.path.join(test_path, '*'+va+'_cfSites_'+test_model+'*'+site+'.nc'))
+            else:
+                test_model = ''.join(e for e in test_model if e.isalnum()).lower()
+                print(test_model,test_path)
+                filename = glob.glob(os.path.join(test_path,site[:3]+test_model+'subday' + site[3:5].upper()+'*.nc' ))
+            print(filename)
             if len(filename) == 0:
                raise RuntimeError('No sub daily data for test model were found.')
             f_in=cdms2.open(filename[0])

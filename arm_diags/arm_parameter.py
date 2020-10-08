@@ -47,6 +47,7 @@ class ARMParameter(cdp.cdp_parameter.CDPParameter):
         self.canvas_size_h = 1628
         self.arrows = True
         self.logo = True
+        self.arm_filename = True
 
     def check_values(self):
         # just check if reference_data_path + reference_data_set and

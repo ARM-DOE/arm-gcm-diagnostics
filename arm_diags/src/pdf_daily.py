@@ -50,12 +50,24 @@ def pdf_daily_data(parameter):
    
     test_model = parameter.test_data_set 
     ref_models = parameter.ref_models
+   
+    arm_name = parameter.arm_filename
 
     # Calculate for test model
     years = list(range(1979,2006))        #a total of 27 years 
     
     test_var_season=np.empty([len(variables),len(years)*90])*np.nan
-    test_file = glob.glob(os.path.join(test_path,'*'+test_model+'*_da_*.nc')) #read in test data
+    print('start')
+    sites = ['sgp',]
+    if not arm_name:
+        test_file = glob.glob(os.path.join(test_path,'*'+test_model+'*_da_*.nc')) #read in test data
+    else:
+        test_model = ''.join(e for e in test_model if e.isalnum()).lower()
+        print('test_model',test_model)
+        print(test_path,test_model,sites[0][:3]+test_model+'day' + sites[0][3:5].upper())
+        test_file = glob.glob(os.path.join(test_path,sites[0][:3]+test_model+'day' + sites[0][3:5].upper()+'*.nc' )) #read in monthly test data
+
+
     if len(test_file) == 0:
        raise RuntimeError('No daily data for test model were found.')
     fin = cdms2.open(test_file[0])
@@ -75,7 +87,11 @@ def pdf_daily_data(parameter):
     # Calculate for observational data
     years_obs = list(range(1999,2012))
     obs_var_season=np.empty([len(variables),len(years_obs)*90])*np.nan
-    obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag*daily*.nc')) #read in diurnal test data
+    
+    if not arm_name:
+        obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag*daily*.nc')) #read in diurnal test data
+    else:
+         obs_file = glob.glob(os.path.join(obs_path,'*armdiagsdayC1.c1.nc'))
     print('ARM data')
     fin = cdms2.open(obs_file[0])
     for j, variable in enumerate(variables): 
@@ -97,7 +113,11 @@ def pdf_daily_data(parameter):
     cmip_var_season=np.empty([len(ref_models),len(variables),len(years)*90])*np.nan
  
     for i, ref_model in enumerate(ref_models):
-         ref_file = glob.glob(os.path.join(cmip_path,'*'+ref_model+'*_da_*.nc')) #read in monthly cmip data
+         if not arm_name:
+             ref_file = glob.glob(os.path.join(cmip_path,'*'+ref_model+'*_da_*.nc')) #read in monthly cmip data
+         else:
+             ref_model = 'cmip5'+''.join(e for e in ref_model if e.isalnum()).lower()
+             ref_file = glob.glob(os.path.join(cmip_path,sites[0][:3]+ref_model+'day' + sites[0][3:5].upper()+'*.nc' )) #read in monthly test data
          print(('ref_model', ref_model))
          if not ref_file :
              print((ref_model+" not found!")) 
