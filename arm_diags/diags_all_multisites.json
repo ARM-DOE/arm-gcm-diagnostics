@@ -4,70 +4,70 @@
       "diags_set": "set1_tables",
       "sites": ["sgp"],
       "variables": ["tas","pr","clt","hurs","hfss","hfls","rlus","rlds","rsus","rsds","ps","prw","mrsos","od550aer"],
-      "ref_models": ["ACCESS1-0","ACCESS1-3", "CESM1-CAM5","CSIRO-Mk3-6-0", "CanAM4","FGOALS-g2","FGOALS-s2","GFDL-HIRAM-C360","GFDL-HIRAM-C180","GISS-E2-R","inmcm4", "MPI-ESM-LR", "MPI-ESM-MR"],
+      "ref_models": ["ACCESS1-0","ACCESS1-3", "CESM1-CAM5","CSIRO-Mk3-6-0", "CanAM4","FGOALS-g2","FGOALS-s2","GFDL-HIRAM-C360","GFDL-HIRAM-C180","GISS-E2-R","inmcm4", "MPI-ESM-LR", "MPI-ESM-MR", "NorESM1-M"],
       "season": ["ANN","DJF","MAM","JJA","SON"]
                 },
           {
       "diags_set": "set1_tables",
       "sites": ["nsa"],
       "variables": ["tas","clt","hurs","rlus","rlds","rsus","rsds","ps","prw"],
-      "ref_models": ["ACCESS1-0","ACCESS1-3", "CESM1-CAM5","CSIRO-Mk3-6-0", "CanAM4","FGOALS-g2","FGOALS-s2","GFDL-HIRAM-C360","GFDL-HIRAM-C180","GISS-E2-R","inmcm4", "MPI-ESM-LR", "MPI-ESM-MR"],
+      "ref_models": ["ACCESS1-0","ACCESS1-3", "CESM1-CAM5","CSIRO-Mk3-6-0", "CanAM4","FGOALS-g2","FGOALS-s2","GFDL-HIRAM-C360","GFDL-HIRAM-C180","GISS-E2-R","inmcm4", "MPI-ESM-LR", "MPI-ESM-MR", "NorESM1-M"],
       "season": ["ANN","DJF","MAM","JJA","SON"]
                 },
           {
       "diags_set": "set1_tables",
       "sites": ["twpc1"],
       "variables": ["tas","pr","clt","hurs","rlus","rlds","rsus","rsds","ps","prw"],
-      "ref_models": ["ACCESS1-0","ACCESS1-3", "CESM1-CAM5","CSIRO-Mk3-6-0", "CanAM4","FGOALS-g2","FGOALS-s2","GFDL-HIRAM-C360","GFDL-HIRAM-C180","GISS-E2-R","inmcm4", "MPI-ESM-LR", "MPI-ESM-MR"],
+      "ref_models": ["ACCESS1-0","ACCESS1-3", "CESM1-CAM5","CSIRO-Mk3-6-0", "CanAM4","FGOALS-g2","FGOALS-s2","GFDL-HIRAM-C360","GFDL-HIRAM-C180","GISS-E2-R","inmcm4", "MPI-ESM-LR", "MPI-ESM-MR", "NorESM1-M"],
       "season": ["ANN","DJF","MAM","JJA","SON"]
                 },
           {
       "diags_set": "set1_tables",
       "sites": ["twpc2"],
       "variables": ["tas","pr","clt","hurs","rlus","rlds","rsus","rsds","ps","prw"],
-      "ref_models": ["ACCESS1-0","ACCESS1-3", "CESM1-CAM5","CSIRO-Mk3-6-0", "CanAM4","FGOALS-g2","FGOALS-s2","GFDL-HIRAM-C360","GFDL-HIRAM-C180","GISS-E2-R","inmcm4", "MPI-ESM-LR", "MPI-ESM-MR"],
+      "ref_models": ["ACCESS1-0","ACCESS1-3", "CESM1-CAM5","CSIRO-Mk3-6-0", "CanAM4","FGOALS-g2","FGOALS-s2","GFDL-HIRAM-C360","GFDL-HIRAM-C180","GISS-E2-R","inmcm4", "MPI-ESM-LR", "MPI-ESM-MR", "NorESM1-M"],
       "season": ["ANN","DJF","MAM","JJA","SON"]
                 },
           {
       "diags_set": "set1_tables",
       "sites": ["twpc3"],
       "variables": ["tas","pr","clt","hurs","rlus","rlds","rsus","rsds","ps","prw"],
-      "ref_models": ["ACCESS1-0","ACCESS1-3", "CESM1-CAM5","CSIRO-Mk3-6-0", "CanAM4","FGOALS-g2","FGOALS-s2","GFDL-HIRAM-C360","GFDL-HIRAM-C180","GISS-E2-R","inmcm4", "MPI-ESM-LR", "MPI-ESM-MR"],
+      "ref_models": ["ACCESS1-0","ACCESS1-3", "CESM1-CAM5","CSIRO-Mk3-6-0", "CanAM4","FGOALS-g2","FGOALS-s2","GFDL-HIRAM-C360","GFDL-HIRAM-C180","GISS-E2-R","inmcm4", "MPI-ESM-LR", "MPI-ESM-MR", "NorESM1-M"],
       "season": ["ANN","DJF","MAM","JJA","SON"]
                 },
           {
       "diags_set": "set2_annual_cycle",
       "sites": ["sgp"],
       "variables": ["tas","pr","clt","hurs","hfss","hfls","rlus","rlds","rsus","rsds","ps","prw","mrsos","od550aer"],
-      "ref_models": ["ACCESS1-0","ACCESS1-3", "CESM1-CAM5","CSIRO-Mk3-6-0", "CanAM4","FGOALS-g2","FGOALS-s2","GFDL-HIRAM-C360","GFDL-HIRAM-C180","GISS-E2-R","inmcm4", "MPI-ESM-LR", "MPI-ESM-MR"],
+      "ref_models": ["ACCESS1-0","ACCESS1-3", "CESM1-CAM5","CSIRO-Mk3-6-0", "CanAM4","FGOALS-g2","FGOALS-s2","GFDL-HIRAM-C360","GFDL-HIRAM-C180","GISS-E2-R","inmcm4", "MPI-ESM-LR", "MPI-ESM-MR", "NorESM1-M"],
       "season": ["J","F","M","A","M","J","J","A","S","O","N","D"]
                 },
           {
       "diags_set": "set2_annual_cycle",
       "sites": ["nsa"],
       "variables": ["tas","clt","hurs","rlus","rlds","rsus","rsds","ps","prw"],
-      "ref_models": ["ACCESS1-0","ACCESS1-3", "CESM1-CAM5","CSIRO-Mk3-6-0", "CanAM4","FGOALS-g2","FGOALS-s2","GFDL-HIRAM-C360","GFDL-HIRAM-C180","GISS-E2-R","inmcm4", "MPI-ESM-LR", "MPI-ESM-MR"],
+      "ref_models": ["ACCESS1-0","ACCESS1-3", "CESM1-CAM5","CSIRO-Mk3-6-0", "CanAM4","FGOALS-g2","FGOALS-s2","GFDL-HIRAM-C360","GFDL-HIRAM-C180","GISS-E2-R","inmcm4", "MPI-ESM-LR", "MPI-ESM-MR", "NorESM1-M"],
       "season": ["J","F","M","A","M","J","J","A","S","O","N","D"]
                 },
           {
       "diags_set": "set2_annual_cycle",
       "sites": ["twpc1"],
       "variables": ["tas","pr","clt","hurs","rlus","rlds","rsus","rsds","ps","prw"],
-      "ref_models": ["ACCESS1-0","ACCESS1-3", "CESM1-CAM5","CSIRO-Mk3-6-0", "CanAM4","FGOALS-g2","FGOALS-s2","GFDL-HIRAM-C360","GFDL-HIRAM-C180","GISS-E2-R","inmcm4", "MPI-ESM-LR", "MPI-ESM-MR"],
+      "ref_models": ["ACCESS1-0","ACCESS1-3", "CESM1-CAM5","CSIRO-Mk3-6-0", "CanAM4","FGOALS-g2","FGOALS-s2","GFDL-HIRAM-C360","GFDL-HIRAM-C180","GISS-E2-R","inmcm4", "MPI-ESM-LR", "MPI-ESM-MR", "NorESM1-M"],
       "season": ["J","F","M","A","M","J","J","A","S","O","N","D"]
                 },
           {
       "diags_set": "set2_annual_cycle",
       "sites": ["twpc2"],
       "variables": ["tas","pr","clt","hurs","rlus","rlds","rsus","rsds","ps","prw"],
-      "ref_models": ["ACCESS1-0","ACCESS1-3", "CESM1-CAM5","CSIRO-Mk3-6-0", "CanAM4","FGOALS-g2","FGOALS-s2","GFDL-HIRAM-C360","GFDL-HIRAM-C180","GISS-E2-R","inmcm4", "MPI-ESM-LR", "MPI-ESM-MR"],
+      "ref_models": ["ACCESS1-0","ACCESS1-3", "CESM1-CAM5","CSIRO-Mk3-6-0", "CanAM4","FGOALS-g2","FGOALS-s2","GFDL-HIRAM-C360","GFDL-HIRAM-C180","GISS-E2-R","inmcm4", "MPI-ESM-LR", "MPI-ESM-MR", "NorESM1-M"],
       "season": ["J","F","M","A","M","J","J","A","S","O","N","D"]
                 },
           {
       "diags_set": "set2_annual_cycle",
       "sites": ["twpc3"],
       "variables": ["tas","pr","clt","hurs","rlus","rlds","rsus","rsds","ps","prw"],
-      "ref_models": ["ACCESS1-0","ACCESS1-3", "CESM1-CAM5","CSIRO-Mk3-6-0", "CanAM4","FGOALS-g2","FGOALS-s2","GFDL-HIRAM-C360","GFDL-HIRAM-C180","GISS-E2-R","inmcm4", "MPI-ESM-LR", "MPI-ESM-MR"],
+      "ref_models": ["ACCESS1-0","ACCESS1-3", "CESM1-CAM5","CSIRO-Mk3-6-0", "CanAM4","FGOALS-g2","FGOALS-s2","GFDL-HIRAM-C360","GFDL-HIRAM-C180","GISS-E2-R","inmcm4", "MPI-ESM-LR", "MPI-ESM-MR", "NorESM1-M"],
       "season": ["J","F","M","A","M","J","J","A","S","O","N","D"]
                 },
           {
