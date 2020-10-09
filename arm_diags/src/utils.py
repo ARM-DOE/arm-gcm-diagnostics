@@ -1,6 +1,7 @@
 import numpy as np
 import numpy.ma as ma
 import cdms2
+import cdutil
 
 
 def climo(var, season):
@@ -35,6 +36,10 @@ def climo(var, season):
         return var
 
     tbounds = var_time.getBounds()
+    if tbounds is None:
+        cdutil.setTimeBoundsMonthly(var)
+        tbounds = var.getTime().getBounds()
+        
     var_time[:] = 0.5*(tbounds[:,0]+tbounds[:,1])
     var_time_absolute = var_time.asComponentTime()
 

@@ -62,7 +62,7 @@ def seasonal_mean_table(parameter):
 
     for j, variable in enumerate(variables): 
         try:
-            var = fin (variable)
+            var = fin(variable)
             #test_var_season[j, :] = var_seasons(var, seasons)
             test_var_season[j, :] = climo(var, seasons)
 
