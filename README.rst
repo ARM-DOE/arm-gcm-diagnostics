@@ -11,12 +11,12 @@ Important Links
 ===============
 
 - Official source code repository: https://github.com/ARM-DOE/arm-gcm-diagnostics
-- ARM webpage: http://www.arm.gov/data/eval/123  (v2 data are under ARM data review, will soon available March/April 2020)
-- Technical Report: https://github.com/ARM-DOE/arm-gcm-diagnostics/blob/master/ARM_gcm_diag_pkg_TechReport_v1.docx
+- ARM webpage: http://www.arm.gov/data/eval/123 (Click Data Directory for data and technical report download)
 
 
 References
 ======
+Zhang, C., S. Xie, C. Tao, S. Tang, T. Emmenegger, J. D. Neelin, K. A. Schiro, W. Lin, and Z. Shaheen. "The ARM Data-oriented Metrics and Diagnostics Package for Climate Models-A New Tool for Evaluating Climate Models with Field Data." Bulletin of the American Meteorological Society (2020). 
 
 Zhang, C., S. Xie, S. A. Klein, H.-Y. Ma, S. Tang, K. V. Weverberg, C. Morcrette, and J. Petch (2018), CAUSES: Diagnosis of the summertime warm bias in CMIP5 climate models at the ARM Southern Great Plains site, Journal of Geophysical Research: Atmospheres, 123(6), doi:10.1002/2017JD027200.
 
