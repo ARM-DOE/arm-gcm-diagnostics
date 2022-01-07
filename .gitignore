@@ -1,7 +1,9 @@
 # exclude everything
 arm_diags/model/*
 arm_diags/observation/*
-arm_diags/cmip/*
+arm_diags/testmodel/*
+arm_diags/cmip5/*
+arm_diags/cmip6/*
 arm_diags/build/*
 arm_diags/dist/*
 
