@@ -26,6 +26,10 @@ def convection_onset(parameter):
  
     arm_name = parameter.arm_filename
     #ref_models = parameter.ref_models
+
+    print('============================================================')
+    print('Create Convection Onset Metrics: '+sites[0])
+    print('============================================================')
     
     #Read in observation data
     precip_threshold = 0.5
@@ -48,12 +52,27 @@ def convection_onset(parameter):
             cwv_min = 28
             bin_width = 2.0
             sitename = 'Darwin'
-        if site == 'sgp':     #sgp
+        if site == 'sgpc1':     #sgp
             cwv_max = 75
             cwv_min = 20
             bin_width = 2.0
             sitename = 'SGP'
+        if site == 'enac1':     #ena
+            cwv_max = 75
+            cwv_min = 20
+            bin_width = 2.0
+            sitename = 'ENA'
+        if site == 'maom1':     #mao
+            cwv_max = 85
+            cwv_min = 20
+            bin_width = 2.0
+            sitename = 'Manacapuru'
     
+        # Generate new folder given site names [XZ]
+        if not os.path.exists(os.path.join(output_path,'figures',site)):
+            os.makedirs(os.path.join(output_path,'figures',site)) 
+        output_path_co = os.path.join(output_path,'figures',site)
+
         for va in variables:
             #print(glob.glob(os.path.join(obs_path,'ARMdiag_'+va+'_1hr_*_'+site+'.nc')))
             
@@ -75,7 +94,7 @@ def convection_onset(parameter):
                 prw[prw<-900] = np.nan
                 #print('Max PRW:',max(prw))
             f_in.close()
-        convection_onset_statistics(precip_threshold,cwv_max,cwv_min,bin_width,prw, precip,'ARM',output_path,sites,sitename)
+        convection_onset_statistics(precip_threshold,cwv_max,cwv_min,bin_width,prw, precip,'ARM',output_path_co,sites,sitename)
        
         #Process model results
         print('Start model')
@@ -96,5 +115,5 @@ def convection_onset(parameter):
             if va == 'pr':
                 pr = pr *3600.           #'kg m-2 s-1' to 'mm/hr'
             pr_prw_mod.append(pr)
-    convection_onset_statistics(precip_threshold,cwv_max,cwv_min,bin_width,pr_prw_mod[1],pr_prw_mod[0],test_model,output_path,sites,sitename)
+    convection_onset_statistics(precip_threshold,cwv_max,cwv_min,bin_width,pr_prw_mod[1],pr_prw_mod[0],test_model,output_path_co,sites,sitename)
  

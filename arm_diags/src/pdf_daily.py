@@ -1,15 +1,31 @@
+#===========================================================================================================================
+# Program for generate precipitation PDF from hourly data -- Originally written by Dr. Chengzhu Zhang @ LLNL
+#---------------------------------------------------------------------------------------------------------------------------
+# V3 Development
+    # ----------------------------------------------------------------------------------------------------
+    # Xiaojian Zheng - Dec 2021
+    # ### unify the data extraction and process code for all the ARM sites
+    # ### change the input/output format & the local time offset to site-dependent
+    # ### minor fix on the legends, add multi-model mean on the plots
+    # ### extend the pdf to all the four seasons
+    # ----------------------------------------------------------------------------------------------------
+
+#===========================================================================================================================
 import os
+import pdb
 import glob
 import cdms2
 import cdutil
 import numpy as np
 from numpy import genfromtxt
+from copy import deepcopy
 import csv
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import grid
 from .varid_dict import varid_longname
 import cdtime
 
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 def var_pdf_daily(var, season, years):
     "Calculate diurnal cycle climatology of each variable"
     if season == 'JJA':
@@ -38,7 +54,7 @@ def var_pdf_daily(var, season, years):
     var_da = np.reshape(var_da_year, (90*len(years)))
     return var_da
 
-
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 def pdf_daily_data(parameter):
     """Calculate diurnal cycle climatology"""
     variables = parameter.variables
@@ -47,18 +63,24 @@ def pdf_daily_data(parameter):
     cmip_path = parameter.cmip_path
     output_path = parameter.output_path
     seasons = parameter.season
-   
+    sites = parameter.sites   
+
     test_model = parameter.test_data_set 
     ref_models = parameter.ref_models
    
     arm_name = parameter.arm_filename
 
+    cmip_ver = cmip_path.split('/')[-1]
+
+    print('============================================================')
+    print('Create Precipitation PDF: '+sites[0])
+    print('============================================================')
     # Calculate for test model
     years = list(range(1979,2006))        #a total of 27 years 
     
-    test_var_season=np.empty([len(variables),len(years)*90])*np.nan
+    test_var_season=np.empty([len(variables),len(years)*90,len(seasons)])*np.nan
     print('start')
-    sites = ['sgp',]
+
     if not arm_name:
         test_file = glob.glob(os.path.join(test_path,'*'+test_model+'*_da_*.nc')) #read in test data
     else:
@@ -75,49 +97,57 @@ def pdf_daily_data(parameter):
     print(('test_model',test_model))
 
     for j, variable in enumerate(variables): 
-        for season in seasons:
+        for k, season in enumerate(seasons):
             try:
                 var = fin (variable,squeeze = 1)
                 test_var_da = var_pdf_daily(var,season,years)
 
             except:
                 print((variable+" not processed for " + test_model))
-            test_var_season[j,:] = test_var_da
+            test_var_season[j,:,k] = test_var_da
 
     # Calculate for observational data
-    years_obs = list(range(1999,2012))
-    obs_var_season=np.empty([len(variables),len(years_obs)*90])*np.nan
+    # site-dependent time range [XZ]
+    if sites[0] == 'sgpc1': years_obs = list(range(2004,2015))
+    if sites[0] == 'enac1': years_obs = list(range(2016,2019))
+    if sites[0] == 'nsac1': years_obs = list(range(2001,2015))
+    if sites[0] == 'twpc1': years_obs = list(range(1998,2009))
+    if sites[0] == 'twpc2': years_obs = list(range(1999,2010))
+    if sites[0] == 'twpc3': years_obs = list(range(2003,2010))
+    if sites[0] == 'maom1': years_obs = list(range(2014,2015))
+    
+    obs_var_season=np.empty([len(variables),len(years_obs)*90,len(seasons)])*np.nan
     
     if not arm_name:
         obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag*daily*.nc')) #read in diurnal test data
     else:
-         obs_file = glob.glob(os.path.join(obs_path,'*armdiagsdayC1.c1.nc'))
+        obs_file = glob.glob(os.path.join(obs_path,sites[0][:3]+'armdiagsday' + sites[0][3:5].upper()+'*c1.nc'))
+   
     print('ARM data')
     fin = cdms2.open(obs_file[0])
     for j, variable in enumerate(variables): 
-              
         try:
             var = fin (variable)
-            for season in seasons:
+            for k, season in enumerate(seasons):
                 try:
                     var = fin (variable,squeeze = 1)
                     obs_var_da = var_pdf_daily(var,season,years_obs)
-    
+                    obs_var_season[j,:,k] = obs_var_da
                 except:
                     print((variable+" not processed for obs"))
         except:
             print((variable+" not processed for obs"))
-        obs_var_season[j,:] = obs_var_da
+        
 
     # Calculate cmip model seasonal mean climatology
-    cmip_var_season=np.empty([len(ref_models),len(variables),len(years)*90])*np.nan
+    cmip_var_season=np.empty([len(ref_models),len(variables),len(years)*90,len(seasons)])*np.nan
  
     for i, ref_model in enumerate(ref_models):
          if not arm_name:
              ref_file = glob.glob(os.path.join(cmip_path,'*'+ref_model+'*_da_*.nc')) #read in monthly cmip data
          else:
-             ref_model = 'cmip5'+''.join(e for e in ref_model if e.isalnum()).lower()
-             ref_file = glob.glob(os.path.join(cmip_path,sites[0][:3]+ref_model+'day' + sites[0][3:5].upper()+'*.nc' )) #read in monthly test data
+             ref_model = cmip_ver +''.join(e for e in ref_model if e.isalnum()).lower()
+             ref_file = glob.glob(os.path.join(cmip_path,sites[0]+'/'+sites[0][:3]+ref_model+'day' + sites[0][3:5].upper()+'*.nc' )) #read in monthly test data
          print(('ref_model', ref_model))
          if not ref_file :
              print((ref_model+" not found!")) 
@@ -125,10 +155,11 @@ def pdf_daily_data(parameter):
              fin = cdms2.open(ref_file[0])
          
              for j, variable in enumerate(variables): 
-                 for season in seasons:
+                 for k, season in enumerate(seasons):
                      try:
                          var = fin (variable,squeeze = 1)
-                         cmip_var_season[i, j, :] = var_pdf_daily(var, season,years)
+                         cmip_var_da = var_pdf_daily(var, season,years)
+                         cmip_var_season[i, j, :, k] = cmip_var_da
 
                      except:
                          print((variable+" not processed for " + ref_model))
@@ -138,12 +169,13 @@ def pdf_daily_data(parameter):
 
     # Save data in csv format in metrics folder
     for j, variable in enumerate(variables):
-        for i, season in enumerate(seasons):
-            np.savetxt(output_path+'/metrics/'+variable+'_'+season+'_test_pdf_daily.csv',test_var_season[j,:])
-            np.savetxt(output_path+'/metrics/'+variable+'_'+season+'_mmm_pdf_daily.csv',mmm_var_season[j,:])
-            np.savetxt(output_path+'/metrics/'+variable+'_'+season+'_cmip_pdf_daily.csv',cmip_var_season[:,j,:])
-            np.savetxt(output_path+'/metrics/'+variable+'_'+season+'_obs_pdf_daily.csv',obs_var_season[j,:])
+        for k, season in enumerate(seasons):
+            np.savetxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_'+season+'_test_pdf_daily.csv',test_var_season[j,:,k])
+            np.savetxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_'+season+'_mmm_pdf_daily.csv',mmm_var_season[j,:,k])
+            np.savetxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_'+season+'_cmip_pdf_daily.csv',cmip_var_season[:,j,:,k])
+            np.savetxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_'+season+'_obs_pdf_daily.csv',obs_var_season[j,:,k])
 
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 def accum(list):
     """Sequential accumulation of the original list"""
     result = []
@@ -163,26 +195,26 @@ def calculate_pdf(var):
     wday_ob=100.0*np.size(var_da)/np.size(var)
     return y, binEdges  
 
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 def pdf_daily_plot(parameter):
     """plotting pdf using daily mean"""
     variables = parameter.variables
     seasons = parameter.season
     output_path = parameter.output_path
     ref_models = parameter.ref_models
+    sites = parameter.sites 
 
     var_longname = [ varid_longname[x] for x in variables]
     mod_num = len(ref_models)
     
     for j, variable in enumerate(variables):
         for i, season in enumerate(seasons):
-            test_data = genfromtxt(output_path+'/metrics/'+variable+'_'+season+'_test_pdf_daily.csv')
-            mmm_data =  genfromtxt(output_path+'/metrics/'+variable+'_'+season+'_mmm_pdf_daily.csv')
-            obs_data =  genfromtxt(output_path+'/metrics/'+variable+'_'+season+'_obs_pdf_daily.csv')
-            cmip_data = genfromtxt(output_path+'/metrics/'+variable+'_'+season+'_cmip_pdf_daily.csv')
+            test_data = genfromtxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_'+season+'_test_pdf_daily.csv')
+            mmm_data =  genfromtxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_'+season+'_mmm_pdf_daily.csv')
+            obs_data =  genfromtxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_'+season+'_obs_pdf_daily.csv')
+            cmip_data = genfromtxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_'+season+'_cmip_pdf_daily.csv')
             mod_num = cmip_data.shape[0]
-
             
-    
             ######################Use same method to calculate PDFs for obs, model and cmip multi-models.
             fig = plt.figure()# Create figure
             ax  =fig.add_axes([0.15, 0.15, 0.8, 0.8]) # Create axes
@@ -191,28 +223,47 @@ def pdf_daily_plot(parameter):
             fig1 = plt.figure()# Create figure
             ax1  =fig1.add_axes([0.15, 0.15, 0.8, 0.8]) # Create axes
             y,binEdges = calculate_pdf(test_data)
-    
-            ax.plot(0.5*(binEdges[1:]+binEdges[:-1]),y,'r',lw=3)
+            y0=deepcopy(y); y[y0 == 0]=np.nan
+            ax.plot(0.5*(binEdges[1:]+binEdges[:-1]),y,'r',lw=3,label='MOD')
             y1=y*0.5*(binEdges[1:]+binEdges[:-1])
-            ax1.plot(0.5*(binEdges[1:]+binEdges[:-1]),y1,'r',lw=3)
+            y10=deepcopy(y1); y1[y10 == 0]=np.nan
+            ax1.plot(0.5*(binEdges[1:]+binEdges[:-1]),y1,'r',lw=3,label='MOD')
 
             y,binEdges = calculate_pdf(obs_data)
-
-            ax.plot(0.5*(binEdges[1:]+binEdges[:-1]),y,'b',lw=3)
+            y0=deepcopy(y); y[y0 == 0]=np.nan
+            ax.plot(0.5*(binEdges[1:]+binEdges[:-1]),y,'k',lw=3,label='OBS')
             y1=y*0.5*(binEdges[1:]+binEdges[:-1])
-            ax1.plot(0.5*(binEdges[1:]+binEdges[:-1]),y1,'b',lw=3)
+            y10=deepcopy(y1); y1[y10 == 0]=np.nan
+            ax1.plot(0.5*(binEdges[1:]+binEdges[:-1]),y1,'k',lw=3,label='OBS')
+            
+            ym_all = np.empty([0])*np.nan
             for imod in range(mod_num):
                 y,binEdges = calculate_pdf(cmip_data[imod,:])
-    
+                y0=deepcopy(y); y[y0 == 0]=np.nan
                 ax.plot(0.5*(binEdges[1:]+binEdges[:-1]),y,'grey',lw=1)
                 y1=y*0.5*(binEdges[1:]+binEdges[:-1])
+                y10=deepcopy(y1); y1[y10 == 0]=np.nan
                 ax1.plot(0.5*(binEdges[1:]+binEdges[:-1]),y1,'grey',lw=1)
                 cumulative1 = np.cumsum(y1*(binEdges[1:]-binEdges[:-1]))
+                
+                ym_all = np.concatenate((ym_all,y))
 
-            ax.text(0.85, 0.9,'OBS',color='r',verticalalignment='top', horizontalalignment='right',transform=ax.transAxes)
-            ax.text(0.85, 0.8,'MOD',color='b',verticalalignment='top', horizontalalignment='right',transform=ax.transAxes)
-            ax1.text(1.2, 1,'OBS',color='r',verticalalignment='top', horizontalalignment='right',transform=ax.transAxes)
-            ax1.text(1.2, 0.9,'MOD',color='b',verticalalignment='top', horizontalalignment='right',transform=ax.transAxes)
+            # get the multi-model mean [XZ]
+            ym_all1 = np.reshape(ym_all,(mod_num,len(y)))
+            ymmm = np.nanmean(ym_all1,axis=0)
+            ymmm0=deepcopy(ymmm); ymmm[ymmm0 == 0]=np.nan
+            ax.plot(0.5*(binEdges[1:]+binEdges[:-1]),ymmm,'b',lw=3,label='MMM')
+            ymmm1 = ymmm*0.5*(binEdges[1:]+binEdges[:-1])
+            ymmm10=deepcopy(ymmm1); ymmm1[ymmm10 == 0]=np.nan
+            ax1.plot(0.5*(binEdges[1:]+binEdges[:-1]),ymmm1,'b',lw=3,label='MMM')
+
+            # legend
+            ax.legend(loc='best',prop={'size':10})
+            ax1.legend(loc='best',prop={'size':10})
+            #ax.text(0.85, 0.9,'OBS',color='r',verticalalignment='top', horizontalalignment='right',transform=ax.transAxes)
+            #ax.text(0.85, 0.8,'MOD',color='b',verticalalignment='top', horizontalalignment='right',transform=ax.transAxes)
+            #ax1.text(1.2, 1,'OBS',color='r',verticalalignment='top', horizontalalignment='right',transform=ax.transAxes)
+            #ax1.text(1.2, 0.9,'MOD',color='b',verticalalignment='top', horizontalalignment='right',transform=ax.transAxes)
 
             ax.set_xscale('log')
             ax.set_yscale('log')
@@ -226,12 +277,10 @@ def pdf_daily_plot(parameter):
             ax1.set_yscale('log')
             ax1.set_ylabel('Precipitation Amount (mm/day)')
             ax1.set_xlabel('Precipitation rate (mm/day)')
-            fig.savefig(output_path+'/figures/'+variable+'_'+season+'_pdf1_daily.png')
-            fig1.savefig(output_path+'/figures/'+variable+'_'+season+'_pdf2_daily.png')
+            fig.savefig(output_path+'/figures/'+sites[0]+'/'+variable+'_'+season+'_pdf1_daily_'+sites[0]+'.png')
+            fig1.savefig(output_path+'/figures/'+sites[0]+'/'+variable+'_'+season+'_pdf2_daily_'+sites[0]+'.png')
 
-
-
-
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 #    
 #            fig = plt.figure()# Create figure

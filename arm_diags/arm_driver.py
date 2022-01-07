@@ -8,6 +8,7 @@ import cdms2
 import MV2
 import glob
 import os
+import pdb
 import fnmatch
 from arm_diags import arm_parser # from . import arm_parser 
 from src.seasonal_mean import seasonal_mean_table # .src
@@ -21,9 +22,8 @@ from src.create_htmls import annual_cycle_zt_html,diurnal_cycle_zt_html,diurnal_
 
 def make_parameters(basic_parameter):
     #f_data = open('examples/diags_set3.json').read()
-    f_data = open('diags_all_multisites.json').read()
-    #f_data = open('examples/test_convection_onset.json').read()
-    #f_data = open('examples/diags_set1.json').read()
+    #f_data = open('diags_all_multisites_for_cmip5.json').read()
+    f_data = open('diags_all_multisites_for_cmip6.json').read()
     
     json_file = json.loads(f_data)
 

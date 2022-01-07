@@ -272,7 +272,7 @@ def convection_onset_statistics(precip_threshold,cwv_max,cwv_min,bin_width,cwv,p
 
     # save figure
     #mp.savefig('conv_diagnostics_example_kas_new.pdf', transparent=True, bbox_inches='tight')
-    mp.savefig(output_path +'/figures/conv_diagnostics_'+test+'_'+sites[0]+'.png', transparent=True, bbox_inches='tight')
+    mp.savefig(output_path +'/conv_diagnostics_'+test+'_'+sites[0]+'.png', transparent=False, bbox_inches='tight')
 
 
 
