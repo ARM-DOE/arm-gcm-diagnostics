@@ -1,0 +1,103 @@
+{
+        "arm_diags": [
+          {
+      "diags_set": "set4_diurnal_cycle",
+      "sites": ["sgpc1"],
+      "variables": ["pr"],
+      "ref_models": ["accessesm15","bcccsm2mr","cmcccm2sr5","ecearth3aerchem","fgoalsf3l", "gfdlcm4", "ipslcm6alr","miroc6","mpiesm12hr","mriesm20"],
+      "season": ["DJF","MAM","JJA","SON"]
+                },  
+          {
+      "diags_set": "set6_pdf_daily",
+      "sites": ["sgpc1"],
+      "variables": ["pr"],
+      "ref_models": ["accessesm15","bcccsm2mr","cmcccm2sr5","ecearth3aerchem","fgoalsf3l", "gfdlcm4", "ipslcm6alr","miroc6","mpiesm12hr","mriesm20"],
+      "season": ["DJF","MAM","JJA","SON"]
+                },
+          {
+      "diags_set": "set4_diurnal_cycle",
+      "sites": ["nsac1"],
+      "variables": ["pr"],
+      "ref_models": ["accessesm15","bcccsm2mr","cmcccm2sr5","ecearth3aerchem","fgoalsf3l", "gfdlcm4", "ipslcm6alr","miroc6","mpiesm12hr","mriesm20"],
+      "season": ["DJF","MAM","JJA","SON"]
+                },  
+          {
+      "diags_set": "set6_pdf_daily",
+      "sites": ["nsac1"],
+      "variables": ["pr"],
+      "ref_models": ["accessesm15","bcccsm2mr","cmcccm2sr5","ecearth3aerchem","fgoalsf3l", "gfdlcm4", "ipslcm6alr","miroc6","mpiesm12hr","mriesm20"],
+      "season": ["DJF","MAM","JJA","SON"]
+                },
+          {
+      "diags_set": "set4_diurnal_cycle",
+      "sites": ["enac1"],
+      "variables": ["pr"],
+      "ref_models": ["accessesm15","bcccsm2mr","cmcccm2sr5","ecearth3aerchem","fgoalsf3l", "gfdlcm4", "ipslcm6alr","miroc6","mpiesm12hr","mriesm20"],
+      "season": ["DJF","MAM","JJA","SON"]
+                },  
+          {
+      "diags_set": "set6_pdf_daily",
+      "sites": ["enac1"],
+      "variables": ["pr"],
+      "ref_models": ["accessesm15","bcccsm2mr","cmcccm2sr5","ecearth3aerchem","fgoalsf3l", "gfdlcm4", "ipslcm6alr","miroc6","mpiesm12hr","mriesm20"],
+      "season": ["DJF","MAM","JJA","SON"]
+                },
+          {
+      "diags_set": "set4_diurnal_cycle",
+      "sites": ["twpc1"],
+      "variables": ["pr"],
+      "ref_models": ["accessesm15","bcccsm2mr","cmcccm2sr5","ecearth3aerchem","fgoalsf3l", "gfdlcm4", "ipslcm6alr","miroc6","mpiesm12hr","mriesm20"],
+      "season": ["DJF","MAM","JJA","SON"]
+                },  
+          {
+      "diags_set": "set6_pdf_daily",
+      "sites": ["twpc1"],
+      "variables": ["pr"],
+      "ref_models": ["accessesm15","bcccsm2mr","cmcccm2sr5","ecearth3aerchem","fgoalsf3l", "gfdlcm4", "ipslcm6alr","miroc6","mpiesm12hr","mriesm20"],
+      "season": ["DJF","MAM","JJA","SON"]
+                },
+          {
+      "diags_set": "set4_diurnal_cycle",
+      "sites": ["twpc2"],
+      "variables": ["pr"],
+      "ref_models": ["accessesm15","bcccsm2mr","cmcccm2sr5","ecearth3aerchem","fgoalsf3l", "gfdlcm4", "ipslcm6alr","miroc6","mpiesm12hr","mriesm20"],
+      "season": ["DJF","MAM","JJA","SON"]
+                },  
+          {
+      "diags_set": "set6_pdf_daily",
+      "sites": ["twpc2"],
+      "variables": ["pr"],
+      "ref_models": ["accessesm15","bcccsm2mr","cmcccm2sr5","ecearth3aerchem","fgoalsf3l", "gfdlcm4", "ipslcm6alr","miroc6","mpiesm12hr","mriesm20"],
+      "season": ["DJF","MAM","JJA","SON"]
+                },
+          {
+      "diags_set": "set4_diurnal_cycle",
+      "sites": ["twpc3"],
+      "variables": ["pr"],
+      "ref_models": ["accessesm15","bcccsm2mr","cmcccm2sr5","ecearth3aerchem","fgoalsf3l", "gfdlcm4", "ipslcm6alr","miroc6","mpiesm12hr","mriesm20"],
+      "season": ["DJF","MAM","JJA","SON"]
+                },  
+          {
+      "diags_set": "set6_pdf_daily",
+      "sites": ["twpc3"],
+      "variables": ["pr"],
+      "ref_models": ["accessesm15","bcccsm2mr","cmcccm2sr5","ecearth3aerchem","fgoalsf3l", "gfdlcm4", "ipslcm6alr","miroc6","mpiesm12hr","mriesm20"],
+      "season": ["DJF","MAM","JJA","SON"]
+                },
+          {
+      "diags_set": "set4_diurnal_cycle",
+      "sites": ["maom1"],
+      "variables": ["pr"],
+      "ref_models": ["accessesm15","bcccsm2mr","cmcccm2sr5","ecearth3aerchem","fgoalsf3l", "gfdlcm4", "ipslcm6alr","miroc6","mpiesm12hr","mriesm20"],
+      "season": ["DJF","MAM","JJA","SON"]
+                },  
+          {
+      "diags_set": "set6_pdf_daily",
+      "sites": ["maom1"],
+      "variables": ["pr"],
+      "ref_models": ["accessesm15","bcccsm2mr","cmcccm2sr5","ecearth3aerchem","fgoalsf3l", "gfdlcm4", "ipslcm6alr","miroc6","mpiesm12hr","mriesm20"],
+      "season": ["DJF","MAM","JJA","SON"]
+                }
+          ]
+}
+
