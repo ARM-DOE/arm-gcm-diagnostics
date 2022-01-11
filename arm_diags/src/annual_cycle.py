@@ -214,7 +214,7 @@ def annual_cycle_line_plot(parameter):
         #special notes for models mistreating surface type [XZ]:
         if (variable == 'hfls') or (variable == 'hfss') or (variable == 'rsus'):
             if (sites[0] == 'enac1') or (sites[0] == 'twpc1') or (sites[0] == 'twpc2') or (sites[0] == 'twpc3'):
-                ax.text(0.5, 0.05,'Most GCMs mistreat the surface type as ocean', ha='center', va='center', transform=ax.transAxes,fontsize=10)
+                ax.text(0.5, 0.05,'Most GCMs treat the surface type as ocean', ha='center', va='center', transform=ax.transAxes,fontsize=10)
         # save figures
         fig.savefig(output_path+'/figures/'+sites[0]+'/'+variable+'_annual_cycle_'+sites[0]+'.png')
         plt.close('all')
