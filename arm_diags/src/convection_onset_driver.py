@@ -98,6 +98,7 @@ def convection_onset(parameter):
        
         #Process model results
         print('Start model')
+        pr_mod_index = 0
         pr_prw_mod = []
         for va in variables:
             
@@ -109,11 +110,14 @@ def convection_onset(parameter):
                 filename = glob.glob(os.path.join(test_path,site[:3]+test_model+'subday' + site[3:5].upper()+'*.nc' ))
             print(filename)
             if len(filename) == 0:
-               raise RuntimeError('No sub daily data for test model were found.')
-            f_in=cdms2.open(filename[0])
-            pr=f_in(va)#,time=('1979-01-01','1979-12-31')) #Read in the variable
-            if va == 'pr':
-                pr = pr *3600.           #'kg m-2 s-1' to 'mm/hr'
-            pr_prw_mod.append(pr)
-    convection_onset_statistics(precip_threshold,cwv_max,cwv_min,bin_width,pr_prw_mod[1],pr_prw_mod[0],test_model,output_path_co,sites,sitename)
+               print('No sub daily data for test model were found.')
+            else:
+                pr_mod_index = 1
+                f_in=cdms2.open(filename[0])
+                pr=f_in(va)#,time=('1979-01-01','1979-12-31')) #Read in the variable
+                if va == 'pr':
+                    pr = pr *3600.           #'kg m-2 s-1' to 'mm/hr'
+                pr_prw_mod.append(pr)
+        if pr_mod_index == 1:
+             convection_onset_statistics(precip_threshold,cwv_max,cwv_min,bin_width,pr_prw_mod[1],pr_prw_mod[0],test_model,output_path_co,sites,sitename)
  
