@@ -57,6 +57,11 @@ def convection_onset(parameter):
             cwv_min = 20
             bin_width = 2.0
             sitename = 'SGP'
+        if site == 'nsac1':     #nsa
+            cwv_max = 50
+            cwv_min = 20
+            bin_width = 2.0
+            sitename = 'NSA'
         if site == 'enac1':     #ena
             cwv_max = 75
             cwv_min = 20
@@ -106,11 +111,11 @@ def convection_onset(parameter):
                 filename = glob.glob(os.path.join(test_path, '*'+va+'_cfSites_'+test_model+'*'+site+'.nc'))
             else:
                 test_model = ''.join(e for e in test_model if e.isalnum()).lower()
-                print(test_model,test_path)
+                print(va,':',test_model,test_path)
                 filename = glob.glob(os.path.join(test_path,site[:3]+test_model+'subday' + site[3:5].upper()+'*.nc' ))
             print(filename)
             if len(filename) == 0:
-               print('No sub daily data for test model were found.')
+               print(va,':','No sub daily data for test model were found.')
             else:
                 pr_mod_index = 1
                 f_in=cdms2.open(filename[0])

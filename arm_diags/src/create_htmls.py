@@ -377,7 +377,7 @@ def convection_onset_html(parameter):
     title_to_file = OrderedDict()
     title_to_file['Southern Great Plains (SGP)'] = 'sgpc1'
     title_to_file['Eastern North Atlantic (ENA)'] = 'enac1'
-#    title_to_file['North Slope of Alaska (NSA)'] = 'nsa'
+    title_to_file['North Slope of Alaska (NSA)'] = 'nsac1'
     title_to_file['Tropical Western Pacific (TWP), Manus, Papua New Guinea'] = 'twpc1'
     title_to_file['Tropical Western Pacific (TWP), Nauru Island'] = 'twpc2'
     title_to_file['Tropical Western Pacific (TWP), Darwin, Australia'] = 'twpc3'
@@ -397,5 +397,5 @@ def convection_onset_html(parameter):
         htmlfile1 = open(output_path+'/html/'+two_figs,"w")
         fig1=output_path+'/figures/{}/'.format(title_name)+'conv_diagnostics_{}_{}.png'.format(test_model, title_name)
         fig2=output_path+'/figures/{}/'.format(title_name)+'conv_diagnostics_ARM_{}.png'.format(title_name)
-        htmlfile1.write('<div class="container"><div style="float:left"><img src='+fig1+' alt="Line" width="700" height="200"></div><div style="float:left"><img src='+fig2+' alt="Line" width="700" height="200"></div>')
+        htmlfile1.write('<div class="container"><div style="float:left"><img src='+fig1+' alt="Line" width="700" height="250"></div><div style="float:left"><img src='+fig2+' alt="Line" width="700" height="250"></div>')
         htmlfile.write('<TD><A HREF='+two_figs+'>'+'model vs. obs'+'</a></TD>')
