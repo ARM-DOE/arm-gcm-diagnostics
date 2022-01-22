@@ -262,11 +262,6 @@
           {
       "diags_set": "set7_convection_onset",
       "variables": ["pr", "prw"],
-      "sites": ["nsac1"]
-                },
-          {
-      "diags_set": "set7_convection_onset",
-      "variables": ["pr", "prw"],
       "sites": ["enac1"]
                 },
           {

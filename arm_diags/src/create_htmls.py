@@ -377,7 +377,7 @@ def convection_onset_html(parameter):
     title_to_file = OrderedDict()
     title_to_file['Southern Great Plains (SGP)'] = 'sgpc1'
     title_to_file['Eastern North Atlantic (ENA)'] = 'enac1'
-    title_to_file['North Slope of Alaska (NSA)'] = 'nsac1'
+    #title_to_file['North Slope of Alaska (NSA)'] = 'nsac1'
     title_to_file['Tropical Western Pacific (TWP), Manus, Papua New Guinea'] = 'twpc1'
     title_to_file['Tropical Western Pacific (TWP), Nauru Island'] = 'twpc2'
     title_to_file['Tropical Western Pacific (TWP), Darwin, Australia'] = 'twpc3'
