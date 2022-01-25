@@ -1,4 +1,18 @@
+#===========================================================================================================================
+# Program for generate annual/seasonal cycle & line plot from monthly data -- Original written by Dr. Chengzhu Zhang @ LLNL
+#---------------------------------------------------------------------------------------------------------------------------
+# V3 Development
+    # ----------------------------------------------------------------------------------------------------
+    # Xiaojian Zheng - Nov2021
+    # ### unify the data extraction and process code for all the ARM sites
+    # ### suppress the taylor diagram and output note, when observation annual mean is not valid
+    # ### change the input/output format to site-dependent
+    # ### minor fix on the plotting code for better visualization
+    # ----------------------------------------------------------------------------------------------------
+
+#===========================================================================================================================
 import os
+import pdb
 import glob
 import cdms2
 import cdutil
@@ -10,6 +24,7 @@ from .varid_dict import varid_longname
 from .taylor_diagram import TaylorDiagram
 from .utils import climo
 
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 def var_annual_cycle(var, seasons):
     "Calculate annual cycle climatology of each variable"
     var_season_data = np.empty([len(seasons)])*np.nan
@@ -24,7 +39,7 @@ def var_annual_cycle(var, seasons):
         
     return var_season_data
 
-
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 def annual_cycle_data(parameter):
     """Calculate annual cycle climatology"""
     variables = parameter.variables
@@ -39,6 +54,12 @@ def annual_cycle_data(parameter):
     ref_models = parameter.ref_models
 
     arm_name = parameter.arm_filename
+
+    cmip_ver = cmip_path.split('/')[-1]
+
+    print('============================================================')
+    print('Create Annual Cycles: '+sites[0])
+    print('============================================================')
 
     # Calculate for test model
     test_var_season=np.empty([len(variables),len(seasons)])*np.nan
@@ -72,47 +93,23 @@ def annual_cycle_data(parameter):
 
     # Calculate for observational data
     obs_var_season=np.empty([len(variables),len(seasons)])*np.nan
-    print('ARM data')
-    if sites[0] == 'sgp':
-        if not arm_name:
-            obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag*monthly_stat_'+ sites[0]+'.nc')) #read in monthly test data
-        else:
-            obs_file = glob.glob(os.path.join(obs_path,'sgparmdiagsmonC1.c1.nc'))#read in monthly test data
-        print('obs_file',obs_file)
-        fin = cdms2.open(obs_file[0])
-        for j, variable in enumerate(variables): 
-            try:
-                var = fin(variable)
-                #obs_var_season[j, :] = var_annual_cycle(var, seasons)
-                obs_var_season[j, :] = climo(var, 'ANNUALCYCLE')
-
-            except:
-                print((variable+" not processed for obs"))
-        fin.close()
+    print('ARM data',sites[0])
+    # read in the monthly data for target site, format unified [XZ]
+    if not arm_name:
+        obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag*monthly_climo*'+ sites[0]+'.nc')) #read in monthly data
     else:
-        if not arm_name:
-            obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag*monthly_climo*'+ sites[0]+'.nc')) #read in monthly test data
-        else:
-            obs_file = glob.glob(os.path.join(obs_path,sites[0][:3]+'armdiagsmonclim' + sites[0][3:5].upper()+'*.nc')) 
-        fin = cdms2.open(obs_file[0])
-        for j, variable in enumerate(variables):
-            try:
-               var = fin(variable)
+        obs_file = glob.glob(os.path.join(obs_path,sites[0][:3]+'armdiagsmon' + sites[0][3:5].upper()+'*c1.nc')) #read in monthly data
+    print('obs_file',obs_file)
+    fin = cdms2.open(obs_file[0])
+    for j, variable in enumerate(variables): 
+        try:
+            var = fin(variable)
+            #obs_var_season[j, :] = var_annual_cycle(var, seasons)
+            obs_var_season[j, :] = climo(var, 'ANNUALCYCLE')
 
-               #tmp
-               obs_var_season[j,:] = var
-               if variable == 'tas':
-                   obs_var_season[j,:] = obs_var_season[j,:] -273.15
-               if variable == 'pr':
-                   obs_var_season[j,:] = obs_var_season[j,:] * 24.0
-               if variable == 'prw':
-                   obs_var_season[j,:] = obs_var_season[j,:] * 10.0
-
-               #var24 = np.concatenate((var,var),axis=0)
-
-            except:
-                print((variable+" not processed for obs"))
-        fin.close()
+        except:  
+            print((variable+" not processed for obs"))
+    fin.close()
   
     # Calculate cmip model seasonal mean climatology
     cmip_var_season=np.empty([len(ref_models),len(variables),len(seasons)])*np.nan
@@ -122,12 +119,12 @@ def annual_cycle_data(parameter):
          if not arm_name:
              ref_file = glob.glob(os.path.join(cmip_path,'*'+ref_model+'*mo*'+ sites[0]+'.nc')) #read in monthly cmip data
          else:
-             ref_model = 'cmip5'+''.join(e for e in ref_model if e.isalnum()).lower()
-             ref_file = glob.glob(os.path.join(cmip_path,sites[0][:3]+ref_model+'mon' + sites[0][3:5].upper()+'*.nc' )) #read in monthly test data
+             ref_model = cmip_ver +''.join(e for e in ref_model if e.isalnum()).lower()
+             ref_file = glob.glob(os.path.join(cmip_path,sites[0]+'/'+sites[0][:3]+ref_model+'mon' + sites[0][3:5].upper()+'*.nc' )) #read in monthly test data
              print('ref_file',ref_file, ref_model,sites[0][:3]+ref_model+'mon' + sites[0][3:5].upper())
          print(('ref_model', ref_model))
          if not ref_file :
-             print((ref_model+" not found!")) 
+             print((ref_model+" not found!"))
          else:
              fin = cdms2.open(ref_file[0])
          
@@ -135,7 +132,10 @@ def annual_cycle_data(parameter):
                  try:
                      var = fin(variable)
                      #cmip_var_season[i, j, :] = var_annual_cycle(var, seasons)
-                     cmip_var_season[i, j, :] = climo(var, 'ANNUALCYCLE')
+                     tmpvarannual = climo(var, 'ANNUALCYCLE')
+                     lnn=np.where(tmpvarannual == 0)[0]
+                     if len(lnn) == 12: tmpvarannual[:]=np.nan #set to missing if model output is invalid
+                     cmip_var_season[i, j, :] = tmpvarannual.copy()
                      print((ref_model,cmip_var_season[i, j, :]))
 
                  except:
@@ -145,11 +145,14 @@ def annual_cycle_data(parameter):
     mmm_var_season =  np.nanmean(cmip_var_season,axis=0)
 
     # Save data in csv format in metrics folder
+    # Generate new folder given site names [XZ]:
+    if not os.path.exists(os.path.join(output_path,'metrics',sites[0])):
+        os.makedirs(os.path.join(output_path,'metrics',sites[0])) 
     for j, variable in enumerate(variables):
-        np.savetxt(output_path+'/metrics/'+variable+'_test_annual_cycle_'+sites[0]+'.csv',test_var_season[j,:])
-        np.savetxt(output_path+'/metrics/'+variable+'_mmm_annual_cycle_'+sites[0]+'.csv',mmm_var_season[j,:])
-        np.savetxt(output_path+'/metrics/'+variable+'_cmip_annual_cycle_'+sites[0]+'.csv',cmip_var_season[:,j,:])
-        np.savetxt(output_path+'/metrics/'+variable+'_obs_annual_cycle_'+sites[0]+'.csv',obs_var_season[j,:])
+        np.savetxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_test_annual_cycle_'+sites[0]+'.csv',test_var_season[j,:])
+        np.savetxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_mmm_annual_cycle_'+sites[0]+'.csv',mmm_var_season[j,:])
+        np.savetxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_cmip_annual_cycle_'+sites[0]+'.csv',cmip_var_season[:,j,:])
+        np.savetxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_obs_annual_cycle_'+sites[0]+'.csv',obs_var_season[j,:])
 
         # Reference dapret
         data = obs_var_season[j,:]
@@ -163,12 +166,12 @@ def annual_cycle_data(parameter):
         test_sample=np.array([test_var_season[j,:].std(ddof=1), np.corrcoef(data, test_var_season[j,:])[0,1]])
         mmm_sample=np.array([mmm_var_season[j,:].std(ddof=1), np.corrcoef(data,mmm_var_season[j,:])[0,1]])
         obs_sample=np.array([refstd,1.0])
-        np.savetxt(output_path+'/metrics/'+variable+'_obs_annual_cycle_std_corr_'+sites[0]+'.csv',obs_sample)
-        np.savetxt(output_path+'/metrics/'+variable+'_test_annual_cycle_std_corr_'+sites[0]+'.csv',test_sample)
-        np.savetxt(output_path+'/metrics/'+variable+'_mmm_annual_cycle_std_corr_'+sites[0]+'.csv',mmm_sample)
-        np.savetxt(output_path+'/metrics/'+variable+'_cmip_annual_cycle_std_corr_'+sites[0]+'.csv',cmip_samples)
+        np.savetxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_obs_annual_cycle_std_corr_'+sites[0]+'.csv',obs_sample)
+        np.savetxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_test_annual_cycle_std_corr_'+sites[0]+'.csv',test_sample)
+        np.savetxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_mmm_annual_cycle_std_corr_'+sites[0]+'.csv',mmm_sample)
+        np.savetxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_cmip_annual_cycle_std_corr_'+sites[0]+'.csv',cmip_samples)
     
-
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 def annual_cycle_line_plot(parameter):
     """Calculate annual cycle climatology"""
     variables = parameter.variables
@@ -176,17 +179,19 @@ def annual_cycle_line_plot(parameter):
     output_path = parameter.output_path
     sites = parameter.sites
 
+    if not os.path.exists(os.path.join(output_path,'figures',sites[0])):
+        os.makedirs(os.path.join(output_path,'figures',sites[0])) 
 
     var_longname = [ varid_longname[x] for x in variables]
     for j, variable in enumerate(variables):
-        test_data = genfromtxt(output_path+'/metrics/'+variable+'_test_annual_cycle_'+sites[0]+'.csv')
-        mmm_data = genfromtxt(output_path+'/metrics/'+variable+'_mmm_annual_cycle_'+sites[0]+'.csv')
-        obs_data = genfromtxt(output_path+'/metrics/'+variable+'_obs_annual_cycle_'+sites[0]+'.csv')
-        cmip_data = genfromtxt(output_path+'/metrics/'+variable+'_cmip_annual_cycle_'+sites[0]+'.csv')
+        test_data = genfromtxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_test_annual_cycle_'+sites[0]+'.csv')
+        mmm_data = genfromtxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_mmm_annual_cycle_'+sites[0]+'.csv')
+        obs_data = genfromtxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_obs_annual_cycle_'+sites[0]+'.csv')
+        cmip_data = genfromtxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_cmip_annual_cycle_'+sites[0]+'.csv')
         mod_num = cmip_data.shape[0]
 
         fig = plt.figure()# Create figure
-        ax  =fig.add_axes([0.15, 0.14, 0.8, 0.8]) # Create axes
+        ax  =fig.add_axes([0.12, 0.12, 0.82, 0.81]) # Create axes
         xax =  np.arange (1,13,1)
 
         for mod_ind in range(mod_num):
@@ -202,15 +207,19 @@ def annual_cycle_line_plot(parameter):
         plt.xticks(xax, my_xticks)
         plt.xlim(1,12)
 #        plt.ylim(ylim[va_ind])
-        plt.title('Annual Cycle: Model vs OBS vs CMIP' )
-        plt.xlabel('Month')
-        plt.legend(loc='best',prop={'size':15})
+        plt.title('Annual Cycle: Model vs OBS vs CMIP',fontsize=15)
+        plt.xlabel('Month',fontsize=15)
+        plt.legend(loc='best',prop={'size':12})
         plt.ylabel(var_longname[j])
-        fig.savefig(output_path+'/figures/'+variable+'_annual_cycle_'+sites[0]+'.png')
+        #special notes for models mistreating surface type [XZ]:
+        if (variable == 'hfls') or (variable == 'hfss') or (variable == 'rsus'):
+            if (sites[0] == 'enac1') or (sites[0] == 'twpc1') or (sites[0] == 'twpc2') or (sites[0] == 'twpc3'):
+                ax.text(0.5, 0.05,'Note: the selected grid points were ocean grids in most GCMs', ha='center', va='center', transform=ax.transAxes,fontsize=8)
+        # save figures
+        fig.savefig(output_path+'/figures/'+sites[0]+'/'+variable+'_annual_cycle_'+sites[0]+'.png')
         plt.close('all')
        
-
-    
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 def annual_cycle_taylor_diagram(parameter):
     """Calculate annual cycle climatology"""
     variables = parameter.variables
@@ -218,42 +227,47 @@ def annual_cycle_taylor_diagram(parameter):
     output_path = parameter.output_path
     sites = parameter.sites
 
+    if not os.path.exists(os.path.join(output_path,'figures',sites[0])):
+        os.makedirs(os.path.join(output_path,'figures',sites[0])) 
+
     var_longname = [ varid_longname[x] for x in variables]
     for j, variable in enumerate(variables):
-        obs_data = genfromtxt(output_path+'/metrics/'+variable+'_obs_annual_cycle_std_corr_'+sites[0]+'.csv')
-        test_data = genfromtxt(output_path+'/metrics/'+variable+'_test_annual_cycle_std_corr_'+sites[0]+'.csv')
-        mmm_data = genfromtxt(output_path+'/metrics/'+variable+'_mmm_annual_cycle_std_corr_'+sites[0]+'.csv')
-        cmip_data = genfromtxt(output_path+'/metrics/'+variable+'_cmip_annual_cycle_std_corr_'+sites[0]+'.csv')
+        obs_data = genfromtxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_obs_annual_cycle_std_corr_'+sites[0]+'.csv')
+        test_data = genfromtxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_test_annual_cycle_std_corr_'+sites[0]+'.csv')
+        mmm_data = genfromtxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_mmm_annual_cycle_std_corr_'+sites[0]+'.csv')
+        cmip_data = genfromtxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_cmip_annual_cycle_std_corr_'+sites[0]+'.csv')
         mod_num = cmip_data.shape[0]
-        
-        try:
-            fig = plt.figure(figsize=(8,8))
-            refstd = obs_data[0]
-            dia = TaylorDiagram(refstd, fig=fig,rect=111, label="Reference")
+        # observational annual mean must be valid for taylor diagram [XZ]
+        if np.isfinite(obs_data[0]):
+            try:
+                fig = plt.figure(figsize=(8,8))
+                refstd = obs_data[0]
+                dia = TaylorDiagram(refstd, fig=fig,rect=111, label="Reference")
 
-            # Add samples to Taylor diagram
-            for i,(stddev,corrcoef) in enumerate(cmip_data):
-                dia.add_sample(stddev, corrcoef, marker='.',ms=10, c='grey')
+                # Add samples to Taylor diagram
+                for i,(stddev,corrcoef) in enumerate(cmip_data):
+                    dia.add_sample(stddev, corrcoef, marker='.',ms=10, c='grey')
 
-            dia.add_sample(test_data[0], test_data[1],marker='.',ms=15, c='red',label='MOD')
-            dia.add_sample(mmm_data[0], mmm_data[1],marker='.',ms=15, c='b',label='MMM')
+                dia.add_sample(test_data[0], test_data[1],marker='.',ms=15, c='red',label='MOD')
+                dia.add_sample(mmm_data[0], mmm_data[1],marker='.',ms=15, c='b',label='MMM')
 
-            # Add RMS contours, and label them
-            contours = dia.add_contours(colors='0.5')
-            plt.clabel(contours, inline=1, fontsize=10)
-            plt.title(var_longname[j])
+                # Add RMS contours, and label them
+                contours = dia.add_contours(colors='0.5')
+                plt.clabel(contours, inline=1, fontsize=10)
+                plt.title(var_longname[j])
 
-            # Add a figure legend
-            fig.legend([dia.samplePoints[0],dia.samplePoints[-2],dia.samplePoints[-1]] ,
-                       [ p.get_label() for p in [dia.samplePoints[0],dia.samplePoints[-2],dia.samplePoints[-1]] ],
-                       numpoints=1,  loc='upper right',prop={'size':10})
-#            np.savetxt(basedir+'metrics/'+vas[va_ind]+'_'+mod+'std_corr.csv',mod_sample,fmt='%.3f')
-            fig.savefig(output_path+'/figures/'+variable+'_annual_cycle_taylor_diagram_'+sites[0]+'.png')
-            plt.close('all')
-        except:    
-            print(('Taylor diagram not generated for' +variable))
-
+                # Add a figure legend
+                fig.legend([dia.samplePoints[0],dia.samplePoints[-2],dia.samplePoints[-1]] ,
+                           [ p.get_label() for p in [dia.samplePoints[0],dia.samplePoints[-2],dia.samplePoints[-1]] ],
+                           numpoints=1,  loc='upper right',prop={'size':10})
+#                np.savetxt(basedir+'metrics/'+vas[va_ind]+'_'+mod+'std_corr.csv',mod_sample,fmt='%.3f')
+                fig.savefig(output_path+'/figures/'+sites[0]+'/'+variable+'_annual_cycle_taylor_diagram_'+sites[0]+'.png')
+                plt.close('all')
+            except:    
+                print(('Taylor diagram not generated for ' +variable+': plotting error'))
+        else:
+            print(('Taylor diagram not generated for ' +variable+': observation annual mean not valid'))
     
-    
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=    
     
     

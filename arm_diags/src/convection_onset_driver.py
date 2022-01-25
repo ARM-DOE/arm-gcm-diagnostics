@@ -26,6 +26,10 @@ def convection_onset(parameter):
  
     arm_name = parameter.arm_filename
     #ref_models = parameter.ref_models
+
+    print('============================================================')
+    print('Create Convection Onset Metrics: '+sites[0])
+    print('============================================================')
     
     #Read in observation data
     precip_threshold = 0.5
@@ -48,12 +52,32 @@ def convection_onset(parameter):
             cwv_min = 28
             bin_width = 2.0
             sitename = 'Darwin'
-        if site == 'sgp':     #sgp
+        if site == 'sgpc1':     #sgp
             cwv_max = 75
             cwv_min = 20
             bin_width = 2.0
             sitename = 'SGP'
+        if site == 'nsac1':     #nsa
+            cwv_max = 50
+            cwv_min = 20
+            bin_width = 2.0
+            sitename = 'NSA'
+        if site == 'enac1':     #ena
+            cwv_max = 75
+            cwv_min = 20
+            bin_width = 2.0
+            sitename = 'ENA'
+        if site == 'maom1':     #mao
+            cwv_max = 85
+            cwv_min = 20
+            bin_width = 2.0
+            sitename = 'Manacapuru'
     
+        # Generate new folder given site names [XZ]
+        if not os.path.exists(os.path.join(output_path,'figures',site)):
+            os.makedirs(os.path.join(output_path,'figures',site)) 
+        output_path_co = os.path.join(output_path,'figures',site)
+
         for va in variables:
             #print(glob.glob(os.path.join(obs_path,'ARMdiag_'+va+'_1hr_*_'+site+'.nc')))
             
@@ -75,10 +99,11 @@ def convection_onset(parameter):
                 prw[prw<-900] = np.nan
                 #print('Max PRW:',max(prw))
             f_in.close()
-        convection_onset_statistics(precip_threshold,cwv_max,cwv_min,bin_width,prw, precip,'ARM',output_path,sites,sitename)
+        convection_onset_statistics(precip_threshold,cwv_max,cwv_min,bin_width,prw, precip,'ARM',output_path_co,sites,sitename)
        
         #Process model results
         print('Start model')
+        pr_mod_index = 0
         pr_prw_mod = []
         for va in variables:
             
@@ -86,15 +111,18 @@ def convection_onset(parameter):
                 filename = glob.glob(os.path.join(test_path, '*'+va+'_cfSites_'+test_model+'*'+site+'.nc'))
             else:
                 test_model = ''.join(e for e in test_model if e.isalnum()).lower()
-                print(test_model,test_path)
+                print(va,':',test_model,test_path)
                 filename = glob.glob(os.path.join(test_path,site[:3]+test_model+'subday' + site[3:5].upper()+'*.nc' ))
             print(filename)
             if len(filename) == 0:
-               raise RuntimeError('No sub daily data for test model were found.')
-            f_in=cdms2.open(filename[0])
-            pr=f_in(va)#,time=('1979-01-01','1979-12-31')) #Read in the variable
-            if va == 'pr':
-                pr = pr *3600.           #'kg m-2 s-1' to 'mm/hr'
-            pr_prw_mod.append(pr)
-    convection_onset_statistics(precip_threshold,cwv_max,cwv_min,bin_width,pr_prw_mod[1],pr_prw_mod[0],test_model,output_path,sites,sitename)
+               print(va,':','No sub daily data for test model were found.')
+            else:
+                pr_mod_index = 1
+                f_in=cdms2.open(filename[0])
+                pr=f_in(va)#,time=('1979-01-01','1979-12-31')) #Read in the variable
+                if va == 'pr':
+                    pr = pr *3600.           #'kg m-2 s-1' to 'mm/hr'
+                pr_prw_mod.append(pr)
+        if pr_mod_index == 1:
+             convection_onset_statistics(precip_threshold,cwv_max,cwv_min,bin_width,pr_prw_mod[1],pr_prw_mod[0],test_model,output_path_co,sites,sitename)
  

@@ -1,0 +1,72 @@
+    #===================================================================================================
+    # source code development log for ARM-Diags V3 -- Xiaojian Zheng (xjzheng@email.arizona.edu)
+    #===================================================================================================
+    #
+    #===================================================================================================
+    # utils.py
+    #---------------------------------------------------------------------------------------
+    # Xiaojian Zheng - Nov2021
+    # ### Add the array treatment: filled the output masked (missing) value with numpy NaN
+    # ### to avoid the issue of plotting masked value as 0 value in the plotting code
+    # ### change the input/output format to site-dependent
+    # --------------------------------------------------------------------------------------
+    #===================================================================================================
+    # annual_cycle.py
+    # --------------------------------------------------------------------------------------
+    # Xiaojian Zheng - Nov2021
+    # ### unify the data extraction and process code for all the ARM sites
+    # ### suppress the taylor diagram and output note, when observation annual mean is not valid
+    # ### change the input/output format to site-dependent
+    # ### minor fix on the plotting code for better visualization
+    # --------------------------------------------------------------------------------------
+    #===================================================================================================
+    # annual_cycle_zt.py
+    # --------------------------------------------------------------------------------------
+    # Xiaojian Zheng - Nov2021
+    # ### unify the data extraction and process code for all the ARM sites
+    # ### change the input/output format to site-dependent
+    # ### change the 2D plots from color-mesh to color-contour
+    # ### change the default treatments when test model not found
+    # ### minor fix on the plotting code for better visualization
+    # --------------------------------------------------------------------------------------
+    #===================================================================================================
+    # seasonal_mean.py
+    # --------------------------------------------------------------------------------------
+    # Xiaojian Zheng - Nov2021
+    # ### unify the data extraction and process code for all the ARM sites
+    # ### change the input/output format to site-dependent
+    # --------------------------------------------------------------------------------------
+    #===================================================================================================	
+    # diurnal_cycle.py
+    # --------------------------------------------------------------------------------------
+    # Xiaojian Zheng - Nov-Dec 2021
+    # ### unify the data extraction and process code for all the ARM sites
+    # ### change the input/output format & the local time offset to site-dependent
+    # ### minor fix on the plotting code for better visualization
+    # ### change the default treatments when test model not found
+    # ### extend the diurnal cycle to all the four seasons, and overlay MMM
+    # ### phase calc. for Obs is fixed for accurate hamnoic plot position
+    # --------------------------------------------------------------------------------------
+    #===================================================================================================	
+    # convection_onset_driver.py
+    # ### add the NSA, ENA and MAO site
+    # --------------------------------------------------------------------------------------
+    #===================================================================================================	
+    # convection_onset_statistics.py
+    # ### change all 'xerr=0' to 'xerr=None', to fix the errorbar definition
+    # --------------------------------------------------------------------------------------
+    #===================================================================================================
+    # create_html.py
+    # --------------------------------------------------------------------------------------
+    # Xiaojian Zheng - Dec 2021
+    # ### change the input/output format to site-dependent (ENA/MAO added)
+    # ### fix minor issues on image linking
+    # --------------------------------------------------------------------------------------
+    #===================================================================================================
+
+
+
+
+
+
+

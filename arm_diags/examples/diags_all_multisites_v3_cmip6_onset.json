@@ -1,0 +1,35 @@
+{
+        "arm_diags": [
+          {
+      "diags_set": "set7_convection_onset",
+      "variables": ["pr", "prw"],
+      "sites": ["twpc1"]
+                },
+          {
+      "diags_set": "set7_convection_onset",
+      "variables": ["pr", "prw"],
+      "sites": ["twpc2"]
+                },
+          {
+      "diags_set": "set7_convection_onset",
+      "variables": ["pr", "prw"],
+      "sites": ["twpc3"]
+                },
+          {
+      "diags_set": "set7_convection_onset",
+      "variables": ["pr", "prw"],
+      "sites": ["enac1"]
+                },
+          {
+      "diags_set": "set7_convection_onset",
+      "variables": ["pr", "prw"],
+      "sites": ["maom1"]
+                },
+          {
+      "diags_set": "set7_convection_onset",
+      "variables": ["pr", "prw"],
+      "sites": ["sgpc1"]
+                }
+          ]
+}
+

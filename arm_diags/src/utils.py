@@ -1,8 +1,21 @@
+#===========================================================================================================================
+# Functions for calculate annual/seasonal cycle from monthly data -- Original written by Dr. Chengzhu Zhang @ LLNL
+#---------------------------------------------------------------------------------------------------------------------------
+# V3 Development
+    # ---------------------------------------------------------------------------------------
+    # Xiaojian Zheng - Nov2021
+    # ### Add the array treatment: filled the output masked (missing) value with numpy NaN
+    # ### to avoid the issue of plotting masked value as 0 value in the plotting code
+    # ---------------------------------------------------------------------------------------
+#===========================================================================================================================
+
+
 import numpy as np
 import numpy.ma as ma
 import cdms2
 import cdutil
-
+import pdb
+from copy import deepcopy
 
 def climo(var, season):
     """
@@ -46,6 +59,8 @@ def climo(var, season):
     # Compute time length
     dt = tbounds[:,1] - tbounds[:,0]
 
+
+
     # Convert to masked array
     v = var.asma()
 
@@ -63,6 +78,12 @@ def climo(var, season):
         idx = np.array( [ season_idx[cycle[n]][var_time_absolute[i].month-1]
                           for i in range(len(var_time_absolute)) ], dtype=np.int).nonzero()
         climo[n] = ma.average(v[idx], axis=0, weights=dt[idx])
+
+    # ---------------------------------------------------------------------------------------
+    # filled the masked array with NaN [XZ]
+    climo = climo.filled(np.nan)
+    # ---------------------------------------------------------------------------------------
+
 
     if var.id == 'tas':
         climo  = climo - 273.15
