@@ -44,15 +44,15 @@ def diags_main_html(output_path,test_model):
     <p>
       <font color=red>2</font> <A HREF="annual_cycle.html">Line plots and Taylor diagrams</A> of Annual Cycle.<br>
     <p>
-      <font color=red>4</font> <A HREF="annual_cycle_aci.html">Line plots and Taylor diagrams</A> of ACI Annual Cycle.<br>
+      <font color=red>3</font> <A HREF="annual_cycle_aci.html">Line plots and Taylor diagrams</A> of ACI Annual Cycle.<br>
     <p>
-      <font color=red>5</font> <A HREF="annual_cycle_zt.html">Contour and Vertical profiles</A> of Annual Cycle.<br>
+      <font color=red>4</font> <A HREF="annual_cycle_zt.html">Contour and Vertical profiles</A> of Annual Cycle.<br>
     <p>
-      <font color=red>6</font> <A HREF="diurnal_cycle.html">Line and Harmonic Dail plots</A> of Diurnal Cycle.<br>
+      <font color=red>5</font> <A HREF="diurnal_cycle.html">Line and Harmonic Dail plots</A> of Diurnal Cycle.<br>
     <p>
-      <font color=red>7</font> <A HREF="diurnal_cycle_zt.html">Contour plots</A> of Diurnal Cycle.<br>
+      <font color=red>6</font> <A HREF="diurnal_cycle_zt.html">Contour plots</A> of Diurnal Cycle.<br>
     <p>
-      <font color=red>8</font> <A HREF="pdf_daily.html">Line plots</A> of Probability Density Function.<br>
+      <font color=red>7</font> <A HREF="pdf_daily.html">Line plots</A> of Probability Density Function.<br>
     <p>
     <TD>
       <TH ALIGN=left>
