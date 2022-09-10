@@ -28,7 +28,9 @@ def diags_main_html(output_path,test_model):
     </table>
     </b></font>
     <p>
-    <b>ARM Metrics and Diagnostics Package</b>
+    <b>ARM data-oriented Diagnostics package (ARM-DIAGS-V3)</b>
+    <p>
+    <b>Metrics and Diagnostics</b>
     <p>
     <b>Model: """+test_model+"""</b>
     <hr noshade size=2 size="100%">
@@ -42,19 +44,23 @@ def diags_main_html(output_path,test_model):
     <p>
       <font color=red>2</font> <A HREF="annual_cycle.html">Line plots and Taylor diagrams</A> of Annual Cycle.<br>
     <p>
-      <font color=red>3</font> <A HREF="annual_cycle_zt.html">Contour and Vertical profiles</A> of Annual Cycle.<br>
+      <font color=red>4</font> <A HREF="annual_cycle_aci.html">Line plots and Taylor diagrams</A> of ACI Annual Cycle.<br>
     <p>
-      <font color=red>4</font> <A HREF="diurnal_cycle.html">Line and Harmonic Dail plots</A> of Diurnal Cycle.<br>
+      <font color=red>5</font> <A HREF="annual_cycle_zt.html">Contour and Vertical profiles</A> of Annual Cycle.<br>
     <p>
-      <font color=red>5</font> <A HREF="diurnal_cycle_zt.html">Contour plots</A> of Diurnal Cycle.<br>
+      <font color=red>6</font> <A HREF="diurnal_cycle.html">Line and Harmonic Dail plots</A> of Diurnal Cycle.<br>
     <p>
-      <font color=red>6</font> <A HREF="pdf_daily.html">Line plots</A> of Probability Density Function.<br>
+      <font color=red>7</font> <A HREF="diurnal_cycle_zt.html">Contour plots</A> of Diurnal Cycle.<br>
+    <p>
+      <font color=red>8</font> <A HREF="pdf_daily.html">Line plots</A> of Probability Density Function.<br>
     <p>
     <TD>
       <TH ALIGN=left>
       <font color=blue>Process-oriented Diagnostics Sets</font><br>
+    <p>
       <font color=red>1</font> <A HREF="convection_onset.html">Basic diagnostics plots</A> for Convection Onset.<br>
-
+    <p>
+      <font color=red>2</font> <A HREF="aerosol_activation.html">Basic diagnostics plots</A> for Aerosol Activation.<br>
 
     </Table>
 
@@ -62,12 +68,12 @@ def diags_main_html(output_path,test_model):
     <p>
     <Table>
     <em>Click on Plot Type</em></b><p>
-      <A HREF="annual_cycle.html"><img src="../../../arm-gcm-diagnostics/arm_diags/misc/clt_annual_cycle_sgpc1.png"  border=1 hspace=3 alt="Set 1" width="150" height="150"></a>
-      <A HREF="annual_cycle.html"><img src="../../../arm-gcm-diagnostics/arm_diags/misc/clt_annual_cycle_taylor_diagram_sgpc1.png"  border=1 hspace=3 alt="Set 1" width="150" height="150"></a>
-      <A HREF="annual_cycle_zt.html"><img src="../../../arm-gcm-diagnostics/arm_diags/misc/cl_p_obs_annual_cycle_clim_sgpc1.png"   border=1 hspace=3 alt="Set 3" width="150" height="150"></a>
-      <A HREF="diurnal_cycle_zt.html"><img src="../../../arm-gcm-diagnostics/arm_diags/misc/cl_p_obs_diurnal_clim_sgpc1.png"   border=1 hspace=3 alt="Set 3" width="150" height="150"></a>
-      <A HREF="diurnal_cycle.html"><img src="../../../arm-gcm-diagnostics/arm_diags/misc/pr_JJA_diurnal_cycle_sgpc1.png"   border=1 hspace=3 alt="Set 4" width="150" height="150"></a>
-      <A HREF="pdf_daily.html"><img src="../../../arm-gcm-diagnostics/arm_diags/misc/pr_JJA_pdf1_daily_sgpc1.png"   border=1 hspace=3 alt="Set 6" width="150" height="150"></a>
+      <A HREF="annual_cycle.html"><img src="../../../arm-gcm-diagnostics/arm_diags/misc/clt_annual_cycle_sgpc1.png"  border=1 hspace=3 alt="Set 1" width="180" height="150"></a>
+      <A HREF="annual_cycle.html"><img src="../../../arm-gcm-diagnostics/arm_diags/misc/clt_annual_cycle_taylor_diagram_sgpc1.png"  border=1 hspace=3 alt="Set 1" width="180" height="150"></a>
+      <A HREF="annual_cycle_zt.html"><img src="../../../arm-gcm-diagnostics/arm_diags/misc/cl_p_obs_annual_cycle_clim_sgpc1.png"   border=1 hspace=3 alt="Set 3" width="180" height="150"></a>
+      <A HREF="diurnal_cycle_zt.html"><img src="../../../arm-gcm-diagnostics/arm_diags/misc/cl_p_obs_diurnal_clim_sgpc1.png"   border=1 hspace=3 alt="Set 3" width="180" height="150"></a>
+      <A HREF="diurnal_cycle.html"><img src="../../../arm-gcm-diagnostics/arm_diags/misc/pr_JJA_diurnal_cycle_sgpc1.png"   border=1 hspace=3 alt="Set 4" width="180" height="150"></a>
+      <A HREF="pdf_daily.html"><img src="../../../arm-gcm-diagnostics/arm_diags/misc/pr_JJA_pdf1_daily_sgpc1.png"   border=1 hspace=3 alt="Set 6" width="180" height="150"></a>
     
     </TH>
     </TD>
@@ -180,7 +186,6 @@ def annual_cycle_html(parameter):
     title_to_file['Tropical Western Pacific (TWP), Darwin, Australia'] = 'twpc3'
     title_to_file['Manacapuru (MAO), Amazonas, Brazil'] = 'maom1'
 
-
     for title in title_to_file:
         title_name=title_to_file[title]
         htmlfile.write('<tr><td><br/></td></tr>')
@@ -193,7 +198,43 @@ def annual_cycle_html(parameter):
             htmlfile1 = open(output_path+'/html/'+two_figs,"w")
             fig1=output_path+'/figures/{}/'.format(title_name)+variable+'_annual_cycle_{}.png'.format(title_name)
             fig2=output_path+'/figures/{}/'.format(title_name)+variable+'_annual_cycle_taylor_diagram_{}.png'.format(title_name)
-            htmlfile1.write('<div class="container"><div style="float:left"><img src='+fig1+' alt="Line" width="550" height="450"></div><div style="float:left"><img src='+fig2+' alt="Line" width="500" height="450"></div>')
+            htmlfile1.write('<div class="container"><div style="float:left"><img src='+fig1+' alt="Line" width="600" height="450"></div><div style="float:left"><img src='+fig2+' alt="Line" width="500" height="450"></div>')
+            htmlfile.write('<TH ALIGN=LEFT><A HREF='+two_figs+'>Line plot and Taylor Diagram.</a>')
+    htmlfile.write('<tr><td><br/></td></tr>')
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+def annual_cycle_aci_html(parameter):
+    """Create set 2 diag. html hosting line plot and Taylor Diagram."""
+    
+    output_path = parameter.output_path
+    test_model = parameter.test_data_set
+    variables = parameter.variables
+    sites = parameter.sites
+    # Open the CSV file for reading
+
+    var_longname = [ varid_longname[x] for x in variables]
+    htmlfile = open(output_path+'/html/annual_cycle_aci.html',"w")
+    htmlfile.write('<p><th><b>'+test_model+': Annual Cycle'+ '</b></th></p>')
+    htmlfile.write('<table>')
+
+    title_to_file = OrderedDict()
+    title_to_file['Southern Great Plains (SGP)'] = 'sgpc1'
+    title_to_file['Eastern North Atlantic (ENA)'] = 'enac1'
+    
+    for title in title_to_file:
+        title_name=title_to_file[title]
+        htmlfile.write('<tr><td><br/></td></tr>')
+        htmlfile.write('<TR><TH ALIGN=LEFT><BR><TH ALIGN=LEFT><font color=blue size=+1>{}</font><TH><BR><TR>'.format(title))
+        for j, variable in enumerate(variables):
+            if variable[0] != 'c':
+                variable = 'chemical_'+variable
+            # Create the HTML file for output
+            htmlfile.write('<TH><BR>')
+            htmlfile.write('<TR><TH ALIGN=LEFT>'+var_longname[j])
+            two_figs='annual_cycle_'+variable+'_2plots_{}.html'.format(title_name)
+            htmlfile1 = open(output_path+'/html/'+two_figs,"w")
+            fig1=output_path+'/figures/{}/'.format(title_name)+variable+'_annual_cycle_{}.png'.format(title_name)
+            fig2=output_path+'/figures/{}/'.format(title_name)+variable+'_annual_cycle_taylor_diagram_{}.png'.format(title_name)
+            htmlfile1.write('<div class="container"><div style="float:left"><img src='+fig1+' alt="Line" width="600" height="450"></div><div style="float:left"><img src='+fig2+' alt="Line" width="500" height="450"></div>')
             htmlfile.write('<TH ALIGN=LEFT><A HREF='+two_figs+'>Line plot and Taylor Diagram.</a>')
     htmlfile.write('<tr><td><br/></td></tr>')
 
@@ -284,7 +325,7 @@ def diurnal_cycle_html(parameter):
                 htmlfile1 = open(output_path+'/html/'+two_figs,"w")
                 fig1=output_path+'/figures/{}/'.format(title_name)+variable+'_'+season+'_diurnal_cycle_{}.png'.format(title_name)
                 fig2=output_path+'/figures/{}/'.format(title_name)+variable+'_'+season+'_diurnal_cycle_harmonic_diagram_{}.png'.format(title_name)
-                htmlfile1.write('<div class="container"><div style="float:left"><img src='+fig1+' alt="Line" width="600" height="500"></div><div style="float:left"><img src='+fig2+' alt="Line" width="550" height="450"></div>')
+                htmlfile1.write('<div class="container"><div style="float:left"><img src='+fig1+' alt="Line" width="650" height="500"></div><div style="float:left"><img src='+fig2+' alt="Line" width="600" height="450"></div>')
                 htmlfile.write('<TD><A HREF='+two_figs+'>'+season+'.</a></TD>')
         htmlfile.write('<tr><td><br/></td></tr>')
 
@@ -370,7 +411,7 @@ def pdf_daily_html(parameter):
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 def convection_onset_html(parameter):
-    """Create set 5 diag. html hosting contour plots of diurnal cycle"""
+    """Create set 7 diag. html hosting convection_onset plot"""
     output_path = parameter.output_path
     test_model = parameter.test_data_set
 
@@ -395,7 +436,41 @@ def convection_onset_html(parameter):
 
         two_figs='convection_onset_'+title_name+'_2plots.html'
         htmlfile1 = open(output_path+'/html/'+two_figs,"w")
-        fig1=output_path+'/figures/{}/'.format(title_name)+'conv_diagnostics_{}_{}.png'.format(test_model, title_name)
-        fig2=output_path+'/figures/{}/'.format(title_name)+'conv_diagnostics_ARM_{}.png'.format(title_name)
+        fig1=output_path+'/figures/{}/'.format(title_name)+'conv_diagnostics_ARM_{}.png'.format(title_name)
+        fig2=output_path+'/figures/{}/'.format(title_name)+'conv_diagnostics_{}_{}.png'.format(test_model, title_name)
         htmlfile1.write('<div class="container"><div style="float:left"><img src='+fig1+' alt="Line" width="700" height="250"></div><div style="float:left"><img src='+fig2+' alt="Line" width="700" height="250"></div>')
-        htmlfile.write('<TD><A HREF='+two_figs+'>'+'model vs. obs'+'</a></TD>')
+        htmlfile.write('<TD><A HREF='+two_figs+'>'+'Obs vs. Model'+'</a></TD>')
+
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+def aerosol_activation_html(parameter):
+    output_path = parameter.output_path
+    test_model = parameter.test_data_set
+
+    title_to_file = OrderedDict()
+    title_to_file['Southern Great Plains (SGP)'] = 'sgpc1'
+    title_to_file['Eastern North Atlantic (ENA)'] = 'enac1'
+
+    htmlfile = open(output_path+'/html/aerosol_activation.html',"w")
+    htmlfile.write('<p><th><b>'+test_model+': Aerosol Activation'+ '</b></th></p>')
+    htmlfile.write('<table>')
+    for title in title_to_file:
+        title_name = title_to_file[title]
+        htmlfile.write('<TR><TH ALIGN=LEFT><BR><TH ALIGN=LEFT><font color=blue size=+1>{}</font><TH><BR><TR>'.format(title))
+        htmlfile.write('<TR><TH><BR><TH ALIGN=LEFT><font color=black >Aerosol Activation (Obs. vs. Model) </font><BR><TH ALIGN=LEFT><font color=red ></font>')
+        #ccn02
+        two_figs_02='aerosol_activation_ccn02_'+title_name+'_2plots.html'
+        htmlfile_02 = open(output_path+'/html/'+two_figs_02,"w")
+        fig1=output_path+'/figures/{}/'.format(title_name)+'aerosol_activation_bulk_cpc_ccn02_{}.png'.format(title_name)
+        fig2=output_path+'/figures/{}/'.format(title_name)+'aerosol_activation_bulk_cpc_ccn02_{}_{}.png'.format(test_model, title_name)
+        htmlfile_02.write('<div class="container"><div style="float:left"><img src='+fig1+' alt="Line" width="720" height="600"></div><div style="float:left"><img src='+fig2+' alt="Line" width="720" height="600"></div>')
+        #ccn05
+        two_figs_05='aerosol_activation_ccn05_'+title_name+'_2plots.html'
+        htmlfile_05 = open(output_path+'/html/'+two_figs_05,"w")
+        fig1=output_path+'/figures/{}/'.format(title_name)+'aerosol_activation_bulk_cpc_ccn05_{}.png'.format(title_name)
+        fig2=output_path+'/figures/{}/'.format(title_name)+'aerosol_activation_bulk_cpc_ccn05_{}_{}.png'.format(test_model, title_name)
+        htmlfile_05.write('<div class="container"><div style="float:left"><img src='+fig1+' alt="Line" width="720" height="600"></div><div style="float:left"><img src='+fig2+' alt="Line" width="720" height="600"></div>')
+        #
+        htmlfile.write('<TD><A HREF='+two_figs_02+'>'+'At 0.2% SS'+'</a></TD>')
+        htmlfile.write('<TD><A HREF='+two_figs_05+'>'+'At 0.5% SS'+'</a></TD>')
+        htmlfile.write('<tr><td><br/></td></tr>')
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
