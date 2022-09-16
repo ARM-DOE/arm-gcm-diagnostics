@@ -353,11 +353,11 @@ def diurnal_cycle_plot(parameter):
             #pdb.set_trace()
     
             ##########Generate hormonic dial plot: mapping phase and amplitude to Dial
+            hup=3
             if sites[0] == 'twpc1' or sites[0] == 'maom1':
                 hup=10
-            else:
-                hup=3
-
+            if sites[0] == 'enac1':
+                hup=1
 
             fig2 = plt.figure()
             ax2  =fig2.add_axes([0.1, 0.1, 0.8, 0.8],polar=True)#, axisbg='#d5de9c')
