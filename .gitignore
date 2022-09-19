@@ -8,8 +8,8 @@ arm_diags/build/*
 arm_diags/dist/*
 arm_diags/__pycache__/*
 arm_diags.egg-info/*
-
-
+build/lib/*
+dist/*
 
 # exception to the rule
 !arm_diags/model/.gitkeep 
