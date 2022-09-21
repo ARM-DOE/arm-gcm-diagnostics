@@ -8,7 +8,7 @@ arm_diags/build/*
 arm_diags/dist/*
 arm_diags/__pycache__/*
 arm_diags.egg-info/*
-build/lib/*
+build/*
 dist/*
 
 # exception to the rule
