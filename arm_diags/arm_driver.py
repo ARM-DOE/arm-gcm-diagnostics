@@ -10,21 +10,23 @@ import glob
 import os
 import pdb
 import fnmatch
-from arm_diags import arm_parser # from . import arm_parser 
+#from arm_diags import arm_parser # from . import arm_parser 
+import arm_parser
 from src.seasonal_mean import seasonal_mean_table # .src
 from src.annual_cycle import annual_cycle_data, annual_cycle_line_plot, annual_cycle_taylor_diagram # .src
+from src.annual_cycle_aci import annual_cycle_aci_data, annual_cycle_aci_line_plot, annual_cycle_aci_taylor_diagram
 from src.annual_cycle_zt import annual_cycle_zt_data,annual_cycle_zt_plot # .src
 from src.diurnal_cycle import diurnal_cycle_data,diurnal_cycle_plot # .src
 from src.pdf_daily import pdf_daily_data, pdf_daily_plot # .src
 from src.convection_onset_driver import convection_onset # .src
+from src.aerosol_activation import aerosol_activation_density_plot # .src
 #from src.convection_onset_driver_todd import convection_onset
-from src.create_htmls import annual_cycle_zt_html,diurnal_cycle_zt_html,diurnal_cycle_html,seasonal_mean_table_html,annual_cycle_html,pdf_daily_html,convection_onset_html,diags_main_html
+from src.create_htmls import annual_cycle_zt_html,diurnal_cycle_zt_html,diurnal_cycle_html,seasonal_mean_table_html,annual_cycle_html,annual_cycle_aci_html,pdf_daily_html,convection_onset_html,aerosol_activation_html,diags_main_html
 
 def make_parameters(basic_parameter):
     #f_data = open('examples/diags_set3.json').read()
     #f_data = open('diags_all_multisites_for_cmip5.json').read()
     f_data = open('diags_all_multisites_for_cmip6.json').read()
-    
     json_file = json.loads(f_data)
 
     parameters = [] 
@@ -69,7 +71,7 @@ for parameter in parameters:
         try:
             seasonal_mean_table(parameter) #Calculate seasonal mean climatology
             seasonal_mean_table_html(parameter) #Generate html 
-            html_count += 1
+            html_count = html_count + 1
         except:
             pass
 
@@ -79,7 +81,7 @@ for parameter in parameters:
             annual_cycle_line_plot(parameter)
             annual_cycle_taylor_diagram(parameter)
             annual_cycle_html(parameter)
-            html_count += 1
+            html_count = html_count + 1
         except:
             pass
 
@@ -89,7 +91,7 @@ for parameter in parameters:
             annual_cycle_zt_plot(parameter)
             annual_cycle_zt_html(parameter)
             diurnal_cycle_zt_html(parameter)
-            html_count += 1
+            html_count = html_count + 1
         except:
             pass
 
@@ -98,7 +100,7 @@ for parameter in parameters:
             diurnal_cycle_data(parameter)
             diurnal_cycle_plot(parameter)
             diurnal_cycle_html(parameter)
-            html_count += 1
+            html_count = html_count + 1
         except:
             pass
 
@@ -107,7 +109,7 @@ for parameter in parameters:
             pdf_daily_data(parameter)
             pdf_daily_plot(parameter)
             pdf_daily_html(parameter)
-            html_count += 1
+            html_count = html_count + 1
         except:
             pass
 
@@ -115,9 +117,27 @@ for parameter in parameters:
         try:
             convection_onset(parameter)
             convection_onset_html(parameter)
-            html_count += 1
+            html_count = html_count + 1
         except:
             pass
+
+    if diags_set == 'set8_annual_cycle_aci':
+        try:
+            annual_cycle_aci_data(parameter)
+            annual_cycle_aci_line_plot(parameter)
+            annual_cycle_aci_taylor_diagram(parameter)
+            annual_cycle_aci_html(parameter)
+            html_count = html_count + 1
+        except:
+            pass
+
+    if diags_set == 'set9_aerosol_activation':
+        #try:
+        aerosol_activation_density_plot(parameter)
+        aerosol_activation_html(parameter)
+        html_count = html_count + 1
+        #except:
+            #pass
     
 #
 if html_count >= 1:

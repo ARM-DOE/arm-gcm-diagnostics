@@ -38,14 +38,14 @@
           {
       "diags_set": "set1_tables",
       "sites": ["nsac1"],
-      "variables": ["tas","pr","clt","hurs","hfss","hfls","rlus","rlds","rsus","rsds","ps","prw","od550aer"],
+      "variables": ["tas","clt","hurs","hfss","hfls","rlus","rlds","rsus","rsds","ps","prw","od550aer"],
       "ref_models": ["accessesm15","bcccsm2mr", "camscsm10","canesm5", "cesm2","cesm2waccm","cmcccm2sr5","cnrmcm61hr","e3sm10","ecearth3aerchem","fgoalsf3l", "gfdlcm4", "hadgem3gc31ll","iitmesm","inmcm50","ipslcm6alr","kace10g","miroc6","mpiesm12ham","mpiesm12hr","mriesm20","nesm3","noresm2lm","taiesm1"],
       "season": ["ANN","DJF","MAM","JJA","SON"]
                 },
           {
       "diags_set": "set2_annual_cycle",
       "sites": ["nsac1"],
-      "variables": ["tas","pr","clt","hurs","hfss","hfls","rlus","rlds","rsus","rsds","ps","prw","od550aer"],
+      "variables": ["tas","clt","hurs","hfss","hfls","rlus","rlds","rsus","rsds","ps","prw","od550aer"],
       "ref_models": ["accessesm15","bcccsm2mr", "camscsm10","canesm5", "cesm2","cesm2waccm","cmcccm2sr5","cnrmcm61hr","e3sm10","ecearth3aerchem","fgoalsf3l", "gfdlcm4", "hadgem3gc31ll","iitmesm","inmcm50","ipslcm6alr","kace10g","miroc6","mpiesm12ham","mpiesm12hr","mriesm20","nesm3","noresm2lm","taiesm1"],
       "season": ["J","F","M","A","M","J","J","A","S","O","N","D"]
                 },
@@ -55,21 +55,7 @@
       "variables": ["cl_p"],
       "ref_models": ["TEST"],
       "season": ["J","F","M","A","M","J","J","A","S","O","N","D"]
-                },
-          {
-      "diags_set": "set4_diurnal_cycle",
-      "sites": ["nsac1"],
-      "variables": ["pr"],
-      "ref_models": ["accessesm15","bcccsm2mr","cmcccm2sr5","ecearth3aerchem","fgoalsf3l", "gfdlcm4", "ipslcm6alr","miroc6","mpiesm12hr","mriesm20"],
-      "season": ["DJF","MAM","JJA","SON"]
-                },  
-          {
-      "diags_set": "set6_pdf_daily",
-      "sites": ["nsac1"],
-      "variables": ["pr"],
-      "ref_models": ["accessesm15","bcccsm2mr","cmcccm2sr5","ecearth3aerchem","fgoalsf3l", "gfdlcm4", "ipslcm6alr","miroc6","mpiesm12hr","mriesm20"],
-      "season": ["DJF","MAM","JJA","SON"]
-                },
+                }, 
           {
       "diags_set": "set1_tables",
       "sites": ["enac1"],
@@ -273,6 +259,30 @@
       "diags_set": "set7_convection_onset",
       "variables": ["pr", "prw"],
       "sites": ["sgpc1"]
+                },
+          {
+      "diags_set": "set8_annual_cycle_aci",
+      "sites": ["sgpc1"],
+      "variables": ["cpc","ccn02","ccn05","organic","sulfate","nitrate","ammonium","cod"],
+      "ref_models": ["accessesm15"],
+      "season": ["J","F","M","A","M","J","J","A","S","O","N","D"]
+                },
+          {
+      "diags_set": "set8_annual_cycle_aci",
+      "sites": ["enac1"],
+      "variables": ["cpc","ccn02","ccn05","organic","sulfate","nitrate","ammonium","cod"],
+      "ref_models": ["accessesm15"],
+      "season": ["J","F","M","A","M","J","J","A","S","O","N","D"]
+                },
+          {
+      "diags_set": "set9_aerosol_activation",
+      "variables": ["cpc","ccn"],
+      "sites": ["sgpc1"]
+                },
+          {
+      "diags_set": "set9_aerosol_activation",
+      "variables": ["cpc","ccn"],
+      "sites": ["enac1"]
                 }
           ]
 }

@@ -1,0 +1,15 @@
+{
+        "arm_diags": [
+          {
+      "diags_set": "set9_aerosol_activation",
+      "variables": ["cpc","ccn"],
+      "sites": ["sgpc1"]
+                },
+          {
+      "diags_set": "set9_aerosol_activation",
+      "variables": ["cpc","ccn"],
+      "sites": ["enac1"]
+                }
+          ]
+}
+
