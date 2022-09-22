@@ -6,7 +6,7 @@ arm_diags/cmip5/*
 arm_diags/cmip6/*
 arm_diags/build/*
 arm_diags/dist/*
-arm_diags/__pycache__/*
+**/__pycache__
 arm_diags.egg-info/*
 build/*
 dist/*
