@@ -45,7 +45,11 @@
           {
       "diags_set": "set2_annual_cycle",
       "sites": ["nsac1"],
+<<<<<<< HEAD
       "variables": ["tas","clt","hurs","hfss","hfls","rlus","rlds","rsus","rsds","ps","prw","od550aer"],
+=======
+      "variables": ["tas","pr","clt","hurs","hfss","hfls","rlus","rlds","rsus","rsds","ps","prw","od550aer"],
+>>>>>>> fbd462a8a18c28c1498dbf4d10576499902d6d6c
       "ref_models": ["accessesm15","bcccsm2mr", "camscsm10","canesm5", "cesm2","cesm2waccm","cmcccm2sr5","cnrmcm61hr","e3sm10","ecearth3aerchem","fgoalsf3l", "gfdlcm4", "hadgem3gc31ll","iitmesm","inmcm50","ipslcm6alr","kace10g","miroc6","mpiesm12ham","mpiesm12hr","mriesm20","nesm3","noresm2lm","taiesm1"],
       "season": ["J","F","M","A","M","J","J","A","S","O","N","D"]
                 },
@@ -55,7 +59,25 @@
       "variables": ["cl_p"],
       "ref_models": ["TEST"],
       "season": ["J","F","M","A","M","J","J","A","S","O","N","D"]
+<<<<<<< HEAD
                 }, 
+=======
+                },
+          {
+      "diags_set": "set4_diurnal_cycle",
+      "sites": ["nsac1"],
+      "variables": ["pr"],
+      "ref_models": ["accessesm15","bcccsm2mr","cmcccm2sr5","ecearth3aerchem","fgoalsf3l", "gfdlcm4", "ipslcm6alr","miroc6","mpiesm12hr","mriesm20"],
+      "season": ["DJF","MAM","JJA","SON"]
+                },  
+          {
+      "diags_set": "set6_pdf_daily",
+      "sites": ["nsac1"],
+      "variables": ["pr"],
+      "ref_models": ["accessesm15","bcccsm2mr","cmcccm2sr5","ecearth3aerchem","fgoalsf3l", "gfdlcm4", "ipslcm6alr","miroc6","mpiesm12hr","mriesm20"],
+      "season": ["DJF","MAM","JJA","SON"]
+                },
+>>>>>>> fbd462a8a18c28c1498dbf4d10576499902d6d6c
           {
       "diags_set": "set1_tables",
       "sites": ["enac1"],
@@ -259,6 +281,7 @@
       "diags_set": "set7_convection_onset",
       "variables": ["pr", "prw"],
       "sites": ["sgpc1"]
+<<<<<<< HEAD
                 },
           {
       "diags_set": "set8_annual_cycle_aci",
@@ -283,6 +306,8 @@
       "diags_set": "set9_aerosol_activation",
       "variables": ["cpc","ccn"],
       "sites": ["enac1"]
+=======
+>>>>>>> fbd462a8a18c28c1498dbf4d10576499902d6d6c
                 }
           ]
 }
