@@ -1,1 +1,0 @@
-python arm_driver.py -p basicparameter.py
