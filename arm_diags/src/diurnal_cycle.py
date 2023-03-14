@@ -11,7 +11,10 @@
     # ### extend the diurnal cycle to all the four seasons, and overlay MMM
     # ### phase calc. for Obs is fixed for accurate hamnoic plot position
     # ----------------------------------------------------------------------------------------------------
-
+    # Xiaojian Zheng - Nov2022
+    # ### add the auto-detection of testmodel temporal resolution (currently support 1-hr & 3hr)
+    # ### add the user input of starting and ending years of making the testmodel climatology
+    # --------------------------------------------------------------------------------------
 #===========================================================================================================================
 import os
 import pdb
@@ -28,7 +31,7 @@ import cdtime
 from scipy.optimize import curve_fit
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-def var_diurnal_cycle(var, season):
+def var_diurnal_cycle(var, season, tres, styr, edyr):
     "Calculate diurnal cycle climatology of each variable"
     if season == 'ANN':
         mo0 = 0
@@ -40,8 +43,11 @@ def var_diurnal_cycle(var, season):
         mo0 = 12
     if season == 'MAM': 
         mo0 = 3
-    years = list(range(1979,2006))         
-    var_dc_year = np.empty([len(years),8])*np.nan
+    #auto-adjust by the input resolution
+    if tres=='1hr': tres_id=24
+    if tres=='3hr': tres_id=8
+    years = list(range(styr,edyr))         
+    var_dc_year = np.empty([len(years),tres_id])*np.nan
     for iy,year in enumerate(years):
         t1 = cdtime.comptime(year,mo0,0o1)
         if season == 'ANN':
@@ -52,9 +58,9 @@ def var_diurnal_cycle(var, season):
         var_yr =  var(time=(t1,t2,'co'))
         #pdb.set_trace()
         if season == 'ANN':
-            var_dc_year[iy,:]= np.nanmean(np.reshape(var_yr,(360,8)), axis=0)
+            var_dc_year[iy,:]= np.nanmean(np.reshape(var_yr,(360,tres_id)), axis=0)
         else:
-            var_dc_year[iy,:]= np.nanmean(np.reshape(var_yr,(90,8)), axis=0)
+            var_dc_year[iy,:]= np.nanmean(np.reshape(var_yr,(90,tres_id)), axis=0)
 
 
         if var.id == 'tas':
@@ -80,6 +86,10 @@ def diurnal_cycle_data(parameter):
     seasons = parameter.season
    
     test_model = parameter.test_data_set 
+
+    test_styr = parameter.test_start_year
+    test_edyr = parameter.test_end_year
+
     ref_models = parameter.ref_models
  
     arm_name = parameter.arm_filename
@@ -92,38 +102,46 @@ def diurnal_cycle_data(parameter):
     print('Create Precipitation Diurnal Cycles: '+sites[0])
     print('============================================================')
 
+
     # Calculate for test model
     test_findex = 0 #preset of test model indicator
-    test_var_season=np.empty([len(variables),8,len(seasons)])*np.nan
+    
     if not arm_name:
-        test_file = glob.glob(os.path.join(test_path,'*'+test_model+'*3hr*.nc')) #read in 3hr test data
+        test_file = glob.glob(os.path.join(test_path,'*'+test_model+'*hr*.nc')) #read in 3hr test data
     else:
         test_model = ''.join(e for e in test_model if e.isalnum()).lower()
-        print(test_path,test_model,sites[0][:3]+test_model+'3hr' + sites[0][3:5].upper())
-        test_file = glob.glob(os.path.join(test_path,sites[0][:3]+test_model+'3hr' + sites[0][3:5].upper()+'*.nc' ))
+        print(test_path,test_model,sites[0][:3]+test_model+'*hr' + sites[0][3:5].upper())
+        test_file = glob.glob(os.path.join(test_path,sites[0][:3]+test_model+'*hr' + sites[0][3:5].upper()+'*.nc' ))
 
     if len(test_file) == 0:
        print('No diurnal data for test model were found: '+sites[0])
 
     #test model exist
-    if len(test_file) > 0: 
+    if len(test_file) > 0:
         test_findex = 1 
 
+        #initialize the indicator for temporal res of testmodel
+        test_tres = test_file[0].split(test_model)[-1][:3] #e.g., '3hr', '1hr'
+
         fin = cdms2.open(test_file[0])
-        test_var_dc = np.empty([8])*np.nan
-    
-        print(('Processing diurnal data for test_model',test_model))
+        if test_tres == '1hr': test_tidlen=24
+        if test_tres == '3hr': test_tidlen=8
+
+        test_var_dc = np.empty([test_tidlen])*np.nan
+        test_var_season=np.empty([len(variables),test_tidlen,len(seasons)])*np.nan
+
+        print(('Processing diurnal data for test_model',test_model,' with Tres of '+test_tres))
 
         for j, variable in enumerate(variables): 
             for k,season in enumerate(seasons):
                 try:
                     var = fin (variable,squeeze = 1)
-                    test_var_dc = var_diurnal_cycle(var,season)
-
+                    test_var_dc = var_diurnal_cycle(var,season,test_tres,test_styr,test_edyr)
+                    test_var_season[j,:,k] = test_var_dc
                 except:
                     print((variable+" "+season+" not processed for " + test_model))
-                test_var_season[j,:,k] = test_var_dc
-
+                    print('!!please check the start and end year in basicparameter.py')
+                    test_findex = 0
     # Calculate for observational data
     obs_var_season=np.empty([len(variables),24,len(seasons)])*np.nan
     #obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag_domain_diurnal*.nc')) #read in diurnal test data
@@ -188,7 +206,7 @@ def diurnal_cycle_data(parameter):
                  for k,season in enumerate(seasons):
                      try:
                          var = fin (variable,squeeze = 1)
-                         cmip_var_season[i, j, :, k] = var_diurnal_cycle(var, season)
+                         cmip_var_season[i, j, :, k] = var_diurnal_cycle(var, season,'3hr',1979,2006)
 
                      except:
                          print((variable+" "+season+" not processed for " + ref_model))
@@ -207,7 +225,7 @@ def diurnal_cycle_data(parameter):
         os.makedirs(os.path.join(output_path,'metrics',sites[0]))
     for j, variable in enumerate(variables):
         for k, season in enumerate(seasons):
-            if test_findex == 1: np.savetxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_'+season+'_test_diurnal_cycle_'+sites[0]+'.csv',test_var_season[j,:,k])
+            if test_findex == 1: np.savetxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_'+season+'_test_diurnal_cycle_'+test_tres+'_'+sites[0]+'.csv',test_var_season[j,:,k])
             np.savetxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_'+season+'_mmm_diurnal_cycle_'+sites[0]+'.csv',mmm_var_season[j,:,k])
             np.savetxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_'+season+'_cmip_diurnal_cycle_'+sites[0]+'.csv',cmip_var_season[:,j,:,k])
             np.savetxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_'+season+'_obs_diurnal_cycle_'+sites[0]+'.csv',obs_var_season[j,:,k])
@@ -238,13 +256,15 @@ def diurnal_cycle_plot(parameter):
         for i, season in enumerate(seasons):
             # check the test model data
             test_findex = 0 #preset of test model indicator
-            test_file = glob.glob(output_path+'/metrics/'+sites[0]+'/'+variable+'_'+season+'_test_diurnal_cycle_'+sites[0]+'.csv')
+            test_file = glob.glob(output_path+'/metrics/'+sites[0]+'/'+variable+'_'+season+'_test_diurnal_cycle_*'+sites[0]+'.csv')
             if len(test_file) == 0:
                print('No test model plotted for diurnal cycle: '+sites[0])
             if len(test_file) > 0: 
                 test_findex = 1   #test model exist
+                test_tres = test_file[0].split('_test_diurnal_cycle_')[-1][:3] #e.g., '3hr', '1hr'
+
             # read data
-            if test_findex == 1: test_data = genfromtxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_'+season+'_test_diurnal_cycle_'+sites[0]+'.csv')
+            if test_findex == 1: test_data = genfromtxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_'+season+'_test_diurnal_cycle_'+test_tres+'_'+sites[0]+'.csv')
             mmm_data =  genfromtxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_'+season+'_mmm_diurnal_cycle_'+sites[0]+'.csv')
             obs_data =  genfromtxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_'+season+'_obs_diurnal_cycle_'+sites[0]+'.csv')
             cmip_data = genfromtxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_'+season+'_cmip_diurnal_cycle_'+sites[0]+'.csv')
@@ -302,12 +322,14 @@ def diurnal_cycle_plot(parameter):
 
             # plotting test model
             if test_findex == 1: 
+                if test_tres == '1hr': test_pxaxis = xax_1hr.copy()
+                if test_tres == '3hr': test_pxaxis = xax_3hr.copy()
                 ann_mean=np.mean(test_data[:])
-                popt, pcov = curve_fit(func24, xax_3hr, test_data ,p0=(1.0,0.2))
+                popt, pcov = curve_fit(func24, test_pxaxis, test_data ,p0=(1.0,0.2))
                 p1_mod = popt[0]
                 p2_mod = popt[1]
                 ymod_fit=func24(xax_1hr,p1_mod,p2_mod)+np.mean(test_data)
-                ax.plot(np.concatenate((xax_3hr,[x+24 for x in xax_3hr])),np.concatenate((test_data,test_data)),'.r',label = 'MOD: %.2f'%ann_mean,lw=2,markersize=10)
+                ax.plot(np.concatenate((test_pxaxis,[x+24 for x in test_pxaxis])),np.concatenate((test_data,test_data)),'.r',label = 'MOD: %.2f'%ann_mean,lw=2,markersize=10)
                 mod_fit,=ax.plot(np.concatenate((xax_1hr,[x+24 for x in xax_1hr])),np.concatenate((ymod_fit,ymod_fit)), 'r',label = 'MOD FFT',lw=2)
                 test_amp=p1_mod
                 if p1_mod<=0 :
@@ -341,17 +363,17 @@ def diurnal_cycle_plot(parameter):
             my_xticks_loc=np.array([3*x for x in range(8)])
             plt.xticks(my_xticks_loc, my_xticks)
             ax.set_xlim([0,24])
-            ax.set_ylim([-1,yup])
+            #ydn = np.nanmin(cmip_data)
+            #yup = np.nanmax(cmip_data)
+            #ax.set_ylim([ydn-1,yup+1])
             #ax.text(0.3, 0.95,'OBS',color='k',verticalalignment='top', horizontalalignment='left',transform=ax.transAxes)
             #ax.text(0.3, 0.85,'MOD',color='r',verticalalignment='top', horizontalalignment='left',transform=ax.transAxes)
-            ax.legend(scatterpoints=1,loc='best',prop={'size':10})
+            ax.legend(scatterpoints=1,loc='best',prop={'size':10},framealpha=0.0)
             plt.xlabel('local solar time [hr]')
             plt.ylabel(var_longname[j])
             fig.savefig(output_path+'/figures/'+sites[0]+'/'+variable+'_'+season+'_diurnal_cycle_'+sites[0]+'.png')
             plt.close('all')
            
-            #pdb.set_trace()
-    
             ##########Generate hormonic dial plot: mapping phase and amplitude to Dial
             hup=3
             if sites[0] == 'twpc1' or sites[0] == 'maom1':

@@ -71,7 +71,9 @@ def annual_cycle_zt_data(parameter):
                 else:
                     var = fin(variable)
                 var[var>100]=np.nan
-                var_2d = np.reshape(var,(12,8,37))    
+                len_var=var.shape[0]
+                #auto-detect the testmodel frequency
+                var_2d = np.reshape(var,(12,int(len_var/12.),37))    
     
                 with open(output_path+'/metrics/'+sites[0]+'/'+variable+'_test_diurnal_climo_'+ sites[0]+'.csv', 'w') as outfile:
                     outfile.write('# Array shape: {0}'.format(var_2d.shape)+' as (month, hours, vertical levels)\n')
@@ -165,7 +167,12 @@ def annual_cycle_zt_plot(parameter):
         # process test model data
         if test_findex == 1:
             test_data = np.loadtxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_test_diurnal_climo_'+ sites[0]+'.csv')
-            test_data = test_data.reshape((12,8,37))
+            #auto-detect the testmodel frequency
+            len_var=test_data.shape[0]
+            tlen_testVar=int(len_var/12.)  #e.g., 24  or 8
+            tlen_testGap=24/tlen_testVar   #e.g., 1hr or 3hr
+
+            test_data = test_data.reshape((12,tlen_testVar,37))
 
             cl_p=np.nanmean(test_data,axis=1)
             cl_p_diurnal=np.nanmean(test_data,axis=0)
@@ -179,20 +186,21 @@ def annual_cycle_zt_plot(parameter):
         cl_ob_diurnal=np.nanmean(obs_data,axis=0)
         cl_ob_ann=np.nanmean(cl_ob,axis=0)
 
+        #pdb.set_trace()
         #################### Monthly Mean Diurnal Cycle Contours
-        # define plotting controller [XZ]
-        if test_findex == 0: index_list = np.arange(1)
-        if test_findex == 1: index_list = np.arange(2)
         #---------------------------------------------- 
         # define site-dependent contour levels [XZ]
-        if sites[0] == 'sgpc1': ct_lo=0; ct_up=25.5
-        if sites[0] == 'nsac1': ct_lo=0; ct_up=50.5
-        if sites[0] == 'enac1': ct_lo=0; ct_up=35.5
-        if sites[0] == 'twpc1': ct_lo=0; ct_up=70.5
-        if sites[0] == 'twpc2': ct_lo=0; ct_up=70.5
-        if sites[0] == 'twpc3': ct_lo=0; ct_up=60.5
-        if sites[0] == 'maom1': ct_lo=0; ct_up=80.5
-        rlevel=np.arange(ct_lo,ct_up,0.5)
+        if sites[0] == 'sgpc1': ct_lo=0; ct_up=25.5; locoff=6
+        if sites[0] == 'nsac1': ct_lo=0; ct_up=50.5; locoff=8
+        if sites[0] == 'enac1': ct_lo=0; ct_up=35.5; locoff=1
+        if sites[0] == 'twpc1': ct_lo=0; ct_up=70.5; locoff=14
+        if sites[0] == 'twpc2': ct_lo=0; ct_up=70.5; locoff=12
+        if sites[0] == 'twpc3': ct_lo=0; ct_up=60.5; locoff=15
+        if sites[0] == 'maom1': ct_lo=0; ct_up=80.5; locoff=4
+        # define plotting controller [XZ]
+        if test_findex == 0: index_list = np.arange(1); ct_up=np.nanmax(obs_data.flatten())
+        if test_findex == 1: index_list = np.arange(2); ct_up=np.nanmax(np.concatenate((obs_data.flatten(),test_data.flatten()),axis=0))
+        rlevel=np.arange(ct_lo,ct_up+1,0.5)
         #---------------------------------------------- 
         #plotting contours
         for iid,index in enumerate(index_list):
@@ -201,12 +209,12 @@ def annual_cycle_zt_plot(parameter):
             axs = axs.ravel()
             for imon in range(12):
                 if index==0:
-                     title=variable+'_obs_mon_diurnal_clim'
+                     title=variable+'_mon_diurnal_clim_obs'
                      yy=np.linspace(0,23,24)
                      xx=np.linspace(100,1000,37)
                      x,y=np.meshgrid(xx,yy)
                      obs_data_con=np.concatenate((obs_data[imon,:,:],obs_data[imon,:,:]),axis=0)#6 hour GMT to Local time
-                     im=axs[imon].contourf(y,x,obs_data_con[6:30,::-1],cmap='jet',levels=rlevel)
+                     im=axs[imon].contourf(y,x,obs_data_con[locoff:locoff+24,::-1],cmap='jet',levels=rlevel)
                      #im=axs[imon].pcolormesh(y,x,obs_data_con[6:30,::-1], vmin=0, vmax=25)
                      #im=axs[imon].pcolormesh(y,x,obs_data_con[:24,::-1], vmin=0, vmax=25)
                      plt.xlim([0,23])
@@ -214,17 +222,22 @@ def annual_cycle_zt_plot(parameter):
                      my_xticks = ['0','3','6','9','12','15','18','21']
 
                 else:
-                     title=variable+'_mod_mon_diurnal_clim'
-                     yy=np.linspace(0,7,8)
+                     title=variable+'_mon_diurnal_clim_mod'
+                     yy=np.linspace(0,tlen_testVar-1,tlen_testVar)
                      xx=np.linspace(100,1000,37)
                      x,y=np.meshgrid(xx,yy)
                      test_data_con=np.concatenate((test_data[imon,:,:],test_data[imon,:,:]),axis=0)
                      #Starting time is 3:00:00 GTM, +3 hour GMT to Local time
                      #NEED TO SWTCH TO LOCAL TIME model data!!!!
-                     im=axs[imon].contourf(y,x,test_data_con[1:9,::-1],cmap='jet',levels=rlevel)
+                     if tlen_testGap == 3: #if the test model is 3-hourly
+                         test_pstart = round(locoff/tlen_testGap)-1
+                         if test_pstart < 0: test_pstart=int(0)
+                         im=axs[imon].contourf(y,x,test_data_con[test_pstart:test_pstart+8,::-1],cmap='jet',levels=rlevel)
+                     if tlen_testGap == 1: #if the test model is 1-hourly
+                         im=axs[imon].contourf(y,x,test_data_con[locoff:locoff+24,::-1],cmap='jet',levels=rlevel)
                      #im=axs[imon].pcolormesh(y,x,test_data_con[1:9,::-1], vmin=0, vmax=25)
-                     plt.xlim([0,7])
-                     xax =  np.arange (0,8,1)
+                     plt.xlim([0,tlen_testVar-1])
+                     xax =  np.arange (0,tlen_testVar,int(tlen_testVar/8))
                      my_xticks = ['0','3','6','9','12','15','18','21']
 
                 axs[imon].set_title(month_legend[imon],fontsize=17)
@@ -240,7 +253,7 @@ def annual_cycle_zt_plot(parameter):
             fig1.subplots_adjust(right=0.8)
             cbar_ax = fig1.add_axes([0.85, 0.15, 0.05, 0.7])
             cb = fig1.colorbar(im, cax=cbar_ax)
-            cb.set_ticks(np.arange(ct_lo,ct_up+4.5,5),update_ticks=True)
+            #cb.set_ticks(np.arange(ct_lo,ct_up+4.5,5),update_ticks=True)
             cb.ax.tick_params(labelsize=15)
             plt.title('cl (%)',fontsize=15)
             fig1.savefig(output_path+'/figures/'+sites[0]+'/'+title+'_'+sites[0]+'.png')
@@ -248,43 +261,51 @@ def annual_cycle_zt_plot(parameter):
 
         ########################## Diurnal Cycle Contours
         #---------------------------------------------- 
-        # define site-dependent contour levels [XZ]
-        if sites[0] == 'sgpc1': ct_lo=0; ct_up=25.5
-        if sites[0] == 'nsac1': ct_lo=0; ct_up=30.5
-        if sites[0] == 'enac1': ct_lo=0; ct_up=25.5
-        if sites[0] == 'twpc1': ct_lo=0; ct_up=70.5
-        if sites[0] == 'twpc2': ct_lo=0; ct_up=40.5
-        if sites[0] == 'twpc3': ct_lo=0; ct_up=40.5
-        if sites[0] == 'maom1': ct_lo=0; ct_up=60.5
-        rlevel=np.arange(ct_lo,ct_up,0.5)
+        # define site-dependent contour levels and local time offest[XZ]
+        if sites[0] == 'sgpc1': ct_lo=0; ct_up=25.5; locoff=6
+        if sites[0] == 'nsac1': ct_lo=0; ct_up=30.5; locoff=8
+        if sites[0] == 'enac1': ct_lo=0; ct_up=25.5; locoff=1
+        if sites[0] == 'twpc1': ct_lo=0; ct_up=70.5; locoff=14
+        if sites[0] == 'twpc2': ct_lo=0; ct_up=40.5; locoff=12
+        if sites[0] == 'twpc3': ct_lo=0; ct_up=40.5; locoff=15
+        if sites[0] == 'maom1': ct_lo=0; ct_up=60.5; locoff=4
+        if test_findex == 0: ct_up=np.nanmax(cl_ob_diurnal.flatten())
+        if test_findex == 1: ct_up=np.nanmax(np.concatenate((cl_ob_diurnal.flatten(),cl_p_diurnal.flatten()),axis=0))
+
+        rlevel=np.arange(ct_lo,ct_up+1,0.5)
         #---------------------------------------------- 
         #plotting contours
         for iid,index in enumerate(index_list):
             fig2 = plt.figure()# Create figure
             ax  =fig2.add_axes([0.15, 0.15, 0.65, 0.75]) # Create axes
             if index==0:
-                 title=variable+'_obs_diurnal_clim'
+                 title=variable+'_diurnal_clim_obs'
                  yy=np.linspace(0,23,24)
                  xx=np.linspace(100,1000,37)
                  x,y=np.meshgrid(xx,yy)
                  obs_data_con=np.concatenate((cl_ob_diurnal,cl_ob_diurnal),axis=0)#6 hour GMT to Local time
-                 im=ax.contourf(y,x,obs_data_con[6:30,::-1],cmap='jet',levels=rlevel)
+                 im=ax.contourf(y,x,obs_data_con[locoff:locoff+24,::-1],cmap='jet',levels=rlevel)
                  #im=ax.pcolormesh(y,x,obs_data_con[6:30,::-1], vmin=0, vmax=25)
                  plt.xlim([0,23])
                  xax =  np.arange (0,24,3)
                  my_xticks = ['0','3','6','9','12','15','18','21']
 
             else:
-                 title=variable+'_mod_diurnal_clim'
-                 yy=np.linspace(0,7,8)
+                 title=variable+'_diurnal_clim_mod'
+                 yy=np.linspace(0,tlen_testVar-1,tlen_testVar)
                  xx=np.linspace(100,1000,37)
                  x,y=np.meshgrid(xx,yy)
                  test_data_con=np.concatenate((cl_p_diurnal,cl_p_diurnal),axis=0)
-                 #Starting time is 3:00:00 GTM, +3 hour GMT to Local time
-                 im=ax.contourf(y,x,test_data_con[1:9,::-1],cmap='jet',levels=rlevel)
+                 #Starting hour GMT to Local time
+                 if tlen_testGap == 3: #if the test model is 3-hourly
+                     test_pstart = round(locoff/tlen_testGap)-1
+                     if test_pstart < 0: test_pstart=int(0)
+                     im=ax.contourf(y,x,test_data_con[test_pstart:test_pstart+8,::-1],cmap='jet',levels=rlevel)
+                 if tlen_testGap == 1: #if the test model is 1-hourly
+                     im=ax.contourf(y,x,test_data_con[locoff:locoff+24,::-1],cmap='jet',levels=rlevel)
                  #im=ax.pcolormesh(y,x,test_data_con[1:9,::-1], vmin=0, vmax=25)
-                 plt.xlim([0,7])
-                 xax =  np.arange (0,8,1)
+                 plt.xlim([0,tlen_testVar-1])
+                 xax =  np.arange (0,tlen_testVar,int(tlen_testVar/8))
                  my_xticks = ['0','3','6','9','12','15','18','21']
 
             plt.xticks(xax, my_xticks)
@@ -294,7 +315,7 @@ def annual_cycle_zt_plot(parameter):
             plt.suptitle(title)
             cbar_ax = fig2.add_axes([0.85, 0.15, 0.05, 0.75])
             cb = fig2.colorbar(im, cax=cbar_ax)
-            cb.set_ticks(np.arange(ct_lo,ct_up+4.5,5),update_ticks=True)
+            #cb.set_ticks(np.arange(ct_lo,ct_up+4.5,5),update_ticks=True)
             plt.title('cl (%)')
             fig2.savefig(output_path+'/figures/'+sites[0]+'/'+title+'_'+sites[0]+'.png')
         #    
@@ -317,7 +338,15 @@ def annual_cycle_zt_plot(parameter):
     if sites[0] == 'twpc2': ct_lo=0; ct_up=60.5; ct_lo_diff=-10; ct_up_diff=50.5
     if sites[0] == 'twpc3': ct_lo=0; ct_up=40.5; ct_lo_diff=-20; ct_up_diff=15.5
     if sites[0] == 'maom1': ct_lo=0; ct_up=70.5; ct_lo_diff=-15; ct_up_diff=60.5
-    rlevel=np.arange(ct_lo,ct_up,0.5) #original
+
+    if test_findex == 0:
+        ct_up=np.nanmax(cl_ob)
+    if test_findex == 1: 
+        ct_up=np.nanmax([cl_ob,cl_p])
+        tmpct=cl_p[:,::-1]-cl_ob[:,::-1]
+        ct_lo_diff=np.int(np.nanmin(tmpct)-1)
+        ct_up_diff=np.int(np.nanmax(tmpct)+1)
+    rlevel=np.arange(ct_lo,ct_up+1,0.5) #original
     drlevel=np.arange(ct_lo_diff,ct_up_diff,0.5)   #difference
     #---------------------------------------------- 
 
@@ -328,14 +357,14 @@ def annual_cycle_zt_plot(parameter):
         ax  =fig.add_axes([0.15, 0.15, 0.65, 0.75]) # Create axes
         if index==0: #observation
             im=ax.contourf(y,x,cl_ob[:,::-1],cmap='jet',levels=rlevel)
-            title=variable+'_obs_annual_cycle_clim_'+sites[0]
+            title=variable+'_annual_cycle_clim_obs_'+sites[0]
         elif index==1: #test model
-            title=variable+'_mod_annual_cycle_clim_'+sites[0]
+            title=variable+'_annual_cycle_clim_mod_'+sites[0]
             im=ax.contourf(y,x,cl_p[:,::-1],cmap='jet',levels=rlevel)
             #im=ax.pcolormesh(y,x,cl_p[:,::-1], vmin=0, vmax=25)
         elif index==2: #difference
             im=ax.contourf(y,x,cl_p[:,::-1]-cl_ob[:,::-1],cmap='coolwarm',levels=drlevel)
-            title=variable+'_diff_annual_cycle_clim_'+sites[0]
+            title=variable+'_annual_cycle_clim_the_diff_'+sites[0]
         xax =  np.arange (0,12,1)
         my_xticks = ['J','F','M','A','M','J','J','A','S','O','N','D']
         plt.xticks(xax, my_xticks)
@@ -346,8 +375,8 @@ def annual_cycle_zt_plot(parameter):
         plt.suptitle(title)
         cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.75])
         cb = fig.colorbar(im, cax=cbar_ax)
-        if index < 2:  cb.set_ticks(np.arange(ct_lo,ct_up+4.5,5),update_ticks=True)           #original plot colorbar
-        if index == 2: cb.set_ticks(np.arange(ct_lo_diff,ct_up_diff+4.5,5),update_ticks=True) #difference plot colorbar
+        #if index < 2:  cb.set_ticks(np.arange(ct_lo,ct_up+4.5,5),update_ticks=True)           #original plot colorbar
+        #if index == 2: cb.set_ticks(np.arange(ct_lo_diff,ct_up_diff+4.5,5),update_ticks=True) #difference plot colorbar
         plt.title('cl (%)')
         fig.savefig(output_path+'/figures/'+sites[0]+'/'+title+'.png')
     #    
@@ -360,13 +389,9 @@ def annual_cycle_zt_plot(parameter):
 
     #---------------------------------------------- 
     # define site-dependent contour levels [XZ]
-    if sites[0] == 'sgpc1': xtup=25
-    if sites[0] == 'nsac1': xtup=50
-    if sites[0] == 'enac1': xtup=35
-    if sites[0] == 'twpc1': xtup=50
-    if sites[0] == 'twpc2': xtup=45
-    if sites[0] == 'twpc3': xtup=40
-    if sites[0] == 'maom1': xtup=60
+    if test_findex == 0: xtup=np.nanmax(cl_ob2.flatten())
+    if test_findex == 1: xtup=np.nanmax(np.concatenate((cl_ob2.flatten(),cl_p2.flatten()),axis=0))
+
     #---------------------------------------------- 
     # start plotting
     for index in range(len(seasons)):
@@ -381,7 +406,7 @@ def annual_cycle_zt_plot(parameter):
         plt.legend(loc='best',prop={'size':25})
         ax.tick_params(labelsize=20,length=5,width=1,direction='out',which='major')
         plt.title(seasons[index]+' Mean Cloud Fraction Vertical Profile',fontsize=20)
-        fig3.savefig(output_path+'/figures/'+sites[0]+'/'+variable+'_diff_'+seasons[index]+'_'+sites[0]+'.png')
+        fig3.savefig(output_path+'/figures/'+sites[0]+'/'+variable+'_zdiff_'+seasons[index]+'_'+sites[0]+'.png')
         plt.close('all')
 
     ########################### ANN Mean Vertical Lind Plot
@@ -397,7 +422,7 @@ def annual_cycle_zt_plot(parameter):
     plt.legend(loc='best',prop={'size':25})
     ax.tick_params(labelsize=20,length=5,width=1,direction='out',which='major')
     plt.title('Annual Mean Cloud Fraction Vertical Profile',fontsize=20)
-    fig0.savefig(output_path+'/figures/'+sites[0]+'/'+variable+'_diff_'+'ANN_'+sites[0]+'.png')
+    fig0.savefig(output_path+'/figures/'+sites[0]+'/'+variable+'_zdiff_'+'ANN_'+sites[0]+'.png')
     plt.close('all')
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 

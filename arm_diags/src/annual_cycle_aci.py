@@ -17,6 +17,7 @@ import numpy as np
 from numpy import genfromtxt
 import csv
 import matplotlib.pyplot as plt
+from matplotlib.ticker import (MultipleLocator,AutoMinorLocator)
 from .varid_dict import varid_longname
 from .taylor_diagram import TaylorDiagram
 from .utils import climo
@@ -66,11 +67,11 @@ def annual_cycle_aci_data(parameter):
     # Calculate for test model
     test_var_season=np.empty([len(variables),len(seasons)])*np.nan
     if not arm_name:
-        test_file = glob.glob(os.path.join(test_path,'*'+test_model+'*acimo*' + sites[0]+'.nc' )) #read in monthly test data
+        test_file = glob.glob(os.path.join(test_path,'*'+test_model+'*mo*' + sites[0]+'.nc' )) #read in monthly test data
     else:
         test_model = ''.join(e for e in test_model if e.isalnum()).lower()
 #         print(test_path,test_model,sites[0][:3]+test_model+'mon' + sites[0][3:5].upper())
-        test_file = glob.glob(os.path.join(test_path,sites[0][:3]+test_model+'acimon' + sites[0][3:5].upper()+'*.nc' )) #read in monthly test data
+        test_file = glob.glob(os.path.join(test_path,sites[0][:3]+test_model+'mon' + sites[0][3:5].upper()+'*.nc' )) #read in monthly test data
     print('test_file',test_file)
         
 
@@ -89,7 +90,7 @@ def annual_cycle_aci_data(parameter):
                 print(('after', test_var_season[j, :]))
 
             except:
-                print((variable+" not processed for " + test_model))
+                print((variable+" could not be found " + test_model))
         fin.close()
         test_index = 1
     except:
@@ -140,7 +141,7 @@ def annual_cycle_aci_data(parameter):
                     cmip_var_season[i, j, :] = tmpvarannual.copy()
                     print((ref_model,cmip_var_season[i, j, :]))
                 except:
-                    print((variable+" not processed for " + ref_model))
+                    print((variable+" could not be found " + ref_model))
             fin.close()
     # Calculate multi-model mean
     mmm_var_season =  np.nanmean(cmip_var_season,axis=0)
@@ -155,7 +156,11 @@ def annual_cycle_aci_data(parameter):
     if not os.path.exists(os.path.join(output_path,'metrics',sites[0])):
         os.makedirs(os.path.join(output_path,'metrics',sites[0])) 
     for j, variable in enumerate(variables):
-        if test_index == 1: np.savetxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_test_annual_cycle_'+sites[0]+'.csv',test_var_season[j,:])
+        if test_index == 1: 
+            try:
+                np.savetxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_test_annual_cycle_'+sites[0]+'.csv',test_var_season[j,:])
+            except:
+                print('No monthly ACI data for testmodel were stored.')
         if cmip_index == 1: 
             np.savetxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_mmm_annual_cycle_'+sites[0]+'.csv',mmm_var_season[j,:])
             np.savetxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_cmip_annual_cycle_'+sites[0]+'.csv',cmip_var_season[:,j,:])
@@ -168,8 +173,11 @@ def annual_cycle_aci_data(parameter):
 
         # Compute and save stddev and correlation coefficient of models,for taylor diagram
         if test_index == 1:
-            test_sample=np.array([test_var_season[j,:].std(ddof=1), np.corrcoef(data, test_var_season[j,:])[0,1]])
-            np.savetxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_test_annual_cycle_std_corr_'+sites[0]+'.csv',test_sample)
+            try:
+                test_sample=np.array([test_var_season[j,:].std(ddof=1), np.corrcoef(data, test_var_season[j,:])[0,1]])
+                np.savetxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_test_annual_cycle_std_corr_'+sites[0]+'.csv',test_sample)
+            except:
+                print('No monthly ACI data std for testmodel were stored.')
         if cmip_index == 1:
             mod_num=len(ref_models)
             m_all=[cmip_var_season[x,j,:] for x in range(mod_num)]
@@ -204,6 +212,7 @@ def annual_cycle_aci_line_plot(parameter):
             test_index = 1
         except:
             print('No test model monthly ACI data metrics found')
+            test_index = 0
         try:
             mmm_data = genfromtxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_mmm_annual_cycle_'+sites[0]+'.csv')
             cmip_data = genfromtxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_cmip_annual_cycle_'+sites[0]+'.csv')
@@ -211,7 +220,7 @@ def annual_cycle_aci_line_plot(parameter):
             cmip_index = 1
         except:
             mod_num = 0
-            print('No CMIP model monthly ACI data metrics found')
+            #print('No CMIP model monthly ACI data metrics found')
         obs_data = genfromtxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_obs_annual_cycle_'+sites[0]+'.csv')
         
         # Start Plotting
@@ -234,25 +243,28 @@ def annual_cycle_aci_line_plot(parameter):
         plt.xticks(xax, my_xticks)
         plt.xlim(1,12)
         if sites[0] == 'sgpc1':
-            if variable == 'cpc': plt.ylim(2000,5000)
             if variable[0:3] == 'ccn': plt.ylim(0,2000)
-            if variable == 'cod': plt.ylim(0,50)
         if sites[0] == 'enac1':
-            if variable == 'cpc': plt.ylim(0,1000)
-            if variable[0:3] == 'ccn': plt.ylim(0,400)
-            if variable == 'cod': plt.ylim(0,50)
+            if variable[0:3] == 'ccn': plt.ylim(0,500)
+        if variable == 'cpc': 
+            if test_index == 1:
+                ydn=np.nanmin([obs_data,test_data])-100
+                yup=np.nanmax([obs_data,test_data])+100
+            else:
+                ydn=np.nanmin([obs_data])-100
+                yup=np.nanmax([obs_data])+100
+            plt.ylim(ydn,yup)
+        if variable == 'cod': plt.ylim(0,50)
         plt.title('Annual Cycle: Model vs OBS vs CMIP',fontsize=15)
         plt.xlabel('Month',fontsize=15)
-        plt.legend(loc='best',prop={'size':12})
         plt.ylabel(var_longname[j])
-        #special notes for models mistreating surface type [XZ]:
-#         if (variable == 'hfls') or (variable == 'hfss') or (variable == 'rsus'):
-#             if (sites[0] == 'enac1') or (sites[0] == 'twpc1') or (sites[0] == 'twpc2') or (sites[0] == 'twpc3'):
-#                 ax.text(0.5, 0.05,'Note: the selected grid points were ocean grids in most GCMs', ha='center', va='center', transform=ax.transAxes,fontsize=8)
+        ax.yaxis.set_minor_locator(AutoMinorLocator(5))
+        plt.legend(loc='best',prop={'size':12})
+
         # save figures
-        figname = variable+'_annual_cycle_'+sites[0]+'.png'
+        figname = 'aerosol_annual_cycle_'+variable+'_'+sites[0]+'.png'
         if (variable[0] != 'c'):
-            figname = 'chemical_'+variable+'_annual_cycle_'+sites[0]+'.png'
+            figname = 'aerosol_annual_cycle_chemical_'+variable+'_'+sites[0]+'.png'
         fig.savefig(output_path+'/figures/'+sites[0]+'/'+figname)
         plt.close('all')
 
@@ -279,6 +291,7 @@ def annual_cycle_aci_taylor_diagram(parameter):
             test_index = 1
         except:
             print('No test model monthly ACI data metrics found')
+            test_index = 0
         try:
             mmm_data = genfromtxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_mmm_annual_cycle_std_corr_'+sites[0]+'.csv')
             cmip_data = genfromtxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_cmip_annual_cycle_std_corr_'+sites[0]+'.csv')
@@ -286,7 +299,7 @@ def annual_cycle_aci_taylor_diagram(parameter):
             cmip_index = 1
         except:
             mod_num = 0
-            print('No CMIP model monthly ACI data metrics found')
+            #print('No CMIP model monthly ACI data metrics found')
         obs_data = genfromtxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_obs_annual_cycle_std_corr_'+sites[0]+'.csv')
         
         # observational annual mean must be valid for taylor diagram [XZ]
@@ -320,9 +333,9 @@ def annual_cycle_aci_taylor_diagram(parameter):
                            [ p.get_label() for p in lg_item ],
                            numpoints=1,  loc='upper right',prop={'size':10})
 #                np.savetxt(basedir+'metrics/'+vas[va_ind]+'_'+mod+'std_corr.csv',mod_sample,fmt='%.3f')
-                figname = variable+'_annual_cycle_taylor_diagram_'+sites[0]+'.png'
+                figname = 'aerosol_annual_cycle_'+variable+'_taylor_diagram_'+sites[0]+'.png'
                 if (variable[0] != 'c'):
-                    figname = 'chemical_'+variable+'_annual_cycle_taylor_diagram_'+sites[0]+'.png'
+                    figname = 'aerosol_annual_cycle_chemical_'+variable+'_taylor_diagram_'+sites[0]+'.png'
                 fig.savefig(output_path+'/figures/'+sites[0]+'/'+figname)
                 plt.close('all')
             except:    
