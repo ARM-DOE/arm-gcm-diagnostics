@@ -18,6 +18,8 @@
     # ### suppress the taylor diagram and output note, when observation annual mean is not valid
     # ### change the input/output format to site-dependent
     # ### minor fix on the plotting code for better visualization
+    # Xiaojian Zheng - Nov2022
+    # ### add the auto-detection of testmodel temporal resolution
     # --------------------------------------------------------------------------------------
     #===================================================================================================
     # annual_cycle_zt.py
@@ -28,7 +30,23 @@
     # ### change the 2D plots from color-mesh to color-contour
     # ### change the default treatments when test model not found
     # ### minor fix on the plotting code for better visualization
+    # Xiaojian Zheng - Nov2022
+    # ### add the auto-detection of testmodel temporal resolution
+    # ### add Annual along the seasonal plots
     # --------------------------------------------------------------------------------------
+    #===================================================================================================
+    # annual_cycle_aci.py
+    # --------------------------------------------------------------------------------------
+    # Xiaojian Zheng - Nov2022
+    # ### add the auto-detection of input testmodel file
+    # ### adjust the auto-yaxis
+    # --------------------------------------------------------------------------------------
+    #===================================================================================================
+    # aerosol_activation.py
+    # --------------------------------------------------------------------------------------
+    # Xiaojian Zheng - Nov2022
+    # ### add the auto-detection of input testmodel file
+    # ### add the option of output histogram plots
     #===================================================================================================
     # seasonal_mean.py
     # --------------------------------------------------------------------------------------
@@ -37,7 +55,7 @@
     # ### change the input/output format to site-dependent
     # --------------------------------------------------------------------------------------
     #===================================================================================================	
-    # diurnal_cycle.py
+    # diurnal_cycle.py & pdf_daily.py
     # --------------------------------------------------------------------------------------
     # Xiaojian Zheng - Nov-Dec 2021
     # ### unify the data extraction and process code for all the ARM sites
@@ -46,6 +64,9 @@
     # ### change the default treatments when test model not found
     # ### extend the diurnal cycle to all the four seasons, and overlay MMM
     # ### phase calc. for Obs is fixed for accurate hamnoic plot position
+    # Xiaojian Zheng - Nov2022
+    # ### add the auto-detection of testmodel temporal resolution
+    # ### add the user input of starting and ending years of making the testmodel climatology
     # --------------------------------------------------------------------------------------
     #===================================================================================================	
     # convection_onset_driver.py
@@ -61,6 +82,8 @@
     # Xiaojian Zheng - Dec 2021
     # ### change the input/output format to site-dependent (ENA/MAO added)
     # ### fix minor issues on image linking
+    # Xiaojian Zheng - Nov 2022
+    # ### update the image linking
     # --------------------------------------------------------------------------------------
     #===================================================================================================
 

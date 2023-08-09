@@ -11,6 +11,10 @@ case_id = 'V3_TestCMIP6'
 # Testing model dataset (User defined model)
 # Specify name of the test model to find the files
 test_data_set = 'testmodel'
+#specify the data starting/ending years in the testmodel file
+#default is 1979 - 2006 as in the CMIP file
+test_start_year = 1979 
+test_end_year   = 2006
 
 #--------------------------------------------------------------------------
 # Set input path, where the model, observational and cmip data are located.
