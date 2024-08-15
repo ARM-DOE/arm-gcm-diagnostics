@@ -76,7 +76,7 @@ def climo(var, season):
     climo = ma.zeros([ncycle])#+list(np.shape(v))[1:])
     for n in range(ncycle):
         idx = np.array( [ season_idx[cycle[n]][var_time_absolute[i].month-1]
-                          for i in range(len(var_time_absolute)) ], dtype=np.int).nonzero()
+                          for i in range(len(var_time_absolute)) ], dtype=int).nonzero()
         climo[n] = ma.average(v[idx], axis=0, weights=dt[idx])
 
     # ---------------------------------------------------------------------------------------

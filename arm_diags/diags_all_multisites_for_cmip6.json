@@ -283,7 +283,23 @@
       "diags_set": "set9_aerosol_activation",
       "variables": ["cpc","ccn"],
       "sites": ["enac1"]
+                },
+          {
+      "diags_set": "set10_twolegged_metric",
+      "variables": ["Atmospheric Coupling Legs","Terrestrial Cooupling Legs"],
+      "sites": ["sgpc1"],
+      "season": ["DJF","MAM","JJA","SON"]
+                },
+
+         {
+      "diags_set": "set11_diurnal_cycle_LAcoupling",
+      "variables": ["SH","LH","T_srf","RH_srf","LCL","pbl"],
+      "varnames": ["Surface Sensible Heat Flux","Surface Latent Heat Flux","Surface Air Temperature","Surface Relative Humidity","Lifting Condensation Level","Planatary Boundary Layer"],
+      "units": ["W/m\u00b2","W/m\u00b2","deg C","%","meter","meter"],
+      "sites": ["sgpc1"],
+      "season": ["ANN","DJF","MAM","JJA","SON"]
                 }
+
           ]
 }
 
