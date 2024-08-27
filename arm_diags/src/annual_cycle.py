@@ -69,6 +69,7 @@ def annual_cycle_data(parameter):
         test_model = ''.join(e for e in test_model if e.isalnum()).lower()
         print(test_path,test_model,sites[0][:3]+test_model+'mon' + sites[0][3:5].upper())
         test_file = glob.glob(os.path.join(test_path,sites[0][:3]+test_model+'mon' + sites[0][3:5].upper()+'*.nc' )) #read in monthly test data
+
     print('test_file',test_file)
         
 

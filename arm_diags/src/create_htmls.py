@@ -232,8 +232,8 @@ def annual_cycle_aci_html(parameter):
             htmlfile.write('<TR><TH ALIGN=LEFT>'+var_longname[j])
             two_figs='annual_cycle_'+variable+'_2plots_{}.html'.format(title_name)
             htmlfile1 = open(output_path+'/html/'+two_figs,"w")
-            fig1=output_path+'/figures/{}/'.format(title_name)+variable+'_annual_cycle_{}.png'.format(title_name)
-            fig2=output_path+'/figures/{}/'.format(title_name)+variable+'_annual_cycle_taylor_diagram_{}.png'.format(title_name)
+            fig1=output_path+'/figures/{}/'.format(title_name)+'aerosol_annual_cycle_'+variable+'_{}.png'.format(title_name)
+            fig2=output_path+'/figures/{}/'.format(title_name)+'aerosol_annual_cycle_'+variable+'_taylor_diagram_{}.png'.format(title_name)
             htmlfile1.write('<div class="container"><div style="float:left"><img src='+fig1+' alt="Line" width="600" height="450"></div><div style="float:left"><img src='+fig2+' alt="Line" width="500" height="450"></div>')
             htmlfile.write('<TH ALIGN=LEFT><A HREF='+two_figs+'>Line plot and Taylor Diagram.</a>')
     htmlfile.write('<tr><td><br/></td></tr>')
@@ -273,16 +273,16 @@ def annual_cycle_zt_html(parameter):
 
             htmlfile.write('<TR><TH ALIGN=LEFT>'+var_longname[j])#+'('+vas_source[va_ind]+')')
             title_name = title_to_file[title]
-            fig_obs=output_path+'/figures/{}/'.format(title_name)+variable+'_obs_annual_cycle_clim_{}.png'.format(title_name)
-            fig_mod=output_path+'/figures/{}/'.format(title_name)+variable+'_mod_annual_cycle_clim_{}.png'.format(title_name)
-            fig_diff=output_path+'/figures/{}/'.format(title_name)+variable+'_diff_annual_cycle_clim_{}.png'.format(title_name)
-            htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig_mod+'> Model</a>')
+            fig_obs=output_path+'/figures/{}/'.format(title_name)+variable+'_annual_cycle_clim_obs_{}.png'.format(title_name)
+            fig_mod=output_path+'/figures/{}/'.format(title_name)+variable+'_annual_cycle_clim_mod_{}.png'.format(title_name)
+            fig_diff=output_path+'/figures/{}/'.format(title_name)+variable+'_annual_cycle_clim_the_diff_{}.png'.format(title_name)
+            htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig_mod+'> Model  </a>')
             htmlfile.write('<A HREF='+fig_obs+'> Obs.</a>')
-            htmlfile.write('<A HREF='+fig_diff+'> Model-Obs.</a>')
+            htmlfile.write('<A HREF='+fig_diff+'>  Model-Obs.</a>')
             #htmlfile.write('<TH><BR>')
 
             for si in range(len(seasons)):
-               fig=output_path+'/figures/{}/'.format(title_name)+variable+'_diff_'+seasons[si]+'_{}.png'.format(title_name)
+               fig=output_path+'/figures/{}/'.format(title_name)+variable+'_zdiff_'+seasons[si]+'_{}.png'.format(title_name)
                if seasons[si]=='ANN':
                    htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig+'> '+seasons[si]+'</a>')
                else:
@@ -299,7 +299,7 @@ def diurnal_cycle_html(parameter):
 
     title_to_file = OrderedDict()
     title_to_file['Southern Great Plains (SGP)'] = 'sgpc1'
-    title_to_file['North Slope of Alaska (NSA)'] = 'nsac1'
+    #title_to_file['North Slope of Alaska (NSA)'] = 'nsac1'
     title_to_file['Eastern North Atlantic (ENA)'] = 'enac1'
     title_to_file['Tropical Western Pacific (TWP), Manus, Papua New Guinea'] = 'twpc1'
     title_to_file['Tropical Western Pacific (TWP), Nauru Island'] = 'twpc2'
@@ -358,13 +358,13 @@ def diurnal_cycle_zt_html(parameter):
         for j, variable in enumerate(variables):
         #for va_ind in range(len(vas)-2):# at this stage for cl_p only
             htmlfile.write('<TR><TH ALIGN=LEFT>'+var_longname[j])#+'('+vas_source[va_ind]+')')
-            fig_obs=output_path+'/figures/{}/'.format(title_name)+variable+'_obs_diurnal_clim_{}.png'.format(title_name)
-            fig_mod=output_path+'/figures/{}/'.format(title_name)+variable+'_mod_diurnal_clim_{}.png'.format(title_name)
-            fig_obs_mon=output_path+'/figures/{}/'.format(title_name)+variable+'_obs_mon_diurnal_clim_{}.png'.format(title_name)
-            fig_mod_mon=output_path+'/figures/{}/'.format(title_name)+variable+'_mod_mon_diurnal_clim_{}.png'.format(title_name)
-            htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig_mod_mon+'> Model</a>')
+            fig_obs=output_path+'/figures/{}/'.format(title_name)+variable+'_diurnal_clim_obs_{}.png'.format(title_name)
+            fig_mod=output_path+'/figures/{}/'.format(title_name)+variable+'_diurnal_clim_mod_{}.png'.format(title_name)
+            fig_obs_mon=output_path+'/figures/{}/'.format(title_name)+variable+'_mon_diurnal_clim_obs_{}.png'.format(title_name)
+            fig_mod_mon=output_path+'/figures/{}/'.format(title_name)+variable+'_mon_diurnal_clim_mod_{}.png'.format(title_name)
+            htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig_mod_mon+'> Model  </a>')
             htmlfile.write('<A HREF='+fig_obs_mon+'> Obs.</a>')
-            htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig_mod+'> Model</a>')
+            htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig_mod+'> Model  </a>')
             htmlfile.write('<A HREF='+fig_obs+'> Obs.</a>')
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -380,7 +380,7 @@ def pdf_daily_html(parameter):
 
     title_to_file = OrderedDict()
     title_to_file['Southern Great Plains (SGP)'] = 'sgpc1'
-    title_to_file['North Slope of Alaska (NSA)'] = 'nsac1'
+    #title_to_file['North Slope of Alaska (NSA)'] = 'nsac1'
     title_to_file['Eastern North Atlantic (ENA)'] = 'enac1'
     title_to_file['Tropical Western Pacific (TWP), Manus, Papua New Guinea'] = 'twpc1'
     title_to_file['Tropical Western Pacific (TWP), Nauru Island'] = 'twpc2'
@@ -460,14 +460,14 @@ def aerosol_activation_html(parameter):
         #ccn02
         two_figs_02='aerosol_activation_ccn02_'+title_name+'_2plots.html'
         htmlfile_02 = open(output_path+'/html/'+two_figs_02,"w")
-        fig1=output_path+'/figures/{}/'.format(title_name)+'aerosol_activation_bulk_cpc_ccn02_{}.png'.format(title_name)
-        fig2=output_path+'/figures/{}/'.format(title_name)+'aerosol_activation_bulk_cpc_ccn02_{}_{}.png'.format(test_model, title_name)
+        fig1=output_path+'/figures/{}/'.format(title_name)+'aerosol_activation_bulk_cpc_ccn02_obs_{}.png'.format(title_name)
+        fig2=output_path+'/figures/{}/'.format(title_name)+'aerosol_activation_bulk_cpc_ccn02_testmodel_{}.png'.format(title_name)
         htmlfile_02.write('<div class="container"><div style="float:left"><img src='+fig1+' alt="Line" width="720" height="600"></div><div style="float:left"><img src='+fig2+' alt="Line" width="720" height="600"></div>')
         #ccn05
         two_figs_05='aerosol_activation_ccn05_'+title_name+'_2plots.html'
         htmlfile_05 = open(output_path+'/html/'+two_figs_05,"w")
-        fig1=output_path+'/figures/{}/'.format(title_name)+'aerosol_activation_bulk_cpc_ccn05_{}.png'.format(title_name)
-        fig2=output_path+'/figures/{}/'.format(title_name)+'aerosol_activation_bulk_cpc_ccn05_{}_{}.png'.format(test_model, title_name)
+        fig1=output_path+'/figures/{}/'.format(title_name)+'aerosol_activation_bulk_cpc_ccn05_obs_{}.png'.format(title_name)
+        fig2=output_path+'/figures/{}/'.format(title_name)+'aerosol_activation_bulk_cpc_ccn05_testmodel_{}.png'.format(title_name)
         htmlfile_05.write('<div class="container"><div style="float:left"><img src='+fig1+' alt="Line" width="720" height="600"></div><div style="float:left"><img src='+fig2+' alt="Line" width="720" height="600"></div>')
         #
         htmlfile.write('<TD><A HREF='+two_figs_02+'>'+'At 0.2% SS'+'</a></TD>')

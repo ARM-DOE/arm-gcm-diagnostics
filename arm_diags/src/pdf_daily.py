@@ -40,7 +40,7 @@ def var_pdf_daily(var, season, years):
     for iy,year in enumerate(years):
         t1 = cdtime.comptime(year,mo0,0o1)
         t2 = t1.add(90,cdtime.Days)
-#        try:
+
         var_yr =  var(time=(t1,t2,'co'))
         var_da_year[iy,:]= var_yr
         if var.id == 'tas':
@@ -48,9 +48,7 @@ def var_pdf_daily(var, season, years):
 
         if var.id == 'pr':
             var_da_year[iy,:] = var_da_year[iy,:]*3600.*24.
-#        except:
-#            print str(year) +' not Available!'
-#            var_da_year[iy,:] =  np.nan
+   
     var_da = np.reshape(var_da_year, (90*len(years)))
     return var_da
 
@@ -66,6 +64,10 @@ def pdf_daily_data(parameter):
     sites = parameter.sites   
 
     test_model = parameter.test_data_set 
+
+    test_styr = parameter.test_start_year
+    test_edyr = parameter.test_end_year
+
     ref_models = parameter.ref_models
    
     arm_name = parameter.arm_filename
@@ -76,9 +78,10 @@ def pdf_daily_data(parameter):
     print('Create Precipitation PDF: '+sites[0])
     print('============================================================')
     # Calculate for test model
-    years = list(range(1979,2006))        #a total of 27 years 
+    test_findex = 0 #preset of test model indicator
+    years_test = list(range(test_styr,test_edyr))        #make years list of test model
     
-    test_var_season=np.empty([len(variables),len(years)*90,len(seasons)])*np.nan
+    test_var_season=np.empty([len(variables),len(years_test)*90,len(seasons)])*np.nan
     print('start')
 
     if not arm_name:
@@ -89,22 +92,27 @@ def pdf_daily_data(parameter):
         print(test_path,test_model,sites[0][:3]+test_model+'day' + sites[0][3:5].upper())
         test_file = glob.glob(os.path.join(test_path,sites[0][:3]+test_model+'day' + sites[0][3:5].upper()+'*.nc' )) #read in monthly test data
 
-
     if len(test_file) == 0:
-       raise RuntimeError('No daily data for test model were found.')
-    fin = cdms2.open(test_file[0])
-    
-    print(('test_model',test_model))
+       print('No diurnal data for test model were found: '+sites[0])
 
-    for j, variable in enumerate(variables): 
-        for k, season in enumerate(seasons):
-            try:
-                var = fin (variable,squeeze = 1)
-                test_var_da = var_pdf_daily(var,season,years)
+    #test model exist
+    if len(test_file) > 0:
+        test_findex = 1 
 
-            except:
-                print((variable+" not processed for " + test_model))
-            test_var_season[j,:,k] = test_var_da
+        fin = cdms2.open(test_file[0])
+        print(('test_model',test_model))
+
+        for j, variable in enumerate(variables): 
+            for k, season in enumerate(seasons):
+                try:
+                    var = fin (variable,squeeze = 1)
+                    test_var_da = var_pdf_daily(var,season,years_test)
+                    test_var_season[j,:,k] = test_var_da
+                except:
+                    print((variable+" not processed for " + test_model))
+                    print('!!please check the start and end year in basicparameter.py')
+                    test_findex = 0
+
 
     # Calculate for observational data
     # site-dependent time range [XZ]
@@ -140,6 +148,7 @@ def pdf_daily_data(parameter):
         
 
     # Calculate cmip model seasonal mean climatology
+    years = list(range(1979,2006))        #make years list of CMIP models
     cmip_var_season=np.empty([len(ref_models),len(variables),len(years)*90,len(seasons)])*np.nan
  
     for i, ref_model in enumerate(ref_models):
@@ -163,14 +172,14 @@ def pdf_daily_data(parameter):
 
                      except:
                          print((variable+" not processed for " + ref_model))
+
              fin.close()  
     # Calculate multi-model mean
     mmm_var_season =  np.nanmean(cmip_var_season,axis=0)
-
     # Save data in csv format in metrics folder
     for j, variable in enumerate(variables):
         for k, season in enumerate(seasons):
-            np.savetxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_'+season+'_test_pdf_daily.csv',test_var_season[j,:,k])
+            if test_findex == 1: np.savetxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_'+season+'_test_pdf_daily.csv',test_var_season[j,:,k])
             np.savetxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_'+season+'_mmm_pdf_daily.csv',mmm_var_season[j,:,k])
             np.savetxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_'+season+'_cmip_pdf_daily.csv',cmip_var_season[:,j,:,k])
             np.savetxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_'+season+'_obs_pdf_daily.csv',obs_var_season[j,:,k])
@@ -207,9 +216,15 @@ def pdf_daily_plot(parameter):
     var_longname = [ varid_longname[x] for x in variables]
     mod_num = len(ref_models)
     
+    test_findex = 0
+ 
     for j, variable in enumerate(variables):
         for i, season in enumerate(seasons):
-            test_data = genfromtxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_'+season+'_test_pdf_daily.csv')
+            try:
+                test_data = genfromtxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_'+season+'_test_pdf_daily.csv')
+                test_findex = 1
+            except:
+                test_findex = 0
             mmm_data =  genfromtxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_'+season+'_mmm_pdf_daily.csv')
             obs_data =  genfromtxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_'+season+'_obs_pdf_daily.csv')
             cmip_data = genfromtxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_'+season+'_cmip_pdf_daily.csv')
@@ -222,12 +237,13 @@ def pdf_daily_plot(parameter):
     
             fig1 = plt.figure()# Create figure
             ax1  =fig1.add_axes([0.15, 0.15, 0.8, 0.8]) # Create axes
-            y,binEdges = calculate_pdf(test_data)
-            y0=deepcopy(y); y[y0 == 0]=np.nan
-            ax.plot(0.5*(binEdges[1:]+binEdges[:-1]),y,'r',lw=3,label='MOD')
-            y1=y*0.5*(binEdges[1:]+binEdges[:-1])
-            y10=deepcopy(y1); y1[y10 == 0]=np.nan
-            ax1.plot(0.5*(binEdges[1:]+binEdges[:-1]),y1,'r',lw=3,label='MOD')
+            if test_findex == 1:
+                y,binEdges = calculate_pdf(test_data)
+                y0=deepcopy(y); y[y0 == 0]=np.nan
+                ax.plot(0.5*(binEdges[1:]+binEdges[:-1]),y,'r',lw=3,label='MOD')
+                y1=y*0.5*(binEdges[1:]+binEdges[:-1])
+                y10=deepcopy(y1); y1[y10 == 0]=np.nan
+                ax1.plot(0.5*(binEdges[1:]+binEdges[:-1]),y1,'r',lw=3,label='MOD')
 
             y,binEdges = calculate_pdf(obs_data)
             y0=deepcopy(y); y[y0 == 0]=np.nan
