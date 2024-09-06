@@ -18,6 +18,7 @@ from matplotlib.gridspec import GridSpec
 from .varid_dict import varid_longname
 from .taylor_diagram import TaylorDiagram
 from .utils import climo
+from .utils import get_diurnal_cycle_seasons
 import MV2
 import matplotlib.gridspec as gridspec
 import scipy.stats
@@ -25,89 +26,89 @@ from scipy import interpolate
 import calendar
 import math
 
-def get_seasonal_3hr(var,seasons,years):
+#def get_seasonal_3hr(var,seasons,years):
+#
+#    '''Get seasonal data for each variable'''
+#    nyears = len(years)
+#    nseasons = len(seasons)
+#    t0 = 0
 
-    '''Get seasonal data for each variable'''
-    nyears = len(years)
-    nseasons = len(seasons)
-    t0 = 0
+#    var_seasons = MV2.zeros([nyears,nseasons,365,8])*np.nan #Daily mean for each season
+#    for iyear in range(nyears):
+#        if calendar.isleap(int(years[iyear]))==True:
+#            nday = 366
+#        else:
+#            nday = 365
+#        ntime = int(nday*8)
+#        var1 = var[t0:t0+ntime]
+#        var1_ext = np.concatenate((var1,var1),axis=0)
+#        t0 = t0+ntime
 
-    var_seasons = MV2.zeros([nyears,nseasons,365,8])*np.nan #Daily mean for each season
-    for iyear in range(nyears):
-        if calendar.isleap(int(years[iyear]))==True:
-            nday = 366
-        else:
-            nday = 365
-        ntime = int(nday*8)
-        var1 = var[t0:t0+ntime]
-        var1_ext = np.concatenate((var1,var1),axis=0)
-        t0 = t0+ntime
+#        for iseason in range(nseasons):
+#            if seasons[iseason]=='ANN':
+#                var_seasons0 = var1[0:2920]
+#                var_seasons1 = np.reshape(var_seasons0,(365,8))
+#                var_seasons[iyear,iseason,:,:] = var_seasons1
+#            else:
+#                if seasons[iseason]=='MAM':
+#                    if nday==366: t1 = 60
+#                    else: t1 = 59
+#                if seasons[iseason]=='JJA':
+#                    if nday==366: t1 = 152
+#                    else: t1 = 151
+#                if seasons[iseason]=='SON':
+#                    if nday==366: t1 = 244
+#                    else: t1 = 243
+#                if seasons[iseason]=='DJF':
+#                    if nday==366: t1 = 335
+#                    else: t1 = 334
+#                var_seasons0 = var1_ext[int(t1*8):int(t1*8)+720]
+#                var_seasons1 = np.reshape(var_seasons0,(90,8))
+#                var_seasons[iyear,iseason,0:90,:] = var_seasons1
+#
+#    return var_seasons
 
-        for iseason in range(nseasons):
-            if seasons[iseason]=='ANN':
-                var_seasons0 = var1[0:2920]
-                var_seasons1 = np.reshape(var_seasons0,(365,8))
-                var_seasons[iyear,iseason,:,:] = var_seasons1
-            else:
-                if seasons[iseason]=='MAM':
-                    if nday==366: t1 = 60
-                    else: t1 = 59
-                if seasons[iseason]=='JJA':
-                    if nday==366: t1 = 152
-                    else: t1 = 151
-                if seasons[iseason]=='SON':
-                    if nday==366: t1 = 244
-                    else: t1 = 243
-                if seasons[iseason]=='DJF':
-                    if nday==366: t1 = 335
-                    else: t1 = 334
-                var_seasons0 = var1_ext[int(t1*8):int(t1*8)+720]
-                var_seasons1 = np.reshape(var_seasons0,(90,8))
-                var_seasons[iyear,iseason,0:90,:] = var_seasons1
-
-    return var_seasons
-
-def get_seasonal(var,seasons,years):
-    
-    '''Get seasonal data for each variable'''
-    nyears = len(years)
-    nseasons = len(seasons)
-    t0 = 0
-
-    var_seasons = MV2.zeros([nyears,nseasons,365,24])*np.nan #Daily mean for each season
-    for iyear in range(nyears):
-        if calendar.isleap(int(years[iyear]))==True:
-            nday = 366
-        else:
-            nday = 365
-        ntime = int(nday*24)
-        var1 = var[t0:t0+ntime]
-        var1_ext = np.concatenate((var1,var1),axis=0)
-        t0 = t0+ntime
-
-        for iseason in range(nseasons):
-            if seasons[iseason]=='ANN': 
-                var_seasons0 = var1[0:8760]
-                var_seasons1 = np.reshape(var_seasons0,(365,24))    
-                var_seasons[iyear,iseason,:,:] = var_seasons1 
-            else:
-                if seasons[iseason]=='MAM':
-                    if nday==366: t1 = 60
-                    else: t1 = 59
-                if seasons[iseason]=='JJA':
-                    if nday==366: t1 = 152
-                    else: t1 = 151
-                if seasons[iseason]=='SON':
-                    if nday==366: t1 = 244
-                    else: t1 = 243
-                if seasons[iseason]=='DJF':
-                    if nday==366: t1 = 335
-                    else: t1 = 334
-                var_seasons0 = var1_ext[int(t1*24):int(t1*24)+2160]
-                var_seasons1 = np.reshape(var_seasons0,(90,24))
-                var_seasons[iyear,iseason,0:90,:] = var_seasons1
-
-    return var_seasons
+#def get_seasonal(var,seasons,years):
+#    
+#    '''Get seasonal data for each variable'''
+#    nyears = len(years)
+#    nseasons = len(seasons)
+#    t0 = 0
+#
+#    var_seasons = MV2.zeros([nyears,nseasons,365,24])*np.nan #Daily mean for each season
+#    for iyear in range(nyears):
+#        if calendar.isleap(int(years[iyear]))==True:
+#            nday = 366
+#        else:
+#            nday = 365
+#        ntime = int(nday*24)
+#        var1 = var[t0:t0+ntime]
+#        var1_ext = np.concatenate((var1,var1),axis=0)
+#        t0 = t0+ntime
+#
+#        for iseason in range(nseasons):
+#            if seasons[iseason]=='ANN': 
+#                var_seasons0 = var1[0:8760]
+#                var_seasons1 = np.reshape(var_seasons0,(365,24))    
+#                var_seasons[iyear,iseason,:,:] = var_seasons1 
+#            else:
+#                if seasons[iseason]=='MAM':
+#                    if nday==366: t1 = 60
+#                    else: t1 = 59
+#                if seasons[iseason]=='JJA':
+#                    if nday==366: t1 = 152
+#                    else: t1 = 151
+#                if seasons[iseason]=='SON':
+#                    if nday==366: t1 = 244
+#                    else: t1 = 243
+#                if seasons[iseason]=='DJF':
+#                    if nday==366: t1 = 335
+#                    else: t1 = 334
+#                var_seasons0 = var1_ext[int(t1*24):int(t1*24)+2160]
+#                var_seasons1 = np.reshape(var_seasons0,(90,24))
+#                var_seasons[iyear,iseason,0:90,:] = var_seasons1
+#
+#    return var_seasons
 
 def diurnal_cycle_LAcoupling_plot(parameter):
     variables = parameter.variables
@@ -151,7 +152,8 @@ def diurnal_cycle_LAcoupling_plot(parameter):
         years_obs = list(range(2004,2016))
         nyears_obs = len(years_obs)
 
-        var_seasons = get_seasonal(var,seasons,years_obs)    #[year,season,90,24] 
+        #var_seasons = get_seasonal(var,seasons,years_obs)    #[year,season,90,24] 
+        var_seasons = get_diurnal_cycle_seasons(var,seasons,years_obs)
         narray = nyears_obs*365
         var_seasons1 = np.empty([nseasons,narray,24])*np.nan
         var_array_err = np.empty([nseasons,24])*np.nan
@@ -174,7 +176,8 @@ def diurnal_cycle_LAcoupling_plot(parameter):
             years_mod = list(range(2003,2015))
             nyears_mod = len(years_mod)
 
-            var_mod_seasons = get_seasonal_3hr(var_mod,seasons,years_mod)    #[year,season,90,24]
+            #var_mod_seasons = get_seasonal_3hr(var_mod,seasons,years_mod)    #[year,season,90,24]
+            var_mod_seasons = get_diurnal_cycle_seasons(var_mod,seasons,years_mod)
             narray = nyears_mod*365
             var_mod_seasons1 = np.empty([nseasons,narray,8])*np.nan
             var_mod_array_err = np.empty([nseasons,8])*np.nan

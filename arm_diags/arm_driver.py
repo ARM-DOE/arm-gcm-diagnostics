@@ -31,6 +31,8 @@ def make_parameters(basic_parameter):
     #f_data = open('diags_all_multisites_for_cmip5.json').read()
     f_data = open('diags_all_multisites_for_cmip6.json').read()
     #f_data = open('diags_set10_cmip6.json').read()
+    #f_data = open('diags_all_multisites_for_LAcoupling.json').read()
+    #f_data = open('diags_all_multisites_check.json').read()
     json_file = json.loads(f_data)
 
     parameters = [] 
