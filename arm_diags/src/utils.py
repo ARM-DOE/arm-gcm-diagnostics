@@ -9,13 +9,14 @@
     # ---------------------------------------------------------------------------------------
 #===========================================================================================================================
 
-
 import numpy as np
 import numpy.ma as ma
 import cdms2
 import cdutil
 import pdb
 from copy import deepcopy
+import MV2
+import calendar
 
 def climo(var, season):
     """
@@ -59,8 +60,6 @@ def climo(var, season):
     # Compute time length
     dt = tbounds[:,1] - tbounds[:,0]
 
-
-
     # Convert to masked array
     v = var.asma()
 
@@ -76,14 +75,13 @@ def climo(var, season):
     climo = ma.zeros([ncycle])#+list(np.shape(v))[1:])
     for n in range(ncycle):
         idx = np.array( [ season_idx[cycle[n]][var_time_absolute[i].month-1]
-                          for i in range(len(var_time_absolute)) ], dtype=np.int).nonzero()
+                          for i in range(len(var_time_absolute)) ], dtype=int).nonzero()
         climo[n] = ma.average(v[idx], axis=0, weights=dt[idx])
 
     # ---------------------------------------------------------------------------------------
     # filled the masked array with NaN [XZ]
     climo = climo.filled(np.nan)
     # ---------------------------------------------------------------------------------------
-
 
     if var.id == 'tas':
         climo  = climo - 273.15
@@ -92,4 +90,58 @@ def climo(var, season):
         climo = climo*3600.*24.
 
     return climo
+
+#============================================================================================
+# Functions to get the diurnal cycle for particular seasons/years
+# Output: var_seasons [nyears,nseasons,365,nhour] 
+#============================================================================================
+
+def get_diurnal_cycle_seasons(var,seasons,years):
+    
+    '''Get seasonal data for each variable'''
+    nyears = len(years)
+    nseasons = len(seasons)
+    t0 = 0
+
+    time = var.getTime()[:]
+    if time[1]-time[0]==1: nhour=24
+    if time[1]-time[0]==3: nhour=8
+    #print('Time resolution: ', nhour)
+
+    var_seasons = MV2.zeros([nyears,nseasons,365,nhour])*np.nan  #diurnal cycle for each day
+    for iyear in range(nyears):
+        if calendar.isleap(int(years[iyear]))==True:
+            nday = 366
+        else:
+            nday = 365
+        ntime = int(nday*nhour)
+        var1 = var[t0:t0+ntime]
+        var1_ext = np.concatenate((var1,var1),axis=0)
+        t0 = t0+ntime
+
+        for iseason in range(nseasons):
+            if seasons[iseason]=='ANN':
+                length = int(365*nhour)
+                var_seasons0 = var1[0:length]
+                var_seasons1 = np.reshape(var_seasons0,(365,nhour))
+                var_seasons[iyear,iseason,:,:] = var_seasons1
+            else:
+                if seasons[iseason]=='MAM':
+                    if nday==366: t1 = 60
+                    else: t1 = 59
+                if seasons[iseason]=='JJA':
+                    if nday==366: t1 = 152
+                    else: t1 = 151
+                if seasons[iseason]=='SON':
+                    if nday==366: t1 = 244
+                    else: t1 = 243
+                if seasons[iseason]=='DJF':
+                    if nday==366: t1 = 335
+                    else: t1 = 334
+                var_seasons0 = var1_ext[int(t1*nhour):int(t1*nhour)+90*nhour]
+                var_seasons1 = np.reshape(var_seasons0,(90,nhour))
+                var_seasons[iyear,iseason,0:90,:] = var_seasons1
+
+    return var_seasons
+
 

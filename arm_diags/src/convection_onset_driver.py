@@ -86,10 +86,10 @@ def convection_onset(parameter):
             else:
                 filename = glob.glob(os.path.join(obs_path,site[:3]+'armdiags1hr' + site[3:5].upper()+'*.nc'))[0]
             
-            print(filename)
+            print('filename: ',filename)
             f_in=cdms2.open(filename)
             var=f_in(va)
-            print('var_shape',va,var.shape)
+            print('var_shape: ',va,var.shape)
             if va == 'pr':
                 precip = var
                 precip[precip<-900] = np.nan

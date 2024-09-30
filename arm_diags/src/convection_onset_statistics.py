@@ -70,13 +70,14 @@ def convection_onset_statistics(precip_threshold,cwv_max,cwv_min,bin_width,cwv,p
     #cwv_max = 85 # default = 70 (in mm)
     #cwv_min = 28 # default = 28 (in mm)
     #bin_width = 1.5 # default = 1.5
+    #print('inputs: ',cwv_max,cwv_min,bin_width)
     number_of_bins = int(np.ceil((cwv_max-cwv_min)/bin_width))
-    #print('cwv_max',cwv_max)
-    #print(number_of_bins)
+    #print('number_of_bins: ',number_of_bins)
     bin_center = np.arange((cwv_min+(bin_width/2)), (cwv_max-(bin_width/2))+bin_width, bin_width)
     #print('bin_center',bin_center,'bin_width',bin_width)
     if len(bin_center)!=number_of_bins:
         bin_center = np.arange((cwv_min+(bin_width/2)), (cwv_max-(bin_width/2)), bin_width)
+    #print('bin_center range: ',np.min(bin_center),np.max(bin_center))
 
     # Define precip threshold
     #precip_threshold = 0.5 # default 0.5 (in mm/hr)
@@ -86,8 +87,14 @@ def convection_onset_statistics(precip_threshold,cwv_max,cwv_min,bin_width,cwv,p
     precip_binned = np.empty([number_of_bins,cwv.size]) * np.nan
     precip_counts = np.zeros([number_of_bins,cwv.size])
 
-    np.warnings.filterwarnings('ignore')
+    #============================================
+    # Cheng 09/05/2024
+    # Comment out the following line.
+    # Otherwise, the figures cannot be generated
+    #==========================================
+    #np.warnings.filterwarnings('ignore')
     # Bin the data by CWV value as specified above
+    print("Bin the data by CWV value as specified above")
     for i in range (0,number_of_bins):
         tmp1 = np.where(cwv > cwv_min+(i*bin_width))
         bin_index[i,tmp1] = 1
@@ -116,6 +123,7 @@ def convection_onset_statistics(precip_threshold,cwv_max,cwv_min,bin_width,cwv,p
             #    precip_counts[i,j] = 1
             if np.isnan(precip_binned[i,j]):
                 precip_counts[i,j] = np.nan
+    #print('Check')
 
     # Create binned arrays
     hist_cwv = np.empty([number_of_bins,1]) * np.nan
@@ -175,19 +183,19 @@ def convection_onset_statistics(precip_threshold,cwv_max,cwv_min,bin_width,cwv,p
     xulim = 5*np.ceil(np.max(np.round(bin_center+bin_width/2))/5)
     xllim = 5*np.floor(np.min(np.round(bin_center-bin_width/2))/5)
     ax1.set_xlim(xllim-10,xulim+15)
-    ax1.set_ylim(0,5)
+    #ax1.set_ylim(0,5)
     ax1.set_xticks(np.arange(np.ceil(xllim/10)*10-10,np.ceil(xulim/10)*10+15,15))
     #print(np.arange(np.ceil(xllim/10)*10-10,np.ceil(xulim/10)*10+15,15))
     #print(np.ceil(xllim/10)*10)
     #print(np.ceil(xulim/10)*10)
     ulim = np.nanmax(pr_binned_mean)
     #print('max precip',ulim)
-    #ax1.set_yticks(np.arange(0,np.ceil(ulim)))
-    ax1.set_yticks(np.arange(0,5))
+    ax1.set_yticks(np.arange(0,np.ceil(ulim)))
+    #ax1.set_yticks(np.arange(0,5))
     #ax1.set_xlim(25,72)
     #ax1.set_ylim(0,6)
     #ax1.set_xticks([30,40,50,60,70])
-    #ax1.set_yticks([0,1,2,3,4,5,6])
+    ax1.set_yticks([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15])
     ax1.tick_params(labelsize=axes_fontsize)
     ax1.tick_params(axis='x', pad=10)
     error = [errorbar_precip,errorbar_precip]

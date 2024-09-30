@@ -113,6 +113,7 @@ def diurnal_cycle_data(parameter):
         print(test_path,test_model,sites[0][:3]+test_model+'*hr' + sites[0][3:5].upper())
         test_file = glob.glob(os.path.join(test_path,sites[0][:3]+test_model+'*hr' + sites[0][3:5].upper()+'*.nc' ))
 
+
     if len(test_file) == 0:
        print('No diurnal data for test model were found: '+sites[0])
 
@@ -122,6 +123,7 @@ def diurnal_cycle_data(parameter):
 
         #initialize the indicator for temporal res of testmodel
         test_tres = test_file[0].split(test_model)[-1][:3] #e.g., '3hr', '1hr'
+
 
         fin = cdms2.open(test_file[0])
         if test_tres == '1hr': test_tidlen=24
@@ -142,6 +144,7 @@ def diurnal_cycle_data(parameter):
                     print((variable+" "+season+" not processed for " + test_model))
                     print('!!please check the start and end year in basicparameter.py')
                     test_findex = 0
+
     # Calculate for observational data
     obs_var_season=np.empty([len(variables),24,len(seasons)])*np.nan
     #obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag_domain_diurnal*.nc')) #read in diurnal test data
@@ -225,6 +228,7 @@ def diurnal_cycle_data(parameter):
         os.makedirs(os.path.join(output_path,'metrics',sites[0]))
     for j, variable in enumerate(variables):
         for k, season in enumerate(seasons):
+
             if test_findex == 1: np.savetxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_'+season+'_test_diurnal_cycle_'+test_tres+'_'+sites[0]+'.csv',test_var_season[j,:,k])
             np.savetxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_'+season+'_mmm_diurnal_cycle_'+sites[0]+'.csv',mmm_var_season[j,:,k])
             np.savetxt(output_path+'/metrics/'+sites[0]+'/'+variable+'_'+season+'_cmip_diurnal_cycle_'+sites[0]+'.csv',cmip_var_season[:,j,:,k])

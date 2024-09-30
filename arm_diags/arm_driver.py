@@ -4,6 +4,7 @@ import copy
 import numpy
 import cdutil
 import genutil
+import shutil
 import cdms2
 import MV2
 import glob
@@ -20,13 +21,18 @@ from src.diurnal_cycle import diurnal_cycle_data,diurnal_cycle_plot # .src
 from src.pdf_daily import pdf_daily_data, pdf_daily_plot # .src
 from src.convection_onset_driver import convection_onset # .src
 from src.aerosol_activation import aerosol_activation_density_plot # .src
-#from src.convection_onset_driver_todd import convection_onset
-from src.create_htmls import annual_cycle_zt_html,diurnal_cycle_zt_html,diurnal_cycle_html,seasonal_mean_table_html,annual_cycle_html,annual_cycle_aci_html,pdf_daily_html,convection_onset_html,aerosol_activation_html,diags_main_html
+from src.twolegged_metric import twolegged_metric_plot # .src
+from src.diurnal_cycle_LAcoupling import diurnal_cycle_LAcoupling_plot
 
+#from src.convection_onset_driver_todd import convection_onset
+from src.create_htmls import annual_cycle_zt_html,diurnal_cycle_zt_html,diurnal_cycle_html,seasonal_mean_table_html,annual_cycle_html,annual_cycle_aci_html,pdf_daily_html,convection_onset_html,aerosol_activation_html,twolegged_metric_html,diurnal_cycle_LAcoupling_html,diags_main_html
 def make_parameters(basic_parameter):
     #f_data = open('examples/diags_set3.json').read()
     #f_data = open('diags_all_multisites_for_cmip5.json').read()
     f_data = open('diags_all_multisites_for_cmip6.json').read()
+    #f_data = open('diags_set10_cmip6.json').read()
+    #f_data = open('diags_all_multisites_for_LAcoupling.json').read()
+    #f_data = open('diags_all_multisites_check.json').read()
     json_file = json.loads(f_data)
 
     parameters = [] 
@@ -48,9 +54,10 @@ basic_parameter = parser.get_orig_parameters(argparse_vals_only=False)
 #basic_parameter = parser.get_parameters()
 parameters = make_parameters(basic_parameter)
 
-
 case_id =  basic_parameter.case_id
 output_path = basic_parameter.output_path
+armdiags_path = basic_parameter.armdiags_path
+print('output_path: ',output_path)
 
 # Generate new case folder given case_id:
 if not os.path.exists(os.path.join(output_path)):
@@ -58,6 +65,13 @@ if not os.path.exists(os.path.join(output_path)):
     os.makedirs(os.path.join(output_path,'html'))
     os.makedirs(os.path.join(output_path,'figures'))
     os.makedirs(os.path.join(output_path,'metrics'))
+
+# Copy the logo figures to the newly created html folder
+src = os.listdir(armdiags_path+'arm_diags/misc/')
+dst = output_path+'/html/'
+for ifile in range(len(src)):
+    src1 = armdiags_path+'arm_diags/misc/'+src[ifile]
+    shutil.copy(src1, dst)
 
 # Loop through diagnostic sets prespecified from diags_sets.json
 html_count = 0
@@ -138,7 +152,18 @@ for parameter in parameters:
         html_count = html_count + 1
         #except:
             #pass
-    
+     
+    if diags_set == 'set10_twolegged_metric':
+        twolegged_metric_plot(parameter)
+        twolegged_metric_html(parameter)
+        html_count = html_count + 1     
+
+    if diags_set == 'set11_diurnal_cycle_LAcoupling':
+        diurnal_cycle_LAcoupling_plot(parameter)
+        diurnal_cycle_LAcoupling_html(parameter)
+        html_count = html_count + 1
+          
+
 #
 if html_count >= 1:
 # Creat the main html page hosting all sets of diagnostics
