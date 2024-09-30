@@ -17,6 +17,7 @@ armdiags_path = '/Users/tao4/Documents/ARM_Infrastructure/ARM_DIAG/arm-gcm-diagn
 test_data_set = 'testmodel'
 #specify the data starting/ending years in the testmodel file
 #default is 1979 - 2006 as in the CMIP file
+
 #NCAR: 2013, 2014
 #GFDL: 1980, 2000
 test_start_year = 1979

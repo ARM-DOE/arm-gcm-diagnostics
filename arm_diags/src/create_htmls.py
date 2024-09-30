@@ -235,8 +235,10 @@ def annual_cycle_aci_html(parameter):
             htmlfile.write('<TR><TH ALIGN=LEFT>'+var_longname[j])
             two_figs='annual_cycle_'+variable+'_2plots_{}.html'.format(title_name)
             htmlfile1 = open(output_path+'/html/'+two_figs,"w")
+
             fig1='../figures/{}/'.format(title_name)+'aerosol_annual_cycle_'+variable+'_{}.png'.format(title_name)
             fig2='../figures/{}/'.format(title_name)+'aerosol_annual_cycle_'+variable+'_taylor_diagram_{}.png'.format(title_name)
+
             htmlfile1.write('<div class="container"><div style="float:left"><img src='+fig1+' alt="Line" width="600" height="450"></div><div style="float:left"><img src='+fig2+' alt="Line" width="500" height="450"></div>')
             htmlfile.write('<TH ALIGN=LEFT><A HREF='+two_figs+'>Line plot and Taylor Diagram.</a>')
     htmlfile.write('<tr><td><br/></td></tr>')
@@ -279,6 +281,7 @@ def annual_cycle_zt_html(parameter):
             fig_obs='../figures/{}/'.format(title_name)+variable+'_annual_cycle_clim_obs_{}.png'.format(title_name)
             fig_mod='../figures/{}/'.format(title_name)+variable+'_annual_cycle_clim_mod_{}.png'.format(title_name)
             fig_diff='../figures/{}/'.format(title_name)+variable+'_annual_cycle_clim_the_diff_{}.png'.format(title_name)
+
             htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig_mod+'> Model  </a>')
             htmlfile.write('<A HREF='+fig_obs+'> Obs.</a>')
             htmlfile.write('<A HREF='+fig_diff+'>  Model-Obs.</a>')
@@ -286,6 +289,7 @@ def annual_cycle_zt_html(parameter):
 
             for si in range(len(seasons)):
                fig='../figures/{}/'.format(title_name)+variable+'_zdiff_'+seasons[si]+'_{}.png'.format(title_name)
+
                if seasons[si]=='ANN':
                    htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig+'> '+seasons[si]+'</a>')
                else:
@@ -367,6 +371,7 @@ def diurnal_cycle_zt_html(parameter):
             fig_mod='../figures/{}/'.format(title_name)+variable+'_diurnal_clim_mod_{}.png'.format(title_name)
             fig_obs_mon='../figures/{}/'.format(title_name)+variable+'_mon_diurnal_clim_obs_{}.png'.format(title_name)
             fig_mod_mon='../figures/{}/'.format(title_name)+variable+'_mon_diurnal_clim_mod_{}.png'.format(title_name)
+
             htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig_mod_mon+'> Model  </a>')
             htmlfile.write('<A HREF='+fig_obs_mon+'> Obs.</a>')
             htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig_mod+'> Model  </a>')
@@ -474,6 +479,7 @@ def aerosol_activation_html(parameter):
         fig1='../figures/{}/'.format(title_name)+'aerosol_activation_bulk_cpc_ccn05_obs_{}.png'.format(title_name)
         fig2='../figures/{}/'.format(title_name)+'aerosol_activation_bulk_cpc_ccn05_testmodel_{}.png'.format(title_name)
         htmlfile_05.write('<div class="container"><div style="float:left"><img src='+fig1+' alt="Line" width="720" height="600"></div><div style="float:left"><img src='+fig2+' alt="No inputs for models" width="720" height="600"></div>')
+
         #
         htmlfile.write('<TD><A HREF='+two_figs_02+'>'+'At 0.2% SS'+'</a></TD>')
         htmlfile.write('<TD><A HREF='+two_figs_05+'>'+'At 0.5% SS'+'</a></TD>')

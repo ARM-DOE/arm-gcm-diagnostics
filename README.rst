@@ -11,14 +11,27 @@ Important Links
 ===============
 
 - Official source code repository: https://github.com/ARM-DOE/arm-gcm-diagnostics
-- ARM webpage: http://www.arm.gov/data/eval/123 (Click Data Directory for data)
+- ARM webpage: https://www.arm.gov/data/data-sources/adcme-123 (Click Data Directory for data)
 
 
 References
 ======
-Zhang, C., S. Xie, C. Tao, S. Tang, T. Emmenegger, J. D. Neelin, K. A. Schiro, W. Lin, and Z. Shaheen. "The ARM Data-oriented Metrics and Diagnostics Package for Climate Models-A New Tool for Evaluating Climate Models with Field Data." Bulletin of the American Meteorological Society (2020). 
+Overview of the ARM-Diags:
 
-Zhang, C., S. Xie, S. A. Klein, H.-Y. Ma, S. Tang, K. V. Weverberg, C. Morcrette, and J. Petch (2018), CAUSES: Diagnosis of the summertime warm bias in CMIP5 climate models at the ARM Southern Great Plains site, Journal of Geophysical Research: Atmospheres, 123(6), doi:10.1002/2017JD027200.
+- Zhang, C., S. Xie, C. Tao, S. Tang, T. Emmenegger, J. D. Neelin, K. A. Schiro, W. Lin, and Z. Shaheen. "The ARM Data-oriented Metrics and Diagnostics Package for Climate Models-A New Tool for Evaluating Climate Models with Field Data."     Bulletin of the American Meteorological Society (2020). 
+
+- Technical report, 2024: "ARM Data-Oriented Metrics and DiagnosticsPackage (ARM-Diags) for Climate Model Evaluation" https://portal.nersc.gov/project/capt/ARMVAP/ARM_DIAG_v4.pdf
+
+- Presentation at ARM/ASR meeting 2020: "ARM Data-Oriented Diagnostics to Evaluate the Climate Model Simulation" https://asr.science.energy.gov/meetings/stm/presentations/2020/976.pdf
+
+- Presentation at ARM/ASR meeting 2023: "Overview of ARM diagnostic package (ARM-Diags) and its applications to climate model evaluation" https://asr.science.energy.gov/meetings/stm/presentations/2023/1576.pdf
+
+Applications of the ARM-Diags:
+
+- Zhang, C., S. Xie, S. A. Klein, H.-Y. Ma, S. Tang, K. V. Weverberg, C. Morcrette, and J. Petch (2018), CAUSES: Diagnosis of the summertime warm bias in CMIP5 climate models at the ARM Southern Great Plains site, Journal of Geophysical Research: Atmospheres, 123(6), doi:10.1002/2017JD027200.
+- Emmenegger, T., Y. Kuo, S. Xie, C. Zhang, C. Tao, and J. D. Neelin, 2022: Evaluating Tropical Precipitation Relations in CMIP6 Models with ARM Data. J. Climate, 35, 6343–6360, https://doi.org/10.1175/JCLI-D-21-0386.1. 
+- Zheng, X., C. Tao, C. Zhang, S. Xie, Y. Zhang, B. Xi, and X. Dong, 2023: Assessment of CMIP5 and CMIP6 AMIP Simulated Clouds and Surface Shortwave Radiation Using ARM Observations over Different Climate Regions. J. Climate, 36, 8475–8495, https://doi.org/10.1175/JCLI-D-23-0247.1. 
+- Emmenegger, T., F. Ahmed, Y. Kuo, S. Xie, C. Zhang, C. Tao, and J. D. Neelin, 2024: The Physics behind Precipitation Onset Bias in CMIP6 Models: The Pseudo-Entrainment Diagnostic and Trade-Offs between Lapse Rate and Humidity. J. Climate, 37, 2013–2033, https://doi.org/10.1175/JCLI-D-23-0227.1. 
 
 Install
 =======
@@ -27,7 +40,7 @@ The data files including observation and CMIP5 model data are available through 
 
 For downloading data:
 
-- Click https://www.arm.gov/data/eval/123
+- Click https://www.arm.gov/data/data-sources/adcme-123 
 - Following the Data Directory link on that page, it will lead to the area that the data files are placed. A short registration is required if you do not already have an ARM account.
 - DOI for the citation of the data is 10.5439/1646838
 
@@ -75,16 +88,19 @@ For Linux::
 
 Examples
 =============
-In this release, the package provides 6 sets of diagnostics including:
+In this release, the following sets of diagnostics are included:
 
 - Tables summarizing DJF, MAM, JJA, SON and Annual Mean climatology using monthly output 
 - Line plots and Taylor diagrams diagnosing annual cycle using monthly output
 - Contour and vertical profiles of annual cycle for quantities with vertical distribution (i.e., cloud fraction)
-- Line plots of diurnal cycle for quantities without vertical distribution (i.e., precipitation)
-- Contour plots of diurnal cycle for quantities with vertical distribution 
-- Line plots of Probability Density Functions using daily output
+- Line and harmonic dial plots of the diurnal cycle of precipitation
+- Line plots of Probability Density Functions (PDF) using daily output
+- Line plots of the diurnal cycle for quantities relevant to the land-atmosphere coupling (e.g.,sensible and latent heat flux, PBL) 
+- Convection onset metrics showing the statistical relationship between precipitation rate and column water vapor
+- Aerosol-CCN activation metrics describing the percentage distribution of how many aerosols can be activated as CCN under different supersaturation levels
+- Two-legged metrics evaluating the strength of L-A coupling by partitioning the impact of the land states on surface fluxes (the land leg) and from the impact of surface fluxes on the atmospheric states (the atmospheric leg)
 
-For now, the diagnostics focus over SGP site. And in a later release we will include data and diagnostics for more ARM site.
+Clike `here <https://portal.nersc.gov/project/capt/ARMVAP/arm_diag_v4_example.html>`_ for an example of the ARM-Diags v4. Please refer to the `technical report <https://github.com/UV-CDAT/uvcdat/wiki/install>`_ for more details.
 
 Set-up new case
 =================

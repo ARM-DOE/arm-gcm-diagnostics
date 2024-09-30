@@ -344,8 +344,10 @@ def annual_cycle_zt_plot(parameter):
     if test_findex == 1: 
         ct_up=np.nanmax([cl_ob,cl_p])
         tmpct=cl_p[:,::-1]-cl_ob[:,::-1]
+
         ct_lo_diff=int(np.nanmin(tmpct)-1)
         ct_up_diff=int(np.nanmax(tmpct)+1)
+
     rlevel=np.arange(ct_lo,ct_up+1,0.5) #original
     drlevel=np.arange(ct_lo_diff,ct_up_diff,0.5)   #difference
     #---------------------------------------------- 
