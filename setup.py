@@ -23,6 +23,7 @@ setup(
         'xcdat',
         'netCDF4',
         'pandas',
+        'scipy',
         'matplotlib',
     ],
     entry_points={

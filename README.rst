@@ -12,6 +12,7 @@ Important Links
 
 - Official source code repository: https://github.com/ARM-DOE/arm-gcm-diagnostics
 - ARM webpage: https://www.arm.gov/data/data-sources/adcme-123 (Click Data Directory for data)
+- Repository traffic statistics: https://arm-doe.github.io/arm-gcm-diagnostics/traffic-report/ (Updated weekly)
 
 
 References
@@ -52,7 +53,7 @@ To create a conda environment with all the required dependencies::
     
     conda create -n arm_diags_env python=3.8
     conda activate arm_diags_env
-    conda install -c conda-forge cdutil cdms2 matplotlib numpy
+    conda install -c conda-forge numpy scipy matplotlib xarray xcdat pandas netCDF4
 
 After setting up the conda environment, you can install the package using the conda recipe::
 
@@ -177,10 +178,13 @@ Dependencies
 
 ARM Diagnostics relies on the following key packages:
 
-* `cdms2 <https://github.com/CDAT/cdms>`_: Climate Data Management System
-* `cdutil <https://github.com/CDAT/cdutil>`_: Climate data analysis utilities
 * `numpy <https://numpy.org/>`_: Scientific computing with Python
+* `scipy <https://scipy.org/>`_: Scientific computing library for Python
 * `matplotlib <https://matplotlib.org/>`_: Visualization with Python
+* `xarray <https://xarray.dev/>`_: N-D labeled arrays and datasets
+* `xcdat <https://xcdat.readthedocs.io/>`_: Climate data analysis built on xarray
+* `pandas <https://pandas.pydata.org/>`_: Data analysis and manipulation tool
+* `netCDF4 <https://unidata.github.io/netcdf4-python/>`_: Python interface to the netCDF C library
 
 Other useful tools in the Earth science ecosystem:
 
