@@ -1,0 +1,4 @@
+include README.rst LICENSE.txt
+recursive-include arm_diags/misc *
+recursive-include arm_diags/examples *.json
+recursive-include docs *.pdf

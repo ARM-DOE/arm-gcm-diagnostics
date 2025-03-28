@@ -1,3 +1,8 @@
+"""
+ARM Diagnostics Parameter Module.
+
+This module contains the parameter class for the ARM Diagnostics package.
+"""
 from __future__ import print_function
 
 import sys

@@ -33,57 +33,91 @@ Applications of the ARM-Diags:
 - Zheng, X., C. Tao, C. Zhang, S. Xie, Y. Zhang, B. Xi, and X. Dong, 2023: Assessment of CMIP5 and CMIP6 AMIP Simulated Clouds and Surface Shortwave Radiation Using ARM Observations over Different Climate Regions. J. Climate, 36, 8475–8495, https://doi.org/10.1175/JCLI-D-23-0247.1. 
 - Emmenegger, T., F. Ahmed, Y. Kuo, S. Xie, C. Zhang, C. Tao, and J. D. Neelin, 2024: The Physics behind Precipitation Onset Bias in CMIP6 Models: The Pseudo-Entrainment Diagnostic and Trade-Offs between Lapse Rate and Humidity. J. Climate, 37, 2013–2033, https://doi.org/10.1175/JCLI-D-23-0227.1. 
 
-Install
-=======
+Installation
+============
 
-The data files including observation and CMIP5 model data are available through ARM archive. The analytical codes to calculate and visualize the diagnostics results are placed via repository (arm-gcm-diagnostics) at https://github.com/ARM-DOE/
+The ARM Diagnostics package can be installed using conda, pip, or from source. The package requires Python 3.6 or later.
 
-For downloading data:
+Data files including observation and CMIP model data are available through the ARM archive:
 
-- Click https://www.arm.gov/data/data-sources/adcme-123 
-- Following the Data Directory link on that page, it will lead to the area that the data files are placed. A short registration is required if you do not already have an ARM account.
+- Visit the ARM Data Center: https://www.arm.gov/data/data-sources/adcme-123 
+- Follow the Data Directory link on that page to access the data files
+- A short registration is required if you do not already have an ARM account
 - DOI for the citation of the data is 10.5439/1646838
 
-For obtaining codes::
+Installation with conda
+----------------------
+
+To create a conda environment with all the required dependencies::
+    
+    conda create -n arm_diags_env python=3.8
+    conda activate arm_diags_env
+    conda install -c conda-forge cdp cdutil cdms2 matplotlib numpy
+
+After setting up the conda environment, you can install the package using the conda recipe::
+
+    cd arm-gcm-diagnostics/conda
+    conda build .
+    conda install --use-local arm_diags
+
+Installation with pip
+--------------------
+
+You can install the latest release of ARM Diagnostics using pip::
+
+    pip install arm-diags
+
+Installation from source
+-----------------------
+
+For development or the latest features, you can install directly from the GitHub repository::
 
     git clone https://github.com/ARM-DOE/arm-gcm-diagnostics/
-    
-To create conda enviroment (for a minimum enviroment)::
-    
-    conda create -n arm_diags_env_py3 cdp cdutil cdms2 libcdms matplotlib scipy python=3 -c conda-forge -c uvcdat
-    
-To activate the conda enviroment::
-    
-    conda activate arm_diags_env_py3
+    cd arm-gcm-diagnostics
+    pip install -e .
 
-To install the package, go into <Your directory> (/arm-gcm-dignostics/)::
-    
-    python setup.py install
+Usage
+=====
+
+Command-line Interface
+---------------------
+
+ARM Diagnostics now provides a user-friendly command-line interface. After installation, you can run diagnostics using the `arm-diags` command::
+
+    arm-diags run --config /path/to/config.json --output /path/to/output
+
+For more options::
+
+    arm-diags --help
 
 Testing
-=============
+-------
 
-A test case has been set up for the users to run the package out-of-the-box. In this case, all the observation, CMIP data, test data should be downloaded placed under directoris:: 
+A test case has been set up for users to run the package out-of-the-box. For this test:
 
- <Your directory>/arm_diags/observation
- <Your directory>/arm_diags/cmip
- <Your directory>/arm_diags/model
+1. Download the observation, CMIP data, and test data from the ARM archive and place them under these directories::
 
-Edit parameter file basicparameter.py to set 'base_path' to <Your directory>
+    <data_directory>/observation
+    <data_directory>/cmip6
+    <data_directory>/testmodel
 
-To run the package, simply type in the terminal the following::
-   
-  python arm_driver.py -p basicparameter.py
+2. Run the package using the provided example configuration::
 
-To view the diagnostics results:
+    # Set environment variables for data paths
+    export ARM_DIAGS_BASE_PATH=/path/to/data_directory
+    
+    # Run diagnostics with an example configuration
+    arm-diags run --config /path/to/arm-gcm-diagnostics/arm_diags/examples/diags_all_multisites_v3_cmip6_annual.json
 
-For Mac OS::
+3. View the diagnostics results:
 
-  open <Your directory>/arm_diags/case_name/html/ARM_diag.html
+   For macOS::
 
-For Linux::
+     open /path/to/output/html/arm_diag.html
 
-   xdg-open <Your directory>/ arm_diags/case_name/html/ARM_diag.html
+   For Linux::
+
+     xdg-open /path/to/output/html/arm_diag.html
 
 
 Examples
@@ -102,29 +136,54 @@ In this release, the following sets of diagnostics are included:
 
 Clike `here <https://portal.nersc.gov/project/capt/ARMVAP/arm_diag_v4_example.html>`_ for an example of the ARM-Diags v4. Please refer to the `technical report <https://github.com/UV-CDAT/uvcdat/wiki/install>`_ for more details.
 
-Set-up new case
-=================
+Setting Up a New Analysis
+=======================
 
-- To apply this package to any CMIP output provided within our dataset, just copy the CMIP model data from <Your directory>/ arm_diags /cmip to <Your directory>/ arm_diags /model.
-- To apply this package to your own model output. The input datasets should be saved under data directory <Your directory>/ arm_diags /model. The file name should follow the test data files provided and the data sets should follow the CMIP convention, so that the input files are readable by the software package.
-- Edit basicparameter.py as follows:
-- Change 'test_data_set' to the model name
-- Edit 'case_id' to create folder to save diagnostics results 
-- Edit 'base_path' to spedify location of the data
-- Run the package by typing::
+Using Custom Model Data
+-----------------------
 
-              python arm_driver.py -p basicparameter.py
+1. To use CMIP output provided within the ARM dataset:
+   - Copy the CMIP model data from the ARM archive to your local data directory
+
+2. To use your own model output:
+   - Save your model data in the appropriate directory structure
+   - Files should follow CMIP naming conventions for compatibility
+   - Ensure proper formatting following the examples in the test data
+
+3. Create a configuration file:
+   - Use one of the example JSON files in the `arm_diags/examples/` directory as a template
+   - Modify parameters to match your analysis requirements
+
+4. Run the diagnostics with your configuration:
+
+   Using environment variables::
+
+       # Set environment variables
+       export ARM_DIAGS_TEST_MODEL="your_model_name"
+       export ARM_DIAGS_CASE_ID="your_analysis_name"
+       export ARM_DIAGS_BASE_PATH="/path/to/your/data"
+       
+       # Run diagnostics
+       arm-diags run --config /path/to/your/config.json
+
+   Or specify paths directly::
+
+       arm-diags run --config /path/to/your/config.json --output /path/to/output
 
 
 
-Extensions and related software
-===============================
+Dependencies
+============
 
-* `UVCDAT <https://github.com/UV-CDAT/uvcdat/wiki/install>`_ : 
-  Ultrascale Visualization Climate Data Analysis Tools.
+ARM Diagnostics relies on the following key packages:
 
-The other required dependencies to install Py-ART in addition to Python are:
+* `cdms2 <https://github.com/CDAT/cdms>`_: Climate Data Management System
+* `cdutil <https://github.com/CDAT/cdutil>`_: Climate data analysis utilities
+* `numpy <https://numpy.org/>`_: Scientific computing with Python
+* `matplotlib <https://matplotlib.org/>`_: Visualization with Python
 
-* `NumPy <http://www.scipy.org>`_
-* `SciPy <http://www.scipy.org>`_
-* `matplotlib <http://matplotlib.org/>`_
+Other useful tools in the Earth science ecosystem:
+
+* `CDAT <https://github.com/CDAT>`_: Climate Data Analysis Tools
+* `xarray <https://xarray.dev/>`_: N-D labeled arrays and datasets
+* `ESMValTool <https://www.esmvaltool.org/>`_: Earth System Model Evaluation Tool

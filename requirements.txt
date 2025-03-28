@@ -1,0 +1,5 @@
+numpy>=1.19.0
+cdms2>=3.1.5
+cdutil>=8.2.1
+genutil>=8.2.1
+matplotlib>=3.3.0
