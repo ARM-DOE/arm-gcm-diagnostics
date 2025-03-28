@@ -7,11 +7,12 @@ This module provides the command-line interface for running the ARM Diagnostics 
 
 import argparse
 import json
+import copy
 import os
 import sys
 from . import __version__
 from .arm_parser import ARMParser
-from .arm_driver import make_parameters
+from .arm_driver import make_parameters, process_diagnostics
 
 
 def main():
@@ -60,7 +61,7 @@ def run_diagnostics(args):
         with open(args.config, 'r') as f:
             config_data = f.read()
         
-        # Original functionality from arm_driver.py
+        # Get parameters
         arm_parser = ARMParser()
         basic_parameter = arm_parser.get_orig_parameters(argparse_vals_only=False)
         
@@ -83,7 +84,6 @@ def run_diagnostics(args):
                 parameters.append(p)
         
         # Process each parameter set
-        from .arm_driver import process_diagnostics
         process_diagnostics(parameters, basic_parameter)
         
         print("Diagnostics completed successfully!")

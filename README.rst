@@ -52,7 +52,7 @@ To create a conda environment with all the required dependencies::
     
     conda create -n arm_diags_env python=3.8
     conda activate arm_diags_env
-    conda install -c conda-forge cdp cdutil cdms2 matplotlib numpy
+    conda install -c conda-forge cdutil cdms2 matplotlib numpy
 
 After setting up the conda environment, you can install the package using the conda recipe::
 
