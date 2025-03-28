@@ -19,9 +19,10 @@ setup(
     python_requires='>=3.6',
     install_requires=[
         'numpy',
-        'cdms2',
-        'cdutil',
-        'genutil',
+        'xarray',
+        'xcdat',
+        'netCDF4',
+        'pandas',
         'matplotlib',
     ],
     entry_points={

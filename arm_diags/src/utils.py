@@ -7,141 +7,225 @@
     # ### Add the array treatment: filled the output masked (missing) value with numpy NaN
     # ### to avoid the issue of plotting masked value as 0 value in the plotting code
     # ---------------------------------------------------------------------------------------
+# V4 Development
+    # ---------------------------------------------------------------------------------------
+    # 2024
+    # ### Replaced cdms2/cdutil with xarray and xcdat for modern compatibility (similar to E3SM Diagnostics)
+    # ---------------------------------------------------------------------------------------
 #===========================================================================================================================
 
 import numpy as np
-import numpy.ma as ma
-import cdms2
-import cdutil
-import pdb
-from copy import deepcopy
-import MV2
+import pandas as pd
+import xarray as xr
+import xcdat
 import calendar
+from copy import deepcopy
 
 def climo(var, season):
     """
-    Compute the climatology for var for the given season.
-    The returned variable must be 2 dimensional.
-    """
-    season_idx = {
-        '01': [1,0,0,0,0,0,0,0,0,0,0,0],
-        '02': [0,1,0,0,0,0,0,0,0,0,0,0],
-        '03': [0,0,1,0,0,0,0,0,0,0,0,0],
-        '04': [0,0,0,1,0,0,0,0,0,0,0,0],
-        '05': [0,0,0,0,1,0,0,0,0,0,0,0],
-        '06': [0,0,0,0,0,1,0,0,0,0,0,0],
-        '07': [0,0,0,0,0,0,1,0,0,0,0,0],
-        '08': [0,0,0,0,0,0,0,1,0,0,0,0],
-        '09': [0,0,0,0,0,0,0,0,1,0,0,0],
-        '10': [0,0,0,0,0,0,0,0,0,1,0,0],
-        '11': [0,0,0,0,0,0,0,0,0,0,1,0],
-        '12': [0,0,0,0,0,0,0,0,0,0,0,1],
-        'DJF':[1,1,0,0,0,0,0,0,0,0,0,1],
-        'MAM':[0,0,1,1,1,0,0,0,0,0,0,0],
-        'JJA':[0,0,0,0,0,1,1,1,0,0,0,0],
-        'SON':[0,0,0,0,0,0,0,0,1,1,1,0],
-        'ANN':[1,1,1,1,1,1,1,1,1,1,1,1],
-    }
-
-    # Redefine time to be in the middle of the time interval
-    var_time = var.getTime()
-    if var_time is None:
-        # Climo cannot be ran on this variable.
-        return var
-
-    tbounds = var_time.getBounds()
-    if tbounds is None:
-        cdutil.setTimeBoundsMonthly(var)
-        tbounds = var.getTime().getBounds()
-        
-    var_time[:] = 0.5*(tbounds[:,0]+tbounds[:,1])
-    var_time_absolute = var_time.asComponentTime()
-
-    # Compute time length
-    dt = tbounds[:,1] - tbounds[:,0]
-
-    # Convert to masked array
-    v = var.asma()
-
-    # Compute climatology
-    if season == 'ANNUALCYCLE':
-        cycle = ['01','02','03','04','05','06','07','08','09','10','11','12']
-    elif season == 'SEASONALCYCLE':
-        cycle = ['DJF','MAM','JJA','SON']
-    else:
-        cycle = season
-
-    ncycle = len(cycle)
-    climo = ma.zeros([ncycle])#+list(np.shape(v))[1:])
-    for n in range(ncycle):
-        idx = np.array( [ season_idx[cycle[n]][var_time_absolute[i].month-1]
-                          for i in range(len(var_time_absolute)) ], dtype=int).nonzero()
-        climo[n] = ma.average(v[idx], axis=0, weights=dt[idx])
-
-    # ---------------------------------------------------------------------------------------
-    # filled the masked array with NaN [XZ]
-    climo = climo.filled(np.nan)
-    # ---------------------------------------------------------------------------------------
-
-    if var.id == 'tas':
-        climo  = climo - 273.15
-
-    if var.id == 'pr':
-        climo = climo*3600.*24.
-
-    return climo
-
-#============================================================================================
-# Functions to get the diurnal cycle for particular seasons/years
-# Output: var_seasons [nyears,nseasons,365,nhour] 
-#============================================================================================
-
-def get_diurnal_cycle_seasons(var,seasons,years):
+    Compute climatology for the given season using xarray/xcdat.
     
-    '''Get seasonal data for each variable'''
-    nyears = len(years)
-    nseasons = len(seasons)
-    t0 = 0
-
-    time = var.getTime()[:]
-    if time[1]-time[0]==1: nhour=24
-    if time[1]-time[0]==3: nhour=8
-    #print('Time resolution: ', nhour)
-
-    var_seasons = MV2.zeros([nyears,nseasons,365,nhour])*np.nan  #diurnal cycle for each day
-    for iyear in range(nyears):
-        if calendar.isleap(int(years[iyear]))==True:
-            nday = 366
+    Args:
+        var: xarray.DataArray or numpy array
+        season: Season to compute climatology for ('ANN', 'DJF', 'MAM', 'JJA', 'SON',
+               'ANNUALCYCLE', 'SEASONALCYCLE', or month number '01'-'12')
+        
+    Returns:
+        numpy array of climatology values
+    """
+    # Convert to xarray DataArray if needed
+    if not isinstance(var, xr.DataArray):
+        # For backward compatibility with cdms2
+        if hasattr(var, 'getValue'):
+            values = var.getValue()
+            var_id = getattr(var, 'id', 'unknown')
         else:
-            nday = 365
-        ntime = int(nday*nhour)
-        var1 = var[t0:t0+ntime]
-        var1_ext = np.concatenate((var1,var1),axis=0)
-        t0 = t0+ntime
-
-        for iseason in range(nseasons):
-            if seasons[iseason]=='ANN':
-                length = int(365*nhour)
-                var_seasons0 = var1[0:length]
-                var_seasons1 = np.reshape(var_seasons0,(365,nhour))
-                var_seasons[iyear,iseason,:,:] = var_seasons1
+            values = np.array(var)
+            var_id = 'unknown'
+        
+        # Create a simple DataArray with time dimension
+        da = xr.DataArray(
+            values,
+            dims=['time'] + [f'dim_{i}' for i in range(values.ndim - 1)],
+            name=var_id
+        )
+        da.attrs['id'] = var_id
+    else:
+        da = var
+        var_id = da.name
+    
+    # Convert to xcdat.Dataset for temporal operations
+    ds = xcdat.Dataset({"var": da})
+    
+    # Compute climatology based on season
+    if season == 'ANNUALCYCLE':
+        # Return monthly climatology
+        result = ds.var.temporal.climatology(freq="month").values
+    elif season == 'SEASONALCYCLE':
+        # Return seasonal climatology
+        result = np.array([
+            ds.var.temporal.climatology(freq="season", season="DJF").values,
+            ds.var.temporal.climatology(freq="season", season="MAM").values,
+            ds.var.temporal.climatology(freq="season", season="JJA").values,
+            ds.var.temporal.climatology(freq="season", season="SON").values
+        ])
+    elif season in ['DJF', 'MAM', 'JJA', 'SON']:
+        # Return specific seasonal climatology
+        result = ds.var.temporal.climatology(freq="season", season=season).values
+    elif season == 'ANN':
+        # Return annual climatology
+        result = ds.var.temporal.climatology(freq="year").values
+    elif season in [str(i).zfill(2) for i in range(1, 13)]:
+        # Return specific month's climatology
+        month_num = int(season)
+        result = ds.var.sel(time=ds.var.time.dt.month == month_num).mean('time').values
+    else:
+        raise ValueError(f"Unknown season: {season}")
+        
+    # Apply unit conversions
+    if var_id == 'tas':
+        result = result - 273.15
+    if var_id == 'pr':
+        result = result * 3600.0 * 24.0
+    
+    return result
+    
+def get_diurnal_cycle_seasons(var, seasons, years):
+    """
+    Extract diurnal cycle data for specific seasons and years.
+    
+    Args:
+        var: xarray.DataArray with hourly or sub-daily time resolution
+        seasons: List of season names
+        years: List of years to extract
+        
+    Returns:
+        numpy array with dimensions [year, season, day, hour]
+    """
+    # Convert to xarray if needed
+    if not isinstance(var, xr.DataArray):
+        if hasattr(var, 'getValue'):
+            # Convert from cdms2
+            values = var.getValue()
+            times = var.getAxis(0)
+            
+            # Create a time axis
+            if hasattr(times, 'asComponentTime'):
+                # Convert cdms2 time to datetime
+                time_values = pd.DatetimeIndex([
+                    pd.Timestamp(t.strftime('%Y-%m-%d %H:%M:%S'))
+                    for t in times.asComponentTime()
+                ])
             else:
-                if seasons[iseason]=='MAM':
-                    if nday==366: t1 = 60
-                    else: t1 = 59
-                if seasons[iseason]=='JJA':
-                    if nday==366: t1 = 152
-                    else: t1 = 151
-                if seasons[iseason]=='SON':
-                    if nday==366: t1 = 244
-                    else: t1 = 243
-                if seasons[iseason]=='DJF':
-                    if nday==366: t1 = 335
-                    else: t1 = 334
-                var_seasons0 = var1_ext[int(t1*nhour):int(t1*nhour)+90*nhour]
-                var_seasons1 = np.reshape(var_seasons0,(90,nhour))
-                var_seasons[iyear,iseason,0:90,:] = var_seasons1
-
-    return var_seasons
-
-
+                # Use simple time coordinates
+                time_values = pd.date_range(
+                    start=f"{years[0]}-01-01",
+                    periods=values.shape[0],
+                    freq='H'
+                )
+                
+            da = xr.DataArray(
+                values,
+                dims=['time'] + [f'dim_{i}' for i in range(values.ndim - 1)],
+                coords={'time': time_values}
+            )
+        else:
+            # Handle numpy array
+            values = np.array(var)
+            time_values = pd.date_range(
+                start=f"{years[0]}-01-01",
+                periods=values.shape[0],
+                freq='H'
+            )
+            
+            da = xr.DataArray(
+                values,
+                dims=['time'] + [f'dim_{i}' for i in range(values.ndim - 1)],
+                coords={'time': time_values}
+            )
+    else:
+        da = var
+        
+    # Determine time resolution
+    time_diff = (da.time[1] - da.time[0]).values
+    time_diff_hours = pd.Timedelta(time_diff).total_seconds() / 3600
+    nhour = int(24 / time_diff_hours) if time_diff_hours <= 24 else 1
+    
+    # Prepare result array
+    result = np.full((len(years), len(seasons), 365, nhour), np.nan)
+    
+    # Process each year and season
+    for iyear, year in enumerate(years):
+        year_data = da.sel(time=slice(f"{year}-01-01", f"{year}-12-31"))
+        is_leap = calendar.isleap(int(year))
+        
+        for iseason, season in enumerate(seasons):
+            if season == 'ANN':
+                # Process all days in the year (up to 365)
+                # Group by day of year to handle different time frequencies
+                grouped = year_data.groupby('time.dayofyear')
+                
+                for day_idx, (day, day_data) in enumerate(grouped):
+                    if day_idx >= 365:  # Skip leap day if present
+                        continue
+                        
+                    # Group by hour within day
+                    day_by_hour = day_data.groupby('time.hour')
+                    
+                    # Fill the result array with hourly data
+                    for hour_idx, (hour, hour_data) in enumerate(day_by_hour):
+                        if hour_idx < nhour:
+                            result[iyear, iseason, day_idx, hour_idx] = hour_data.mean().values
+            else:
+                # Process seasonal data
+                if season == 'DJF':
+                    season_data = da.sel(
+                        time=(da.time.dt.month.isin([12, 1, 2])) & 
+                             (da.time.dt.year == year)
+                    )
+                elif season == 'MAM':
+                    season_data = da.sel(
+                        time=(da.time.dt.month.isin([3, 4, 5])) & 
+                             (da.time.dt.year == year)
+                    )
+                elif season == 'JJA':
+                    season_data = da.sel(
+                        time=(da.time.dt.month.isin([6, 7, 8])) & 
+                             (da.time.dt.year == year)
+                    )
+                elif season == 'SON':
+                    season_data = da.sel(
+                        time=(da.time.dt.month.isin([9, 10, 11])) & 
+                             (da.time.dt.year == year)
+                    )
+                else:
+                    continue
+                
+                # Get day index offset for the season
+                if season == 'MAM':
+                    day_offset = 60 if is_leap else 59
+                elif season == 'JJA':
+                    day_offset = 152 if is_leap else 151
+                elif season == 'SON':
+                    day_offset = 244 if is_leap else 243
+                elif season == 'DJF':
+                    day_offset = 335 if is_leap else 334
+                else:
+                    day_offset = 0
+                
+                # Group by day and hour
+                season_by_day = season_data.groupby('time.dayofyear')
+                
+                # Fill the result array
+                for rel_day_idx, (day, day_data) in enumerate(season_by_day):
+                    if rel_day_idx >= 90:  # Use at most 90 days for each season
+                        break
+                        
+                    # Group by hour
+                    day_by_hour = day_data.groupby('time.hour')
+                    
+                    for hour_idx, (hour, hour_data) in enumerate(day_by_hour):
+                        if hour_idx < nhour:
+                            result[iyear, iseason, rel_day_idx, hour_idx] = hour_data.mean().values
+    
+    return result
