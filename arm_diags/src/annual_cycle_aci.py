@@ -11,29 +11,56 @@
 import os
 import pdb
 import glob
-import cdms2
-import cdutil
 import numpy as np
 from numpy import genfromtxt
 import csv
 import matplotlib.pyplot as plt
+import xarray as xr
+import xcdat
 from matplotlib.ticker import (MultipleLocator,AutoMinorLocator)
 from .varid_dict import varid_longname
 from .taylor_diagram import TaylorDiagram
-from .utils import climo
+from .core import climo
+from .dataset import open_dataset
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 def var_annual_cycle(var, seasons):
-    "Calculate annual cycle climatology of each variable"
-    var_season_data = np.empty([len(seasons)])*np.nan
-    cdutil.setTimeBoundsMonthly(var)
-    var_season_data = cdutil.ANNUALCYCLE.climatology(var)(squeeze=1)
-    # convert units
-    if var.id == 'tas':
-        var_season_data = var_season_data-273.15
-
-    if var.id == 'pr':
-        var_season_data = var_season_data*3600.*24.
+    """
+    Calculate annual cycle climatology of each variable using xarray/xcdat
+    
+    Args:
+        var: xarray.DataArray with time dimension
+        seasons: List of season names
+        
+    Returns:
+        numpy array of climatology for each month
+    """
+    var_season_data = np.empty([len(seasons)]) * np.nan
+    
+    # Convert to xarray DataArray if it's not already
+    if not isinstance(var, xr.DataArray):
+        # For backward compatibility with cdms2 variables
+        if hasattr(var, 'getValue'):
+            values = var.getValue()
+            var_id = getattr(var, 'id', 'unknown')
+            da = xr.DataArray(values, name=var_id)
+            da.attrs['id'] = var_id
+        else:
+            # It's a numpy array or similar
+            values = np.array(var)
+            da = xr.DataArray(values)
+    else:
+        da = var
+        
+    # Use core.climo function to calculate climatology
+    var_season_data = climo(da, 'ANNUALCYCLE')
+    
+    # Apply unit conversions if needed
+    var_id = getattr(var, 'id', getattr(da, 'name', None))
+    if var_id == 'tas':
+        var_season_data = var_season_data - 273.15
+    elif var_id == 'pr':
+        var_season_data = var_season_data * 3600.0 * 24.0
         
     return var_season_data
 
@@ -78,23 +105,26 @@ def annual_cycle_aci_data(parameter):
 #     if len(test_file) == 0:
 #        raise RuntimeError('No monthly data for test model were found.')
     try:
-        fin = cdms2.open(test_file[0])
-
-        print(('test_model',test_model))
+        # Open test data with Dataset class
+        test_dataset = open_dataset(test_file[0], name=test_model)
+        
+        print(('test_model', test_model))
 
         for j, variable in enumerate(variables): 
             try:
-                var = fin(variable)
-                #test_var_season[j, :] = var_annual_cycle(var, seasons)
+                # Get variable from dataset
+                var = test_dataset.get_variable(variable)
+                
+                # Calculate climatology
                 test_var_season[j, :] = climo(var, 'ANNUALCYCLE')
                 print(('after', test_var_season[j, :]))
 
-            except:
-                print((variable+" could not be found " + test_model))
-        fin.close()
+            except Exception as e:
+                print(f"{variable} could not be found for {test_model}: {e}")
+                
         test_index = 1
-    except:
-        print('No monthly ACI data for test model were found.')
+    except Exception as e:
+        print(f"No monthly ACI data for test model were found: {e}")
 
     # Calculate for observational data (specified by the ACI data structure)
     obs_var_season=np.empty([len(variables),len(seasons),2])*np.nan
@@ -102,16 +132,22 @@ def annual_cycle_aci_data(parameter):
     # read in the monthly data for target site, format unified [XZ]
     obs_file = glob.glob(os.path.join(obs_path,sites[0][:3]+'armdiagsaciclim' + sites[0][3:5].upper()+'*c1.nc')) #read in monthly data
     print('obs_file',obs_file)
-    fin = cdms2.open(obs_file[0])
+    
+    # Open observation data with Dataset class
+    obs_dataset = open_dataset(obs_file[0], name="OBS")
+    
     for j, variable in enumerate(variables): 
         try:
-            var = fin(variable)
-            #obs_var_season[j, :] = climo(var, 'ANNUALCYCLE')
-            obs_var_season[j, :, 0] = var[:,0] #mean
-            obs_var_season[j, :, 1] = var[:,1] #std
-        except:  
-            print((variable+" not processed for obs"))
-    fin.close()
+            # Get variable from dataset
+            var = obs_dataset.get_variable(variable)
+            
+            # Extract data - for ACI the first column is mean, second is std
+            var_data = var.values
+            obs_var_season[j, :, 0] = var_data[:, 0]  # mean
+            obs_var_season[j, :, 1] = var_data[:, 1]  # std
+            
+        except Exception as e:  
+            print(f"{variable} not processed for obs: {e}")
   
     # Calculate cmip model seasonal mean climatology
     cmip_var_season=np.empty([len(ref_models),len(variables),len(seasons)])*np.nan
@@ -127,22 +163,29 @@ def annual_cycle_aci_data(parameter):
         print(('ref_model', ref_model))
 
         if len(ref_file) == 0:
-            print((ref_model+" not found!"))
+            print(f"{ref_model} not found!")
         else:
-            fin = cdms2.open(ref_file[0])
+            # Open reference model data with Dataset class
+            ref_dataset = open_dataset(ref_file[0], name=ref_model)
 
             for j, variable in enumerate(variables): 
                 try:
-                    var = fin(variable)
-                    #cmip_var_season[i, j, :] = var_annual_cycle(var, seasons)
+                    # Get variable from dataset
+                    var = ref_dataset.get_variable(variable)
+                    
+                    # Calculate climatology
                     tmpvarannual = climo(var, 'ANNUALCYCLE')
-                    lnn=np.where(tmpvarannual == 0)[0]
-                    if len(lnn) == 12: tmpvarannual[:]=np.nan #set to missing if model output is invalid
+                    
+                    # Check for invalid data
+                    lnn = np.where(tmpvarannual == 0)[0]
+                    if len(lnn) == 12: 
+                        tmpvarannual[:] = np.nan  # Set to missing if model output is invalid
+                    
                     cmip_var_season[i, j, :] = tmpvarannual.copy()
-                    print((ref_model,cmip_var_season[i, j, :]))
-                except:
-                    print((variable+" could not be found " + ref_model))
-            fin.close()
+                    print((ref_model, cmip_var_season[i, j, :]))
+                    
+                except Exception as e:
+                    print(f"{variable} could not be found for {ref_model}: {e}")
     # Calculate multi-model mean
     mmm_var_season =  np.nanmean(cmip_var_season,axis=0)
     cmip_index = 1

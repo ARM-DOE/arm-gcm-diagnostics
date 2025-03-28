@@ -13,13 +13,15 @@
 import os
 import pdb
 import glob
-import cdms2
-import cdutil
 import numpy as np
 from numpy import genfromtxt
 import csv
 import matplotlib.pyplot as plt
+import xarray as xr
+import xcdat
 from .varid_dict import varid_longname
+from .dataset import open_dataset
+from .core import climo
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 def annual_cycle_zt_data(parameter):
@@ -62,31 +64,34 @@ def annual_cycle_zt_data(parameter):
     if len(test_file) > 0: 
         test_findex = 1 
 
-        fin = cdms2.open(test_file[0])
+        # Open test data with Dataset class
+        test_dataset = open_dataset(test_file[0], name=test_model)
         print(('Processing climatology data for test_model',test_model))
         for j, variable in enumerate(variables): 
             try:
+                # Get variable from dataset
                 if variable == 'cl' or variable == 'cl_p':
-                    var = fin ('cl_p')
+                    var = test_dataset.get_variable('cl_p')
                 else:
-                    var = fin(variable)
-                var[var>100]=np.nan
-                len_var=var.shape[0]
-                #auto-detect the testmodel frequency
-                var_2d = np.reshape(var,(12,int(len_var/12.),37))    
+                    var = test_dataset.get_variable(variable)
+                
+                # Convert to numpy array and process
+                var_data = var.values
+                var_data[var_data > 100] = np.nan
+                len_var = var_data.shape[0]
+                
+                # Auto-detect the testmodel frequency
+                var_2d = np.reshape(var_data, (12, int(len_var/12.), 37))    
     
                 with open(output_path+'/metrics/'+sites[0]+'/'+variable+'_test_diurnal_climo_'+ sites[0]+'.csv', 'w') as outfile:
                     outfile.write('# Array shape: {0}'.format(var_2d.shape)+' as (month, hours, vertical levels)\n')
                     mon_id=0
                     for data_slice in var_2d:
-                        #outfile.write('# New slice\n')
                         outfile.write('#'+month[mon_id]+' slice\n')
                         np.savetxt(outfile, data_slice, fmt='%-7.2f')
                         mon_id=mon_id+1
-            except:
-                print((variable+" not processed for " + test_model))
-
-        fin.close()
+            except Exception as e:
+                print(f"{variable} not processed for {test_model}: {e}")
     
 
     # Calculate for observational data
@@ -97,29 +102,32 @@ def annual_cycle_zt_data(parameter):
         obs_file = glob.glob(os.path.join(obs_path,sites[0][:3]+'armdiagsmondiurnalclim' + sites[0][3:5].upper()+'*c1.nc'))
 
     print(('ARM data', sites[0]))
-    fin = cdms2.open(obs_file[0])
+    
+    # Open observation data with Dataset class
+    obs_dataset = open_dataset(obs_file[0], name="OBS")
+    
     for j, variable in enumerate(variables): 
         try:
-            var = fin (variable)
-            var[var>100]=np.nan #for cloud fraction set Value>100 to NaN
-#            if sites[0] == 'sgp':
-#                var_2d = np.reshape(var,(12,24,37))
-#            print var_2d.shape
-            var_2d = np.reshape(var,(12,24,37))
+            # Get variable from dataset
+            var = obs_dataset.get_variable(variable)
+            
+            # Convert to numpy array and process
+            var_data = var.values
+            var_data[var_data > 100] = np.nan  # For cloud fraction set values > 100 to NaN
+            
+            # Reshape data
+            var_2d = np.reshape(var_data, (12, 24, 37))
     
             with open(output_path+'/metrics/'+sites[0]+'/'+variable+'_obs_diurnal_climo_'+ sites[0]+'.csv', 'w') as outfile:
                 outfile.write('# Array shape: {0}'.format(var_2d.shape)+' as (month, hours, vertical levels)\n')
                 mon_id=0
                 for data_slice in var_2d:
-                    #outfile.write('# New slice\n')
                     outfile.write('#'+month[mon_id]+' slice\n')
                     np.savetxt(outfile, data_slice, fmt='%-7.2f')
                     mon_id=mon_id+1
     
-    
-        except:
-            print((variable+" not processed for obs"))
-    fin.close()
+        except Exception as e:
+            print(f"{variable} not processed for obs: {e}")
 #    else:
 #        obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag_domain_monthly_climo_'+ sites[0]+'*.nc')) #read in monthly test data
 #        #obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag_c1_ARSCL_ACRED_diurnal_climo*.nc')) #read in monthly test data

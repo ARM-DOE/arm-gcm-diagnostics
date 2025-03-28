@@ -12,101 +12,137 @@
 import os
 import pdb
 import glob
-import cdms2
-import cdutil
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
+import xarray as xr
+import xcdat
 from .varid_dict import varid_longname
 from .taylor_diagram import TaylorDiagram
-from .utils import climo
-import MV2
+from .core import climo
+from .dataset import open_dataset
 import matplotlib.gridspec as gridspec
 import scipy.stats
 from scipy import interpolate
 import calendar
 
-def get_seasonal_data_3hr(var,seasons,years):
-
-    '''Get seasonal data for each variable'''
+def get_seasonal_data_3hr(var, seasons, years):
+    """
+    Get seasonal data for each variable (3-hourly data)
+    
+    Args:
+        var: numpy array of variable data
+        seasons: list of season names
+        years: list of years
+        
+    Returns:
+        numpy array of seasonal data
+    """
     nyears = len(years)
     nseasons = len(seasons)
     nsteps = int(nyears*90)
     t0 = 0
 
-    var_seasons = MV2.zeros([nyears,nseasons,90])*np.nan #Daily mean for each season
-    var_seasons_f = MV2.zeros([nsteps,nseasons])*np.nan
+    # Convert to numpy array if it's a DataArray
+    if isinstance(var, xr.DataArray):
+        var_values = var.values
+    else:
+        var_values = np.array(var)
+        
+    var_seasons = np.zeros([nyears, nseasons, 90]) * np.nan  # Daily mean for each season
+    var_seasons_f = np.zeros([nsteps, nseasons]) * np.nan
+    
     for iyear in range(nyears):
-        if calendar.isleap(int(years[iyear]))==True:
+        if calendar.isleap(int(years[iyear])):
             nday = 366
         else:
             nday = 365
+            
         ntime = int(nday*8)
-        var1 = var[t0:t0+ntime]
-        var1_ext = np.concatenate((var1,var1),axis=0)
+        var1 = var_values[t0:t0+ntime]
+        var1_ext = np.concatenate((var1, var1), axis=0)
         t0 = t0+ntime
 
         for iseason in range(nseasons):
-            if seasons[iseason]=='MAM':
-                if nday==366: t1 = 60
+            if seasons[iseason] == 'MAM':
+                if nday == 366: t1 = 60
                 else: t1 = 59
-            if seasons[iseason]=='JJA':
-                if nday==366: t1 = 152
+            elif seasons[iseason] == 'JJA':
+                if nday == 366: t1 = 152
                 else: t1 = 151
-            if seasons[iseason]=='SON':
-                if nday==366: t1 = 244
+            elif seasons[iseason] == 'SON':
+                if nday == 366: t1 = 244
                 else: t1 = 243
-            if seasons[iseason]=='DJF':
-                if nday==366: t1 = 335
+            elif seasons[iseason] == 'DJF':
+                if nday == 366: t1 = 335
                 else: t1 = 334
+                
             var_seasons0 = var1_ext[int(t1*8):int(t1*8)+720]
-            var_seasons1 = np.reshape(var_seasons0,(90,8))
-            var_seasons2 = MV2.average(var_seasons1,axis=1) #daily mean for 90 days
-            #print(var_seasons2.shape)
-            var_seasons[iyear,iseason,:] = var_seasons2
-            var_seasons_f[iyear*90:iyear*90+90,iseason] = var_seasons2
+            var_seasons1 = np.reshape(var_seasons0, (90, 8))
+            var_seasons2 = np.nanmean(var_seasons1, axis=1)  # daily mean for 90 days
+            
+            var_seasons[iyear, iseason, :] = var_seasons2
+            var_seasons_f[iyear*90:iyear*90+90, iseason] = var_seasons2
 
     return var_seasons_f
 
-def get_seasonal_data(var,seasons,years):
+def get_seasonal_data(var, seasons, years):
+    """
+    Get seasonal data for each variable (daily data)
     
-    '''Get seasonal data for each variable'''
+    Args:
+        var: numpy array of variable data
+        seasons: list of season names
+        years: list of years
+        
+    Returns:
+        numpy array of seasonal data
+    """
     nyears = len(years)
     nseasons = len(seasons)
     nsteps = int(nyears*90)
     t0 = 0
     
-    var_seasons = MV2.zeros([nyears,nseasons,90])*np.nan #Daily mean for each season
-    var_seasons_f = MV2.zeros([nsteps,nseasons])*np.nan
+    # Convert to numpy array if it's a DataArray
+    if isinstance(var, xr.DataArray):
+        var_values = var.values
+    else:
+        var_values = np.array(var)
+        
+    var_seasons = np.zeros([nyears, nseasons, 90]) * np.nan  # Daily mean for each season
+    var_seasons_f = np.zeros([nsteps, nseasons]) * np.nan
+    
     for iyear in range(nyears):
-        if calendar.isleap(int(years[iyear]))==True:
+        if calendar.isleap(int(years[iyear])):
             nday = 366
         else:
             nday = 365
+            
         ntime = int(nday*24)
-        var1 = var[t0:t0+ntime]
-        var1_ext = np.concatenate((var1,var1),axis=0)
+        var1 = var_values[t0:t0+ntime]
+        var1_ext = np.concatenate((var1, var1), axis=0)
         t0 = t0+ntime
 
         for iseason in range(nseasons):
-            if seasons[iseason]=='MAM':
-                if nday==366: t1 = 60
+            if seasons[iseason] == 'MAM':
+                if nday == 366: t1 = 60
                 else: t1 = 59
-            if seasons[iseason]=='JJA':
-                if nday==366: t1 = 152
+            elif seasons[iseason] == 'JJA':
+                if nday == 366: t1 = 152
                 else: t1 = 151
-            if seasons[iseason]=='SON':
-                if nday==366: t1 = 244 
+            elif seasons[iseason] == 'SON':
+                if nday == 366: t1 = 244 
                 else: t1 = 243
-            if seasons[iseason]=='DJF':
-                if nday==366: t1 = 335
+            elif seasons[iseason] == 'DJF':
+                if nday == 366: t1 = 335
                 else: t1 = 334
+                
             var_seasons0 = var1_ext[int(t1*24):int(t1*24)+2160]   
-            var_seasons1 = np.reshape(var_seasons0,(90,24)) 
-            var_seasons2 = MV2.average(var_seasons1,axis=1) #daily mean for 90 days
-            #print(var_seasons2.shape)
-            var_seasons[iyear,iseason,:] = var_seasons2
-            var_seasons_f[iyear*90:iyear*90+90,iseason] = var_seasons2
+            var_seasons1 = np.reshape(var_seasons0, (90, 24)) 
+            var_seasons2 = np.nanmean(var_seasons1, axis=1)  # daily mean for 90 days
+            
+            var_seasons[iyear, iseason, :] = var_seasons2
+            var_seasons_f[iyear*90:iyear*90+90, iseason] = var_seasons2
 
     return var_seasons_f
             
@@ -129,27 +165,34 @@ def twolegged_metric_plot(parameter):
     print('ARM data',sites[0])
     obs_file = glob.glob(os.path.join(obs_path,sites[0][:3]+'armdiagsLAcoupling' + sites[0][3:5].upper()+'*c1.nc')) #read in data
     print('Processing obs_file',obs_file)
-    fin = cdms2.open(obs_file[0])
-    sh0 = fin('SH')
-    lh0 = fin('LH')
-    LCL0 = fin('LCL')
-    sm_ebbr0 = fin('soil_moisture_ebbr')
-    sm_swats0 = fin('soil_moisture_swats')
-    fin.close()
+    
+    # Open observation data with Dataset class
+    obs_dataset = open_dataset(obs_file[0], name="OBS")
+    
+    # Get variables from dataset
+    sh0 = obs_dataset.get_variable('SH')
+    lh0 = obs_dataset.get_variable('LH')
+    LCL0 = obs_dataset.get_variable('LCL')
+    sm_ebbr0 = obs_dataset.get_variable('soil_moisture_ebbr')
+    sm_swats0 = obs_dataset.get_variable('soil_moisture_swats')
 
     #==========================================================================
     # Calculate for model data
     #==========================================================================
     test_file = glob.glob(os.path.join(test_path,sites[0][:3]+'testmodel3hrLAcoupling' + sites[0][3:5].upper()+'*c1.nc')) #read in data
     print('Processing test_file',test_file)
-    fin = cdms2.open(test_file[0])
-    sh1 = fin('SH')
-    lh1 = fin('LH')
-    LCL1 = fin('LCL')
-    print('sh1: ',np.min(sh1),np.max(sh1))
-    print('lh1: ',np.min(lh1),np.max(lh1))
-    print('LCL1: ',np.min(LCL1),np.max(LCL1))
-    fin.close()
+    
+    # Open test model data with Dataset class
+    test_dataset = open_dataset(test_file[0], name=test_model)
+    
+    # Get variables from dataset
+    sh1 = test_dataset.get_variable('SH')
+    lh1 = test_dataset.get_variable('LH')
+    LCL1 = test_dataset.get_variable('LCL')
+    
+    print('sh1: ', np.min(sh1.values), np.max(sh1.values))
+    print('lh1: ', np.min(lh1.values), np.max(lh1.values))
+    print('LCL1: ', np.min(LCL1.values), np.max(LCL1.values))
 
     #=================
     # Seasons: obs
@@ -162,7 +205,7 @@ def twolegged_metric_plot(parameter):
     sm_ebbr = get_seasonal_data(sm_ebbr0,seasons,years_obs)
     sm_swats = get_seasonal_data(sm_swats0,seasons,years_obs)
     
-    EF = MV2.zeros([nday_obs,nseasons])*np.nan
+    EF = np.zeros([nday_obs,nseasons]) * np.nan
     for im in range(nday_obs):
         for iseason in range(nseasons):
             EF[im,iseason] = lh[im,iseason]/(lh[im,iseason]+sh[im,iseason])
@@ -176,7 +219,7 @@ def twolegged_metric_plot(parameter):
     lh_mod  = get_seasonal_data_3hr(lh1,seasons,years_mod)
     LCL_mod  = get_seasonal_data_3hr(LCL1,seasons,years_mod)
 
-    EF_mod = MV2.zeros([nday_mod,nseasons])*np.nan
+    EF_mod = np.zeros([nday_mod,nseasons]) * np.nan
     for im in range(nday_mod):
         for iseason in range(nseasons):
             EF_mod[im,iseason] = lh_mod[im,iseason]/(lh_mod[im,iseason]+sh_mod[im,iseason])
@@ -186,12 +229,12 @@ def twolegged_metric_plot(parameter):
     #==========================================================================
     nt_10day = int(nday_obs/10)
      
-    sh_10day = MV2.zeros([nt_10day,nseasons])*np.nan
-    lh_10day = MV2.zeros([nt_10day,nseasons])*np.nan
-    LCL_10day = MV2.zeros([nt_10day,nseasons])*np.nan
-    EF_10day = MV2.zeros([nt_10day,nseasons])*np.nan
-    sm_ebbr_10day = MV2.zeros([nt_10day,nseasons])*np.nan
-    sm_swats_10day = MV2.zeros([nt_10day,nseasons])*np.nan
+    sh_10day = np.zeros([nt_10day,nseasons]) * np.nan
+    lh_10day = np.zeros([nt_10day,nseasons]) * np.nan
+    LCL_10day = np.zeros([nt_10day,nseasons]) * np.nan
+    EF_10day = np.zeros([nt_10day,nseasons]) * np.nan
+    sm_ebbr_10day = np.zeros([nt_10day,nseasons]) * np.nan
+    sm_swats_10day = np.zeros([nt_10day,nseasons]) * np.nan
     for im in range(nt_10day):
         for iseason in range(nseasons):
             tmp1 = sh[:,iseason]
@@ -221,10 +264,10 @@ def twolegged_metric_plot(parameter):
     #==========================================================================
     nt_10day_mod = int(nday_mod/10)
 
-    sh_10day_mod = MV2.zeros([nt_10day_mod,nseasons])*np.nan
-    lh_10day_mod = MV2.zeros([nt_10day_mod,nseasons])*np.nan
-    LCL_10day_mod = MV2.zeros([nt_10day_mod,nseasons])*np.nan
-    EF_10day_mod = MV2.zeros([nt_10day_mod,nseasons])*np.nan
+    sh_10day_mod = np.zeros([nt_10day_mod,nseasons]) * np.nan
+    lh_10day_mod = np.zeros([nt_10day_mod,nseasons]) * np.nan
+    LCL_10day_mod = np.zeros([nt_10day_mod,nseasons]) * np.nan
+    EF_10day_mod = np.zeros([nt_10day_mod,nseasons]) * np.nan
     for im in range(nt_10day_mod):
         for iseason in range(nseasons):
             tmp1 = sh_mod[:,iseason]

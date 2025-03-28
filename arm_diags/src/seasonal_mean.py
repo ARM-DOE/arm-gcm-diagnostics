@@ -12,30 +12,54 @@
 import os
 import pdb
 import glob
-import cdms2
-import cdutil
 import numpy as np
+import xarray as xr
+import pandas as pd
 import csv
 from .varid_dict import varid_longname
-from .utils import climo
+from .core import climo
+from .dataset import open_dataset
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 def var_seasons(var, seasons):
-    "Calculate seasonal climatology of each variable"
-    var_season_data = np.empty([len(seasons)])*np.nan
-    cdutil.setTimeBoundsMonthly(var)
-    for k, season in enumerate(seasons):
-        if season == 'ANN':
-            months = cdutil.times.Seasons('DJFMAMJJASON')
+    """
+    Calculate seasonal climatology of each variable using xarray/xcdat
+    
+    Args:
+        var: xarray.DataArray with time dimension
+        seasons: List of season names
+        
+    Returns:
+        numpy array of seasonal climatologies
+    """
+    var_season_data = np.empty([len(seasons)]) * np.nan
+    
+    # Convert to xarray DataArray if it's not already
+    if not isinstance(var, xr.DataArray):
+        # Convert from cdms2 format (for backward compatibility)
+        if hasattr(var, 'getValue'):
+            values = var.getValue()
+            var_id = getattr(var, 'id', 'unknown')
+            da = xr.DataArray(values, name=var_id)
+            da.attrs['id'] = var_id
         else:
-            months = cdutil.times.Seasons(str(season))
-        var_season_data[k] = months.climatology(var)
-    # convert units
-    if var.id == 'tas':
-        var_season_data = var_season_data-273.15
-
-    if var.id == 'pr':
-        var_season_data = var_season_data*3600.*24.
+            # It's a numpy array or similar
+            values = np.array(var)
+            da = xr.DataArray(values)
+    else:
+        da = var
+    
+    # Process each season
+    for k, season in enumerate(seasons):
+        var_season_data[k] = climo(da, season)
+    
+    # Convert units
+    var_id = getattr(var, 'id', getattr(da, 'name', None))
+    if var_id == 'tas':
+        var_season_data = var_season_data - 273.15
+    
+    if var_id == 'pr':
+        var_season_data = var_season_data * 3600.0 * 24.0
        
         
     return var_season_data
@@ -75,19 +99,23 @@ def seasonal_mean_table(parameter):
     if len(test_file) == 0:
        raise RuntimeError('No monthly data for test model were found.')
  
-    fin = cdms2.open(test_file[0])
+    # Open test data with Dataset class
+    test_dataset = open_dataset(test_file[0], name=test_model)
     
     print(('test_model',test_model))
 
     for j, variable in enumerate(variables): 
         try:
-            var = fin(variable)
+            # Get variable from dataset
+            var = test_dataset.get_variable(variable)
             #test_var_season[j, :] = var_seasons(var, seasons)
             test_var_season[j, :] = climo(var, seasons)
 
-        except:
-            print((variable+" not processed for " + test_model))
-    fin.close()
+        except Exception as e:
+            print(f"{variable} not processed for {test_model}: {e}")
+    
+    # Close dataset
+    test_dataset.close()
 
     # Calculate for observational data
     # read in the monthly data for target site, format unified [XZ]
@@ -99,15 +127,21 @@ def seasonal_mean_table(parameter):
     else:
         obs_file = glob.glob(os.path.join(obs_path,sites[0][:3]+'armdiagsmon' + sites[0][3:5].upper()+'*c1.nc')) #read in monthly test data
     print('obs_file',obs_file)
-    fin = cdms2.open(obs_file[0])
+    
+    # Open observation data with Dataset class
+    obs_dataset = open_dataset(obs_file[0], name="OBS")
+    
     for j, variable in enumerate(variables): 
         try:
-            var = fin (variable)
+            # Get variable from dataset
+            var = obs_dataset.get_variable(variable)
             obs_var_season[j, :] = climo(var, seasons)
     
-        except:
-            print((variable+" not processed for obs"))
-    fin.close()
+        except Exception as e:
+            print(f"{variable} not processed for obs: {e}")
+    
+    # Close dataset
+    obs_dataset.close()
    
   
     # Calculate cmip model seasonal mean climatology
@@ -120,20 +154,24 @@ def seasonal_mean_table(parameter):
              ref_model = cmip_ver +''.join(e for e in ref_model if e.isalnum()).lower()
              ref_file = glob.glob(os.path.join(cmip_path,sites[0]+'/'+sites[0][:3]+ref_model+'mon' + sites[0][3:5].upper()+'*.nc' )) #read in monthly test data
          print(('ref_model', ref_model))
-         if not ref_file :
-             print((ref_model+" not found!")) 
+         if not ref_file:
+             print(f"{ref_model} not found!") 
          else:
-             fin = cdms2.open(ref_file[0])
+             # Open reference model data with Dataset class
+             ref_dataset = open_dataset(ref_file[0], name=ref_model)
          
              for j, variable in enumerate(variables): 
                  try:
-                     var = fin (variable)
+                     # Get variable from dataset
+                     var = ref_dataset.get_variable(variable)
                      #cmip_var_season[i, j, :] = var_seasons(var, seasons)
                      cmip_var_season[i, j, :] = climo(var, seasons)
 
-                 except:
-                     print((variable+" not processed for " + ref_model))
-             fin.close()  
+                 except Exception as e:
+                     print(f"{variable} not processed for {ref_model}: {e}")
+             
+             # Close dataset
+             ref_dataset.close()  
     # Calculate multi-model mean
     mmm_var_season =  np.nanmean(cmip_var_season,axis=0)
     

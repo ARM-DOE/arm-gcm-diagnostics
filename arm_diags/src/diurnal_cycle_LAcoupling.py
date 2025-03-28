@@ -10,16 +10,15 @@
 import os
 import pdb
 import glob
-import cdms2
-import cdutil
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
+import xarray as xr
+import xcdat
 from .varid_dict import varid_longname
 from .taylor_diagram import TaylorDiagram
-from .utils import climo
-from .utils import get_diurnal_cycle_seasons
-import MV2
+from .core import climo, get_diurnal_cycle_seasons
+from .dataset import open_dataset
 import matplotlib.gridspec as gridspec
 import scipy.stats
 from scipy import interpolate
@@ -50,7 +49,9 @@ def diurnal_cycle_LAcoupling_plot(parameter):
     #==========================================================================
     test_file = glob.glob(os.path.join(test_path,sites[0][:3]+'testmodel3hrLAcoupling'+sites[0][3:5].upper()+'*.nc' )) 
     print('Processing test_file: ',test_file)
-    fin1 = cdms2.open(test_file[0])
+    
+    # Open test model data with Dataset class
+    test_dataset = open_dataset(test_file[0], name=test_model)
     
     #==========================================================================
     # Calculate for observational data
@@ -58,58 +59,65 @@ def diurnal_cycle_LAcoupling_plot(parameter):
     print('ARM data',sites[0])
     obs_file = glob.glob(os.path.join(obs_path,sites[0][:3]+'armdiagsLAcoupling' + sites[0][3:5].upper()+'*c1.nc')) #read in data
     print('Processing obs_file',obs_file)
-    fin = cdms2.open(obs_file[0])
+    
+    # Open observation data with Dataset class
+    obs_dataset = open_dataset(obs_file[0], name="OBS")
    
     for ivar in range(nvariables):
         #============================
         # Seasons: for observations
         #============================
-        var = fin(variables[ivar])           
+        # Get variable from dataset
+        var = obs_dataset.get_variable(variables[ivar])
         years_obs = list(range(2004,2016))
         nyears_obs = len(years_obs)
 
-        #var_seasons = get_seasonal(var,seasons,years_obs)    #[year,season,90,24] 
-        var_seasons = get_diurnal_cycle_seasons(var,seasons,years_obs)
+        # Calculate diurnal cycle for each season
+        var_seasons = get_diurnal_cycle_seasons(var, seasons, years_obs)
         narray = nyears_obs*365
-        var_seasons1 = np.empty([nseasons,narray,24])*np.nan
-        var_array_err = np.empty([nseasons,24])*np.nan
-        var_array = np.empty([nseasons,24])*np.nan
+        var_seasons1 = np.empty([nseasons, narray, 24]) * np.nan
+        var_array_err = np.empty([nseasons, 24]) * np.nan
+        var_array = np.empty([nseasons, 24]) * np.nan
+        
         for iseason in range(nseasons):
             for iyear in range(nyears_obs):
                 for iday in range(365):
-                    var_seasons1[iseason,365*iyear+iday,:] = var_seasons[iyear,iseason,iday,:]
+                    var_seasons1[iseason, 365*iyear+iday, :] = var_seasons[iyear, iseason, iday, :]
  
-            array_tmp = var_seasons1[iseason,:,:] 
-            data0 = np.nanstd(array_tmp,axis=0) #stddev 
-            var_array_err[iseason,:] = data0/(math.sqrt(narray))
-            var_array[iseason,:] = np.nanmean(array_tmp,axis=0)
+            array_tmp = var_seasons1[iseason, :, :] 
+            data0 = np.nanstd(array_tmp, axis=0)  # Calculate standard deviation
+            var_array_err[iseason, :] = data0 / (math.sqrt(narray))  # Standard error
+            var_array[iseason, :] = np.nanmean(array_tmp, axis=0)  # Mean
             
         #==========================
         # Seasons: for models
         #==========================
         try:
-            var_mod = fin1(variables[ivar])  
+            # Get variable from test dataset
+            var_mod = test_dataset.get_variable(variables[ivar])
             years_mod = list(range(2003,2015))
             nyears_mod = len(years_mod)
 
-            #var_mod_seasons = get_seasonal_3hr(var_mod,seasons,years_mod)    #[year,season,90,24]
-            var_mod_seasons = get_diurnal_cycle_seasons(var_mod,seasons,years_mod)
+            # Calculate diurnal cycle for each season
+            var_mod_seasons = get_diurnal_cycle_seasons(var_mod, seasons, years_mod)
             narray = nyears_mod*365
-            var_mod_seasons1 = np.empty([nseasons,narray,8])*np.nan
-            var_mod_array_err = np.empty([nseasons,8])*np.nan
-            var_mod_array = np.empty([nseasons,8])*np.nan
+            var_mod_seasons1 = np.empty([nseasons, narray, 8]) * np.nan
+            var_mod_array_err = np.empty([nseasons, 8]) * np.nan
+            var_mod_array = np.empty([nseasons, 8]) * np.nan
+            
             for iseason in range(nseasons):
                 for iyear in range(nyears_mod):
                     for iday in range(365):
-                        var_mod_seasons1[iseason,365*iyear+iday,:] = var_mod_seasons[iyear,iseason,iday,:]
+                        var_mod_seasons1[iseason, 365*iyear+iday, :] = var_mod_seasons[iyear, iseason, iday, :]
  
-                array_tmp = var_mod_seasons1[iseason,:,:]
-                data0 = np.nanstd(array_tmp,axis=0) #stddev
-                var_mod_array_err[iseason,:] = data0/(math.sqrt(narray))
-                var_mod_array[iseason,:] = np.nanmean(array_tmp,axis=0)
-        except:
-            var_mod_array_err = np.empty([nseasons,8])*np.nan
-            var_mod_array = np.empty([nseasons,8])*np.nan
+                array_tmp = var_mod_seasons1[iseason, :, :]
+                data0 = np.nanstd(array_tmp, axis=0)  # Calculate standard deviation
+                var_mod_array_err[iseason, :] = data0 / (math.sqrt(narray))  # Standard error
+                var_mod_array[iseason, :] = np.nanmean(array_tmp, axis=0)  # Mean
+        except Exception as e:
+            print(f"Error processing {variables[ivar]} for test model: {e}")
+            var_mod_array_err = np.empty([nseasons, 8]) * np.nan
+            var_mod_array = np.empty([nseasons, 8]) * np.nan
 
         #==========================================================================
         # Plotting: Diurnal cycle (daytime)
@@ -150,6 +158,3 @@ def diurnal_cycle_LAcoupling_plot(parameter):
                 plt.xlim([7.4,17.6])
             plt.legend()
             plt.savefig(output_path+'/figures/'+sites[0]+'/'+'Diurnal_cycle_'+seasons[iseason]+'_'+variables[ivar]+'_'+sites[0]+'.png')
-            
-
-    fin.close()

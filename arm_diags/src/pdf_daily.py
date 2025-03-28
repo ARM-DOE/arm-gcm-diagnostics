@@ -14,42 +14,107 @@
 import os
 import pdb
 import glob
-import cdms2
-import cdutil
 import numpy as np
 from numpy import genfromtxt
 from copy import deepcopy
 import csv
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import grid
+import xarray as xr
+import xcdat
+import pandas as pd
+from datetime import datetime, timedelta
 from .varid_dict import varid_longname
-import cdtime
+from .dataset import open_dataset
+from .core import climo
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 def var_pdf_daily(var, season, years):
-    "Calculate diurnal cycle climatology of each variable"
+    """
+    Calculate daily PDF for each variable using xarray/xcdat
+    
+    Args:
+        var: xarray.DataArray with time dimension
+        season: Season name ('JJA', 'SON', 'DJF', 'MAM')
+        years: List of years to process
+        
+    Returns:
+        numpy array of daily data for the specified season and years
+    """
+    # Define the starting month for each season
     if season == 'JJA':
-        mo0 = 6
-    if season == 'SON': 
-        mo0 = 9
-    if season == 'DJF': 
-        mo0 = 12
-    if season == 'MAM': 
-        mo0 = 3
-    var_da_year = np.empty([len(years),90])*np.nan
-    for iy,year in enumerate(years):
-        t1 = cdtime.comptime(year,mo0,0o1)
-        t2 = t1.add(90,cdtime.Days)
-
-        var_yr =  var(time=(t1,t2,'co'))
-        var_da_year[iy,:]= var_yr
-        if var.id == 'tas':
-            var_da_year[iy,:] = var_da_year[iy,:]-273.15
-
-        if var.id == 'pr':
-            var_da_year[iy,:] = var_da_year[iy,:]*3600.*24.
-   
-    var_da = np.reshape(var_da_year, (90*len(years)))
+        mo0 = 6  # Summer (Jun-Aug)
+    elif season == 'SON': 
+        mo0 = 9  # Fall (Sep-Nov)
+    elif season == 'DJF': 
+        mo0 = 12  # Winter (Dec-Feb)
+    elif season == 'MAM': 
+        mo0 = 3  # Spring (Mar-May)
+    
+    # Convert to xarray DataArray if it's not already
+    if not isinstance(var, xr.DataArray):
+        # For backward compatibility with cdms2 variables
+        if hasattr(var, 'getValue'):
+            values = var.getValue()
+            var_id = getattr(var, 'id', 'unknown')
+            da = xr.DataArray(values, name=var_id)
+            da.attrs['id'] = var_id
+        else:
+            # It's a numpy array or similar
+            values = np.array(var)
+            da = xr.DataArray(values)
+    else:
+        da = var
+    
+    # Initialize output array
+    var_da_year = np.empty([len(years), 90]) * np.nan
+    
+    # Process each year
+    for iy, year in enumerate(years):
+        # Set time range for this year and season
+        if mo0 == 12:  # Special case for DJF (spans year boundary)
+            start_date = f"{year-1}-12-01"
+            if mo0 == 12 and year-1 < min(years):
+                # Skip if previous year is not available for DJF
+                continue
+            end_date = f"{year}-02-28"  # February end (ignoring leap years)
+        else:
+            start_date = f"{year}-{mo0:02d}-01"
+            end_month = mo0 + 2
+            end_year = year
+            end_date = f"{end_year}-{end_month:02d}-30"  # Approximate month end
+        
+        # Select data for this time period
+        try:
+            if 'time' in da.coords:
+                year_data = da.sel(time=slice(start_date, end_date))
+                # Keep only first 90 days if more are selected
+                if len(year_data) > 90:
+                    year_data = year_data.isel(time=slice(0, 90))
+                elif len(year_data) < 90:
+                    # Pad with NaN if less than 90 days
+                    padding = np.empty(90 - len(year_data)) * np.nan
+                    year_data_values = np.concatenate([year_data.values, padding])
+                    var_da_year[iy, :] = year_data_values
+                    continue
+                
+                var_da_year[iy, :] = year_data.values
+            else:
+                # Handle the case where there's no time coordinate
+                var_da_year[iy, :90] = da.values[:90]
+        except Exception as e:
+            print(f"Error processing year {year}: {e}")
+            continue
+    
+    # Apply unit conversions if needed
+    var_id = getattr(var, 'id', getattr(da, 'name', None))
+    if var_id == 'tas':
+        var_da_year = var_da_year - 273.15
+    elif var_id == 'pr':
+        var_da_year = var_da_year * 3600.0 * 24.0
+    
+    # Reshape into a 1D array
+    var_da = np.reshape(var_da_year, (90 * len(years)))
     return var_da
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -99,17 +164,19 @@ def pdf_daily_data(parameter):
     if len(test_file) > 0:
         test_findex = 1 
 
-        fin = cdms2.open(test_file[0])
+        # Open test data with Dataset class
+        test_dataset = open_dataset(test_file[0], name=test_model)
         print(('test_model',test_model))
 
         for j, variable in enumerate(variables): 
             for k, season in enumerate(seasons):
                 try:
-                    var = fin (variable,squeeze = 1)
-                    test_var_da = var_pdf_daily(var,season,years_test)
+                    # Get variable from dataset
+                    var = test_dataset.get_variable(variable)
+                    test_var_da = var_pdf_daily(var, season, years_test)
                     test_var_season[j,:,k] = test_var_da
-                except:
-                    print((variable+" not processed for " + test_model))
+                except Exception as e:
+                    print(f"{variable} {season} not processed for {test_model}: {e}")
                     print('!!please check the start and end year in basicparameter.py')
                     test_findex = 0
 
@@ -132,19 +199,23 @@ def pdf_daily_data(parameter):
         obs_file = glob.glob(os.path.join(obs_path,sites[0][:3]+'armdiagsday' + sites[0][3:5].upper()+'*c1.nc'))
    
     print('ARM data')
-    fin = cdms2.open(obs_file[0])
+    
+    # Open observation data with Dataset class
+    obs_dataset = open_dataset(obs_file[0], name="OBS")
+    
     for j, variable in enumerate(variables): 
         try:
-            var = fin (variable)
+            # Get variable from dataset
+            var = obs_dataset.get_variable(variable)
+            
             for k, season in enumerate(seasons):
                 try:
-                    var = fin (variable,squeeze = 1)
-                    obs_var_da = var_pdf_daily(var,season,years_obs)
+                    obs_var_da = var_pdf_daily(var, season, years_obs)
                     obs_var_season[j,:,k] = obs_var_da
-                except:
-                    print((variable+" not processed for obs"))
-        except:
-            print((variable+" not processed for obs"))
+                except Exception as e:
+                    print(f"{variable} {season} not processed for obs: {e}")
+        except Exception as e:
+            print(f"{variable} not processed for obs: {e}")
         
 
     # Calculate cmip model seasonal mean climatology
@@ -158,22 +229,21 @@ def pdf_daily_data(parameter):
              ref_model = cmip_ver +''.join(e for e in ref_model if e.isalnum()).lower()
              ref_file = glob.glob(os.path.join(cmip_path,sites[0]+'/'+sites[0][:3]+ref_model+'day' + sites[0][3:5].upper()+'*.nc' )) #read in monthly test data
          print(('ref_model', ref_model))
-         if not ref_file :
-             print((ref_model+" not found!")) 
+         if not ref_file:
+             print(f"{ref_model} not found!") 
          else:
-             fin = cdms2.open(ref_file[0])
+             # Open reference model data with Dataset class
+             ref_dataset = open_dataset(ref_file[0], name=ref_model)
          
              for j, variable in enumerate(variables): 
                  for k, season in enumerate(seasons):
                      try:
-                         var = fin (variable,squeeze = 1)
-                         cmip_var_da = var_pdf_daily(var, season,years)
+                         # Get variable from dataset
+                         var = ref_dataset.get_variable(variable)
+                         cmip_var_da = var_pdf_daily(var, season, years)
                          cmip_var_season[i, j, :, k] = cmip_var_da
-
-                     except:
-                         print((variable+" not processed for " + ref_model))
-
-             fin.close()  
+                     except Exception as e:
+                         print(f"{variable} {season} not processed for {ref_model}: {e}")  
     # Calculate multi-model mean
     mmm_var_season =  np.nanmean(cmip_var_season,axis=0)
     # Save data in csv format in metrics folder

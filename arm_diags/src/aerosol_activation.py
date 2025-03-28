@@ -11,14 +11,15 @@
 import os
 import pdb
 import glob
-import cdms2
-import cdutil
 import numpy as np
 import matplotlib.pyplot as plt
+import xarray as xr
+import xcdat
 from matplotlib.gridspec import GridSpec
 from .varid_dict import varid_longname
 from .taylor_diagram import TaylorDiagram
-from .utils import climo
+from .core import climo
+from .dataset import open_dataset
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
@@ -41,17 +42,23 @@ def aerosol_activation_density_plot(parameter):
     print('ARM data',sites[0])
     obs_file = glob.glob(os.path.join(obs_path,sites[0][:3]+'armdiagsaciactivate' + sites[0][3:5].upper()+'*c1.nc')) #read in data
     print('obs_file',obs_file)
-    fin = cdms2.open(obs_file[0])
+    
+    # Open observation data with Dataset class
+    obs_dataset = open_dataset(obs_file[0], name="OBS")
+    
+    # Get variables from dataset
     # Bulk Activation
-    cpc_bulk = fin('cpc_bulk'); cpc_bulk.filled(fill_value=np.nan)
-    cpc_bulk=np.array(cpc_bulk)
-    #
-    ccn02_bulk = fin('ccn02_bulk'); ccn02_bulk.filled(fill_value=np.nan)
-    ccn02_bulk=np.array(ccn02_bulk)
-    #
-    ccn05_bulk = fin('ccn05_bulk'); ccn05_bulk.filled(fill_value=np.nan)
-    ccn05_bulk=np.array(ccn05_bulk)
-    fin.close()  
+    cpc_bulk_var = obs_dataset.get_variable('cpc_bulk')
+    cpc_bulk = cpc_bulk_var.values
+    cpc_bulk[~np.isfinite(cpc_bulk)] = np.nan
+    
+    ccn02_bulk_var = obs_dataset.get_variable('ccn02_bulk')
+    ccn02_bulk = ccn02_bulk_var.values
+    ccn02_bulk[~np.isfinite(ccn02_bulk)] = np.nan
+    
+    ccn05_bulk_var = obs_dataset.get_variable('ccn05_bulk')
+    ccn05_bulk = ccn05_bulk_var.values
+    ccn05_bulk[~np.isfinite(ccn05_bulk)] = np.nan  
     #==========================================================================
     # Plotting=================================================================
     #==========================================================================
@@ -200,46 +207,59 @@ def aerosol_activation_density_plot(parameter):
         test_tres = test_file[0].split(test_model)[-1][:3] #e.g., '3hr', '1hr'
         print('test_file',test_file[0])
         
-        fin = cdms2.open(test_file[0])
-        # test Activation
-        #check if test model contain the required variables
-        #cpc
+        # Open test model data with Dataset class
+        test_dataset = open_dataset(test_file[0], name=test_model)
+        
+        # Check if test model contains the required variables
+        # CPC
         try:
-            cpc_test0 = fin('cpc'); cpc_test0.filled(fill_value=np.nan)
-            cpc_test0=np.array(cpc_test0)
+            cpc_test0_var = test_dataset.get_variable('cpc')
+            cpc_test0 = cpc_test0_var.values
+            cpc_test0[~np.isfinite(cpc_test0)] = np.nan
             test_cpc_exist = 1
-        except:
+        except Exception as e:
+            print(f"CPC not found in test model: {e}")
             test_cpc_exist = 0
-        #aitken mode aerosol
+            
+        # Aitken mode aerosol
         try:
-            ait_test0 = fin('aitken'); ait_test0.filled(fill_value=np.nan)
-            ait_test0=np.array(ait_test0)
+            ait_test0_var = test_dataset.get_variable('aitken')
+            ait_test0 = ait_test0_var.values
+            ait_test0[~np.isfinite(ait_test0)] = np.nan
             test_ait_exist = 1
-        except:
+        except Exception as e:
+            print(f"Aitken mode not found in test model: {e}")
             test_ait_exist = 0
-        #accumulation mode aerosol
+            
+        # Accumulation mode aerosol
         try:
-            acc_test0 = fin('accumulation'); acc_test0.filled(fill_value=np.nan)
-            acc_test0=np.array(acc_test0)
+            acc_test0_var = test_dataset.get_variable('accumulation')
+            acc_test0 = acc_test0_var.values
+            acc_test0[~np.isfinite(acc_test0)] = np.nan
             test_acc_exist = 1
-        except:
+        except Exception as e:
+            print(f"Accumulation mode not found in test model: {e}")
             test_acc_exist = 0
-        #ccn at 0.2%SS
+            
+        # CCN at 0.2%SS
         try:
-            ccn02_test0 = fin('ccn02'); ccn02_test0.filled(fill_value=np.nan)
-            ccn02_test0=np.array(ccn02_test0)
+            ccn02_test0_var = test_dataset.get_variable('ccn02')
+            ccn02_test0 = ccn02_test0_var.values
+            ccn02_test0[~np.isfinite(ccn02_test0)] = np.nan
             test_ccn02_exist = 1
-        except:
+        except Exception as e:
+            print(f"CCN at 0.2%SS not found in test model: {e}")
             test_ccn02_exist = 0
-        #ccn at 0.5%SS
+            
+        # CCN at 0.5%SS
         try:
-            ccn05_test0 = fin('ccn05'); ccn05_test0.filled(fill_value=np.nan)
-            ccn05_test0=np.array(ccn05_test0)
+            ccn05_test0_var = test_dataset.get_variable('ccn05')
+            ccn05_test0 = ccn05_test0_var.values
+            ccn05_test0[~np.isfinite(ccn05_test0)] = np.nan
             test_ccn05_exist = 1
-        except:
-            test_ccn05_exist = 0
-
-        fin.close()  
+        except Exception as e:
+            print(f"CCN at 0.5%SS not found in test model: {e}")
+            test_ccn05_exist = 0  
         #initial QC
         if (test_cpc_exist == 1) and (test_ccn02_exist == 1) and (test_ccn05_exist == 1):
             lvloc=np.where((cpc_test0>0)&(ccn02_test0>0)&(ccn05_test0>0))[0]

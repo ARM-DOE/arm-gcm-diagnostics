@@ -22,50 +22,12 @@ import xarray as xr
 import xcdat
 from .varid_dict import varid_longname
 from .taylor_diagram import TaylorDiagram
-from .utils import climo
-from .data_utils import open_dataset, annual_cycle_climatology
+from .core import climo, var_annual_cycle
+from .dataset import open_dataset, climatology
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-def var_annual_cycle(var, seasons):
-    """
-    Calculate annual cycle climatology of each variable
-    
-    Args:
-        var: xarray.DataArray
-        seasons: List of seasons
-        
-    Returns:
-        Monthly climatology data
-    """
-    # Ensure we're working with an xarray DataArray
-    if not isinstance(var, xr.DataArray):
-        if hasattr(var, 'getValue'):
-            # Convert from cdms2 format
-            # Create a DataArray with proper attributes
-            values = var.getValue()
-            var_id = getattr(var, 'id', 'unknown')
-            da = xr.DataArray(values, name=var_id)
-            da.attrs['id'] = var_id
-        else:
-            # It's a numpy array or similar
-            values = np.array(var)
-            da = xr.DataArray(values)
-    else:
-        da = var
-    
-    # Use xcdat for temporal operations
-    da_xcdat = xcdat.Dataset({"var": da}).var
-    var_season_data = da_xcdat.temporal.climatology(freq="month")
-    
-    # Convert units
-    var_id = getattr(var, 'id', getattr(da, 'name', None))
-    if var_id == 'tas':
-        var_season_data = var_season_data - 273.15
-    
-    if var_id == 'pr':
-        var_season_data = var_season_data * 3600.0 * 24.0
-    
-    return var_season_data
+# Import from core.py instead
+# This function is now defined in core.py
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 def annual_cycle_data(parameter):
@@ -108,28 +70,15 @@ def annual_cycle_data(parameter):
     if len(test_file) == 0:
        raise RuntimeError('No monthly data for test model were found.')
 
-    # Open test data with xarray
-    test_ds = open_dataset(test_file[0])
+    # Open test data with Dataset class
+    test_dataset = open_dataset(test_file[0], name=test_model)
     
-    print(('test_model',test_model))
+    print(('test_model', test_model))
 
     for j, variable in enumerate(variables): 
         try:
-            # Extract variable from dataset
-            if variable in test_ds:
-                var = test_ds[variable]
-            else:
-                # Try case-insensitive matching
-                var_found = False
-                for test_var in test_ds.data_vars:
-                    if test_var.lower() == variable.lower():
-                        var = test_ds[test_var]
-                        var.attrs['id'] = variable
-                        var_found = True
-                        break
-                if not var_found:
-                    print(f"{variable} not found in test dataset")
-                    continue
+            # Get variable from dataset
+            var = test_dataset.get_variable(variable)
                     
             # Calculate climatology
             test_var_season[j, :] = climo(var, 'ANNUALCYCLE')
@@ -138,8 +87,8 @@ def annual_cycle_data(parameter):
         except Exception as e:
             print(f"{variable} not processed for {test_model}: {e}")
     
-    # Close dataset if needed
-    test_ds.close()
+    # Close dataset
+    test_dataset.close()
 
     # Calculate for observational data
     obs_var_season=np.empty([len(variables),len(seasons)])*np.nan
@@ -151,26 +100,13 @@ def annual_cycle_data(parameter):
         obs_file = glob.glob(os.path.join(obs_path,sites[0][:3]+'armdiagsmon' + sites[0][3:5].upper()+'*c1.nc')) #read in monthly data
     print('obs_file',obs_file)
     
-    # Open observation data with xarray
-    obs_ds = open_dataset(obs_file[0])
+    # Open observation data with Dataset class
+    obs_dataset = open_dataset(obs_file[0], name="OBS")
     
     for j, variable in enumerate(variables): 
         try:
-            # Extract variable from dataset
-            if variable in obs_ds:
-                var = obs_ds[variable]
-            else:
-                # Try case-insensitive matching
-                var_found = False
-                for obs_var in obs_ds.data_vars:
-                    if obs_var.lower() == variable.lower():
-                        var = obs_ds[obs_var]
-                        var.attrs['id'] = variable
-                        var_found = True
-                        break
-                if not var_found:
-                    print(f"{variable} not found in observation dataset")
-                    continue
+            # Get variable from dataset
+            var = obs_dataset.get_variable(variable)
                     
             # Calculate climatology
             obs_var_season[j, :] = climo(var, 'ANNUALCYCLE')
@@ -178,8 +114,8 @@ def annual_cycle_data(parameter):
         except Exception as e:
             print(f"{variable} not processed for obs: {e}")
     
-    # Close dataset if needed
-    obs_ds.close()
+    # Close dataset
+    obs_dataset.close()
   
     # Calculate cmip model seasonal mean climatology
     cmip_var_season=np.empty([len(ref_models),len(variables),len(seasons)])*np.nan
@@ -196,26 +132,13 @@ def annual_cycle_data(parameter):
         if not ref_file:
             print(f"{ref_model} not found!")
         else:
-            # Open reference model data with xarray
-            ref_ds = open_dataset(ref_file[0])
+            # Open reference model data with Dataset class
+            ref_dataset = open_dataset(ref_file[0], name=ref_model)
             
             for j, variable in enumerate(variables): 
                 try:
-                    # Extract variable from dataset
-                    if variable in ref_ds:
-                        var = ref_ds[variable]
-                    else:
-                        # Try case-insensitive matching
-                        var_found = False
-                        for ref_var in ref_ds.data_vars:
-                            if ref_var.lower() == variable.lower():
-                                var = ref_ds[ref_var]
-                                var.attrs['id'] = variable
-                                var_found = True
-                                break
-                        if not var_found:
-                            print(f"{variable} not found in {ref_model} dataset")
-                            continue
+                    # Get variable from dataset
+                    var = ref_dataset.get_variable(variable)
                             
                     # Calculate climatology
                     tmpvarannual = climo(var, 'ANNUALCYCLE')
@@ -231,8 +154,8 @@ def annual_cycle_data(parameter):
                 except Exception as e:
                     print(f"{variable} not processed for {ref_model}: {e}")
             
-            # Close dataset if needed
-            ref_ds.close()
+            # Close dataset
+            ref_dataset.close()
             
     # Calculate multi-model mean
     mmm_var_season = np.nanmean(cmip_var_season, axis=0)

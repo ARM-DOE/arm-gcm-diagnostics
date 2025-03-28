@@ -19,60 +19,130 @@
 import os
 import pdb
 import glob
-import cdms2
-import cdutil
 import numpy as np
 from numpy import genfromtxt
 import csv
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import grid
+import xarray as xr
+import xcdat
+import pandas as pd
 from .varid_dict import varid_longname
-import cdtime
+from .dataset import open_dataset
+from .core import get_diurnal_cycle
 from scipy.optimize import curve_fit
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 def var_diurnal_cycle(var, season, tres, styr, edyr):
-    "Calculate diurnal cycle climatology of each variable"
+    """
+    Calculate diurnal cycle climatology of each variable using xarray
+    
+    Args:
+        var: xarray.DataArray with time dimension
+        season: Season name ('ANN', 'JJA', 'SON', 'DJF', 'MAM')
+        tres: Time resolution ('1hr' or '3hr')
+        styr: Start year
+        edyr: End year
+        
+    Returns:
+        numpy array of diurnal cycle data
+    """
+    # Determine start month based on season
     if season == 'ANN':
-        mo0 = 0
-    if season == 'JJA':
-        mo0 = 6
-    if season == 'SON': 
-        mo0 = 9
-    if season == 'DJF': 
-        mo0 = 12
-    if season == 'MAM': 
-        mo0 = 3
-    #auto-adjust by the input resolution
-    if tres=='1hr': tres_id=24
-    if tres=='3hr': tres_id=8
-    years = list(range(styr,edyr))         
-    var_dc_year = np.empty([len(years),tres_id])*np.nan
-    for iy,year in enumerate(years):
-        t1 = cdtime.comptime(year,mo0,0o1)
-        if season == 'ANN':
-            t2 = t1.add(360,cdtime.Days)
+        mo0 = 1  # Start from January for annual
+    elif season == 'JJA':
+        mo0 = 6  # Summer (Jun-Aug)
+    elif season == 'SON': 
+        mo0 = 9  # Fall (Sep-Nov)
+    elif season == 'DJF': 
+        mo0 = 12  # Winter (Dec-Feb)
+    elif season == 'MAM': 
+        mo0 = 3  # Spring (Mar-May)
+    
+    # Set time resolution (hours per day)
+    if tres == '1hr':
+        tres_id = 24
+    elif tres == '3hr':
+        tres_id = 8
+    else:
+        raise ValueError(f"Unsupported time resolution: {tres}")
+    
+    # Create list of years to process
+    years = list(range(styr, edyr))
+    
+    # Convert to xarray DataArray if it's not already
+    if not isinstance(var, xr.DataArray):
+        if hasattr(var, 'getValue'):
+            # Convert from cdms2 format
+            values = var.getValue()
+            times = var.getTime()[:]
+            # Create a default time coordinate
+            time_coords = pd.date_range(
+                start=f"{styr}-01-01",
+                periods=values.shape[0],
+                freq='H' if tres == '1hr' else '3H'
+            )
+            da = xr.DataArray(values, dims=['time'], coords={'time': time_coords})
         else:
-            t2 = t1.add(90,cdtime.Days)
-#        try:
-        var_yr =  var(time=(t1,t2,'co'))
-        #pdb.set_trace()
+            # Assume it's a numpy array
+            values = np.array(var)
+            # Create a default time coordinate
+            time_coords = pd.date_range(
+                start=f"{styr}-01-01",
+                periods=values.shape[0],
+                freq='H' if tres == '1hr' else '3H'
+            )
+            da = xr.DataArray(values, dims=['time'], coords={'time': time_coords})
+    else:
+        da = var
+    
+    # Initialize output array
+    var_dc_year = np.empty([len(years), tres_id]) * np.nan
+    
+    # Process each year
+    for iy, year in enumerate(years):
+        # Set time range for this year and season
         if season == 'ANN':
-            var_dc_year[iy,:]= np.nanmean(np.reshape(var_yr,(360,tres_id)), axis=0)
+            # Full year
+            start_date = f"{year}-01-01"
+            end_date = f"{year}-12-31"
         else:
-            var_dc_year[iy,:]= np.nanmean(np.reshape(var_yr,(90,tres_id)), axis=0)
+            # Seasonal (3 months)
+            start_month = mo0
+            if mo0 == 12:  # Special case for DJF (spans year boundary)
+                start_date = f"{year-1}-12-01"
+                end_date = f"{year}-02-28"  # February end (ignoring leap years)
+            else:
+                start_date = f"{year}-{start_month:02d}-01"
+                end_month = (start_month + 2) % 12
+                end_month = 12 if end_month == 0 else end_month
+                end_year = year + 1 if end_month < start_month else year
+                end_date = f"{end_year}-{end_month:02d}-30"  # Approximate month end
+        
+        # Select data for this time period
+        try:
+            year_data = da.sel(time=slice(start_date, end_date))
+            
+            # Group by hour of day and calculate mean
+            hourly_data = year_data.groupby('time.hour').mean(dim='time')
+            
+            # Store in output array
+            for hour in range(tres_id):
+                if hour in hourly_data.hour.values:
+                    var_dc_year[iy, hour] = hourly_data.sel(hour=hour).values
+        except Exception as e:
+            print(f"Error processing year {year}: {e}")
+            continue
 
 
-        if var.id == 'tas':
-            var_dc_year[iy,:] = var_dc_year[iy,:]-273.15
-
-        if var.id == 'pr':
-            var_dc_year[iy,:] = var_dc_year[iy,:]*3600.*24.
-#        print year
-#        except:
-#            print str(year) +' not Available!'
-#            var_dc_year[iy,:] =  np.nan
-    var_dc = np.nanmean(var_dc_year,axis=0)  
+    # Apply unit conversions if needed
+    var_id = getattr(var, 'id', getattr(da, 'name', None))
+    if var_id == 'tas':
+        var_dc_year = var_dc_year - 273.15
+    elif var_id == 'pr':
+        var_dc_year = var_dc_year * 3600.0 * 24.0
+    # Calculate mean across years
+    var_dc = np.nanmean(var_dc_year, axis=0)  
     return var_dc
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -125,7 +195,8 @@ def diurnal_cycle_data(parameter):
         test_tres = test_file[0].split(test_model)[-1][:3] #e.g., '3hr', '1hr'
 
 
-        fin = cdms2.open(test_file[0])
+        # Open test data with Dataset class
+        test_dataset = open_dataset(test_file[0], name=test_model)
         if test_tres == '1hr': test_tidlen=24
         if test_tres == '3hr': test_tidlen=8
 
@@ -135,58 +206,67 @@ def diurnal_cycle_data(parameter):
         print(('Processing diurnal data for test_model',test_model,' with Tres of '+test_tres))
 
         for j, variable in enumerate(variables): 
-            for k,season in enumerate(seasons):
+            for k, season in enumerate(seasons):
                 try:
-                    var = fin (variable,squeeze = 1)
-                    test_var_dc = var_diurnal_cycle(var,season,test_tres,test_styr,test_edyr)
-                    test_var_season[j,:,k] = test_var_dc
-                except:
-                    print((variable+" "+season+" not processed for " + test_model))
+                    # Get variable from dataset
+                    var = test_dataset.get_variable(variable)
+                    test_var_dc = var_diurnal_cycle(var, season, test_tres, test_styr, test_edyr)
+                    test_var_season[j, :, k] = test_var_dc
+                except Exception as e:
+                    print(f"{variable} {season} not processed for {test_model}: {e}")
                     print('!!please check the start and end year in basicparameter.py')
                     test_findex = 0
 
     # Calculate for observational data
     obs_var_season=np.empty([len(variables),24,len(seasons)])*np.nan
-    #obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag_domain_diurnal*.nc')) #read in diurnal test data
-    #obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag_c1_diurnal*.nc')) #read in diurnal test data
+    
+    # Determine observation file path
     if not arm_name:
-        #obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag_c1_diurnal_climo_sgp_localtime.nc')) #read in diurnal test data
         obs_file = glob.glob(os.path.join(obs_path,'*ARMdiag_domain_diurnal*.nc')) #read in diurnal test data
     else:
-        #obs_file = glob.glob(os.path.join(obs_path,'sgparmdiagsmondiurnalC1.c1.nc'))
         obs_file = glob.glob(os.path.join(obs_path,sites[0][:3]+'armdiagsmondiurnal'+ sites[0][3:5].upper()+'.c1.nc'))
+    
     print('ARM data')
-    fin = cdms2.open(obs_file[0])
+    
+    # Open observation data with Dataset class
+    obs_dataset = open_dataset(obs_file[0], name="OBS")
     for j, variable in enumerate(variables): 
               
         try:
-            var = fin (variable)
-            var_dc = np.reshape(var,(int(var.shape[0]/12/24),12,24))
-            var_dc = np.nanmean(var_dc,axis=0)
+            # Get variable from dataset
+            var = obs_dataset.get_variable(variable)
+            
+            # Extract the diurnal cycle data for each season using xarray
+            # Reshape to (years, months, hours) if needed
+            var_data = var.values
+            var_dc = np.reshape(var_data, (int(var_data.shape[0]/12/24), 12, 24))
+            var_dc = np.nanmean(var_dc, axis=0)  # Mean across years
 
-            # extend the var for all seasons [XZ]
-            var_dc12 = np.concatenate((var_dc,var_dc),axis=0)
-            for k,season in enumerate(seasons):
+            # Extend the var for all seasons [XZ]
+            var_dc12 = np.concatenate((var_dc, var_dc), axis=0)
+            for k, season in enumerate(seasons):
                 if season == 'ANN':
-                    obs_var_dc = np.nanmean(var_dc12[0:12,:],axis=0)
+                    obs_var_dc = np.nanmean(var_dc12[0:12,:], axis=0)
                 if season == 'MAM':
-                    obs_var_dc = np.nanmean(var_dc12[2:5,:],axis=0)
+                    obs_var_dc = np.nanmean(var_dc12[2:5,:], axis=0)
                 if season == 'JJA':
-                    obs_var_dc = np.nanmean(var_dc12[5:8,:],axis=0)
+                    obs_var_dc = np.nanmean(var_dc12[5:8,:], axis=0)
                 if season == 'SON':
-                    obs_var_dc = np.nanmean(var_dc12[8:11,:],axis=0)
+                    obs_var_dc = np.nanmean(var_dc12[8:11,:], axis=0)
                 if season == 'DJF':
-                    obs_var_dc = np.nanmean(var_dc12[11:14,:],axis=0)
+                    obs_var_dc = np.nanmean(var_dc12[11:14,:], axis=0)
 
-                # convert var units
-                if var.id == 'tas':
-                    obs_var_dc = obs_var_dc-273.15
-                if var.id == 'pr':
-                    obs_var_dc = obs_var_dc*3600.*24.
-                # store processed array
+                # Convert var units
+                var_id = getattr(var, 'id', variable)
+                if var_id == 'tas':
+                    obs_var_dc = obs_var_dc - 273.15
+                if var_id == 'pr':
+                    obs_var_dc = obs_var_dc * 3600.0 * 24.0
+                
+                # Store processed array
                 obs_var_season[j,:,k] = obs_var_dc
-        except:
-            print((variable+" "+season+" not processed for obs"))
+        except Exception as e:
+            print(f"{variable} {season} not processed for obs: {e}")
 
     # Calculate cmip model seasonal mean climatology (diurnal cycles)
     cmip_var_season=np.empty([len(ref_models),len(variables),8,len(seasons)])*np.nan
@@ -200,20 +280,20 @@ def diurnal_cycle_data(parameter):
              ref_file = glob.glob(os.path.join(cmip_path,sites[0]+'/'+sites[0][:3]+ref_model+'3hr'+sites[0][3:5].upper()+'*.nc' )) #read in monthly test data
 
          print(('ref_model', ref_model))
-         if not ref_file :
-             print((ref_model+" not found!"))
+         if not ref_file:
+             print(f"{ref_model} not found!")
          else:
-             fin = cdms2.open(ref_file[0])
+             # Open CMIP model data with Dataset class
+             cmip_dataset = open_dataset(ref_file[0], name=ref_model)
          
              for j, variable in enumerate(variables): 
-                 for k,season in enumerate(seasons):
+                 for k, season in enumerate(seasons):
                      try:
-                         var = fin (variable,squeeze = 1)
-                         cmip_var_season[i, j, :, k] = var_diurnal_cycle(var, season,'3hr',1979,2006)
-
-                     except:
-                         print((variable+" "+season+" not processed for " + ref_model))
-             fin.close()
+                         # Get variable from dataset
+                         var = cmip_dataset.get_variable(variable)
+                         cmip_var_season[i, j, :, k] = var_diurnal_cycle(var, season, '3hr', 1979, 2006)
+                     except Exception as e:
+                         print(f"{variable} {season} not processed for {ref_model}: {e}")
 
     # Calculate multi-model mean
     # TODO: cmip_var_season should only save available models, remove all rows with nan

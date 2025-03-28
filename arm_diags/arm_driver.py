@@ -7,16 +7,17 @@ This module contains the core functionality for running the ARM Diagnostics pack
 
 import json
 import copy
-import numpy
-import cdutil
-import genutil
+import numpy as np
+import xarray as xr
+import xcdat
 import shutil
-import cdms2
-import MV2
 import glob
 import os
 import pdb
 import fnmatch
+import pandas as pd
+from .src.dataset import open_dataset, climatology
+from .src.core import climo, get_diurnal_cycle, var_annual_cycle
 from . import arm_parser
 from .src.seasonal_mean import seasonal_mean_table
 from .src.annual_cycle import annual_cycle_data, annual_cycle_line_plot, annual_cycle_taylor_diagram
