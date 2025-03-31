@@ -5,11 +5,12 @@
 #---------------------------------------------------------------------------------------------------------------------------
 #===========================================================================================================================
 # User defined case id
-#case_id = 'output_cheng_20230705_mdtfv3_cesm'
 case_id = 'output_cheng_20240905_armdiags_v4'
+case_id = 'output_03312025_armdiags_v4'
 
 # User defined the ARM-Diags package path
-armdiags_path = '/Users/tao4/Documents/ARM_Infrastructure/ARM_DIAG/arm-gcm-diagnostics/'
+#armdiags_path = '/Users/tao4/Documents/ARM_Infrastructure/ARM_DIAG/arm-gcm-diagnostics/'
+armdiags_path = '/Users/zhang40/Documents/repos/arm-gcm-diagnostics/'
 
 #--------------------------------------------------------------------------
 # Testing model dataset (User defined model)
@@ -29,7 +30,7 @@ test_end_year   = 2006
 #base_path = '/Users/tao4/Documents/ARM_Infrastructure/ARM_DIAG/arm_diags_data_v3.1_07052023_mdtfv3_cesm/'
 #base_path = '/Users/tao4/Documents/ARM_Infrastructure/ARM_DIAG/arm_diags_data_v3.1_05192023/'
 #base_path = '/Users/tao4/Documents/ARM_Infrastructure/ARM_DIAG/arm_diags_data_v3.1_06292023_mdtfv3_gfdl/'
-base_path = '/Users/tao4/Documents/ARM_Infrastructure/ARM_DIAG/arm_diags_data_v3.1_06122023/'
+base_path = '/Users/zhang40/Documents/ARM/data/arm_diags_data_v4.0/'
 test_data_path = base_path+'testmodel'
 obs_path = base_path+'observation'
 cmip_path =  base_path+'cmip6'
@@ -37,7 +38,7 @@ cmip_path =  base_path+'cmip6'
 #--------------------------------------------------------------------------
 # Set output path, where the results will be saved
 #output_path = '/DATA/ARM-Diag/Results/'+case_id
-output_path = '/Users/tao4/Documents/ARM_Infrastructure/ARM_DIAG/'+case_id
+output_path = '/Users/zhang40/Documents/ARM/data/arm_diags_data_v4.0/results/'+case_id
 
 arm_filename = True
 #===========================================================================================================================
