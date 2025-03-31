@@ -36,7 +36,7 @@ Applications of the ARM-Diags:
 Install
 =======
 
-The data files including observation and CMIP5 model data are available through ARM archive. The analytical codes to calculate and visualize the diagnostics results are placed via repository (arm-gcm-diagnostics) at https://github.com/ARM-DOE/
+The data files including observation and CMIP model data are available through ARM archive. The analytical codes to calculate and visualize the diagnostics results are placed via repository (arm-gcm-diagnostics) at https://github.com/ARM-DOE/
 
 For downloading data:
 
@@ -48,42 +48,77 @@ For obtaining codes::
 
     git clone https://github.com/ARM-DOE/arm-gcm-diagnostics/
     
-To create conda enviroment (for a minimum enviroment)::
+To create conda environment (for a minimum environment)::
     
-    conda create -n arm_diags_env_py3 cdp cdutil cdms2 libcdms matplotlib scipy python=3 -c conda-forge -c uvcdat
+    conda create -n arm_diags_env_py3 cdutil cdms2 libcdms matplotlib scipy xarray pandas netCDF4 python=3.9 -c conda-forge
     
-To activate the conda enviroment::
+To activate the conda environment::
     
     conda activate arm_diags_env_py3
 
-To install the package, go into <Your directory> (/arm-gcm-dignostics/)::
+To install the package, go into the project directory::
     
-    python setup.py install
+    cd arm-gcm-diagnostics
+    pip install -e .
 
-Testing
-=============
+Running the Diagnostics
+===================
 
-A test case has been set up for the users to run the package out-of-the-box. In this case, all the observation, CMIP data, test data should be downloaded placed under directoris:: 
+A test case has been set up for the users to run the package out-of-the-box. In this case, all the observation, CMIP data, test data should be downloaded and placed under directories:
 
- <Your directory>/arm_diags/observation
- <Your directory>/arm_diags/cmip
- <Your directory>/arm_diags/model
+- Observation data: ``<Your directory>/arm_diags_data/observation``
+- CMIP data: ``<Your directory>/arm_diags_data/cmip6``
+- Test model data: ``<Your directory>/arm_diags_data/testmodel``
 
-Edit parameter file basicparameter.py to set 'base_path' to <Your directory>
+Recommended Approach: Using a Parameter File
+--------------------------------------------
 
-To run the package, simply type in the terminal the following::
-   
-  python arm_driver.py -p basicparameter.py
+The recommended way to run ARM Diagnostics is using a parameter file, which provides a cleaner and more reproducible workflow:
+
+.. code-block:: bash
+
+    ./run_arm_diags.py -p examples/arm_diags_params.py
+
+An example parameter file is provided in ``examples/arm_diags_params.py``. You can copy and modify this file for your specific needs. The parameter file allows you to set all configuration options in one place and easily reuse configurations.
+
+Alternative: Using Command-line Arguments
+----------------------------------------
+
+You can also run the diagnostics by providing parameters directly on the command line:
+
+.. code-block:: bash
+
+    ./run_arm_diags.py --base-path <Your directory>/arm_diags_data --case-id my_test_case
+
+The script accepts several command-line arguments:
+
+- ``--base-path``: Base directory containing model and observational data (required)
+- ``--case-id``: Unique identifier for this run (default: a timestamp-based name)
+- ``--test-data-path``: Path to test model data (default: {base_path}/testmodel)
+- ``--obs-path``: Path to observational data (default: {base_path}/observation)
+- ``--cmip-path``: Path to CMIP data (default: {base_path}/cmip6)
+- ``--output-path``: Path where results will be saved (default: {base_path}/results/{case_id})
+- ``--test-data-set``: Name of the test model dataset (default: "testmodel")
+- ``--test-start-year``: Start year for test data (default: 1979)
+- ``--test-end-year``: End year for test data (default: 2006)
+- ``--config-file``: Configuration file with diagnostics settings (default: diags_all_multisites_for_cmip6.json)
+
+Viewing Results
+--------------
 
 To view the diagnostics results:
 
-For Mac OS::
+For Mac OS:
 
-  open <Your directory>/arm_diags/case_name/html/ARM_diag.html
+.. code-block:: bash
 
-For Linux::
+    open <Your directory>/arm_diags_data/results/my_test_case/html/ARM_diag.html
 
-   xdg-open <Your directory>/ arm_diags/case_name/html/ARM_diag.html
+For Linux:
+
+.. code-block:: bash
+
+    xdg-open <Your directory>/arm_diags_data/results/my_test_case/html/ARM_diag.html
 
 
 Examples
@@ -105,15 +140,25 @@ Clike `here <https://portal.nersc.gov/project/capt/ARMVAP/arm_diag_v4_example.ht
 Set-up new case
 =================
 
-- To apply this package to any CMIP output provided within our dataset, just copy the CMIP model data from <Your directory>/ arm_diags /cmip to <Your directory>/ arm_diags /model.
-- To apply this package to your own model output. The input datasets should be saved under data directory <Your directory>/ arm_diags /model. The file name should follow the test data files provided and the data sets should follow the CMIP convention, so that the input files are readable by the software package.
-- Edit basicparameter.py as follows:
-- Change 'test_data_set' to the model name
-- Edit 'case_id' to create folder to save diagnostics results 
-- Edit 'base_path' to spedify location of the data
-- Run the package by typing::
+To run the diagnostics with your own model data:
 
-              python arm_driver.py -p basicparameter.py
+1. Prepare your model data:
+   - To use CMIP output provided within our dataset, copy the CMIP model data to your test model directory.
+   - For your own model output: Save datasets in your test model directory. The file names should follow the test data files provided and should follow the CMIP convention.
+
+2. Create a parameter file:
+   - Copy the example parameter file from ``examples/arm_diags_params.py`` to a new location
+   - Modify the following parameters:
+     - ``case_id``: Set a unique name for this run
+     - ``base_path``: Set the path to your data directory
+     - ``test_data_set``: Set the name of your model
+     - ``test_start_year`` and ``test_end_year``: Set the time range of your data
+
+3. Run the diagnostics:
+
+.. code-block:: bash
+
+    ./run_arm_diags.py -p your_parameter_file.py
 
 
 
