@@ -5,6 +5,7 @@ This document tracks the progress of migrating from CDMS2/CDUTIL to Xarray in th
 ## Completed Modules
 
 1. `annual_cycle.py` - Refactored to use xarray instead of cdms2
+2. `diurnal_cycle.py` - Refactored to use xarray instead of cdms2/cdtime
 
 ## Migration Approach
 
@@ -12,7 +13,7 @@ Each module is being refactored individually using a script-by-script approach. 
 
 ### Key Transformations
 
-For `annual_cycle.py`, the following changes were made:
+#### For `annual_cycle.py`
 
 1. **File Opening**
    - CDMS2: `cdms2.open(filename)`
@@ -38,6 +39,37 @@ For `annual_cycle.py`, the following changes were made:
 
 5. **Statistical Calculations**
    - Using numpy's nanmean, nanstd, etc., for calculations to handle missing values properly
+
+#### For `diurnal_cycle.py`
+
+1. **Time Selection by Season**
+   - CDMS2: 
+     ```python
+     t1 = cdtime.comptime(year, month, day)
+     t2 = t1.add(90, cdtime.Days)
+     var_yr = var(time=(t1, t2, 'co'))
+     ```
+   - Xarray:
+     ```python
+     start_time = f"{year}-{month:02d}-{day:02d}"
+     end_time = f"{year+1}-{month:02d}-{day:02d}"
+     var_yr = da.sel(time=slice(start_time, end_time))
+     ```
+
+2. **Diurnal Cycle Calculation**
+   - CDMS2/NumPy: 
+     ```python
+     var_dc_year[iy, :] = np.nanmean(np.reshape(var_yr, (days_in_season, hours_per_day)), axis=0)
+     ```
+   - Xarray:
+     ```python
+     var_yr.groupby('time.hour').mean(dim='time')
+     ```
+
+3. **Data Handling**
+   - Improved error handling and validation
+   - Better support for different temporal resolutions (1hr, 3hr)
+   - More explicit handling of different seasonal time ranges
 
 ### Benefits of the Migration
 
