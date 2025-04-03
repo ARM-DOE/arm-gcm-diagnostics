@@ -7,6 +7,7 @@ This document tracks the progress of migrating from CDMS2/CDUTIL to Xarray in th
 1. `annual_cycle.py` - Refactored to use xarray instead of cdms2
 2. `diurnal_cycle.py` - Refactored to use xarray instead of cdms2/cdtime
 3. `pdf_daily.py` - Refactored to use xarray instead of cdms2/cdutil/cdtime
+4. `seasonal_mean.py` - Refactored to use xarray instead of cdms2/cdutil
 
 ## Migration Approach
 
