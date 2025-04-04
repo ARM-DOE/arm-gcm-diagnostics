@@ -11,9 +11,8 @@
 import os
 import pdb
 import glob
-import cdms2
-import cdutil
 import numpy as np
+import xarray as xr
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from .varid_dict import varid_longname
@@ -41,17 +40,26 @@ def aerosol_activation_density_plot(parameter):
     print('ARM data',sites[0])
     obs_file = glob.glob(os.path.join(obs_path,sites[0][:3]+'armdiagsaciactivate' + sites[0][3:5].upper()+'*c1.nc')) #read in data
     print('obs_file',obs_file)
-    fin = cdms2.open(obs_file[0])
-    # Bulk Activation
-    cpc_bulk = fin('cpc_bulk'); cpc_bulk.filled(fill_value=np.nan)
-    cpc_bulk=np.array(cpc_bulk)
-    #
-    ccn02_bulk = fin('ccn02_bulk'); ccn02_bulk.filled(fill_value=np.nan)
-    ccn02_bulk=np.array(ccn02_bulk)
-    #
-    ccn05_bulk = fin('ccn05_bulk'); ccn05_bulk.filled(fill_value=np.nan)
-    ccn05_bulk=np.array(ccn05_bulk)
-    fin.close()  
+    
+    try:
+        # Use xarray to open the dataset with decode_times=False to prevent time parsing issues
+        ds = xr.open_dataset(obs_file[0], decode_times=False)
+        
+        # Bulk Activation
+        cpc_bulk = ds['cpc_bulk'].values
+        cpc_bulk = np.where(np.isnan(cpc_bulk), np.nan, cpc_bulk)
+        
+        ccn02_bulk = ds['ccn02_bulk'].values
+        ccn02_bulk = np.where(np.isnan(ccn02_bulk), np.nan, ccn02_bulk)
+        
+        ccn05_bulk = ds['ccn05_bulk'].values
+        ccn05_bulk = np.where(np.isnan(ccn05_bulk), np.nan, ccn05_bulk)
+        
+        ds.close()
+    except Exception as e:
+        print(f"Error loading observation data: {e}")
+        return
+    
     #==========================================================================
     # Plotting=================================================================
     #==========================================================================
@@ -200,46 +208,52 @@ def aerosol_activation_density_plot(parameter):
         test_tres = test_file[0].split(test_model)[-1][:3] #e.g., '3hr', '1hr'
         print('test_file',test_file[0])
         
-        fin = cdms2.open(test_file[0])
-        # test Activation
-        #check if test model contain the required variables
-        #cpc
         try:
-            cpc_test0 = fin('cpc'); cpc_test0.filled(fill_value=np.nan)
-            cpc_test0=np.array(cpc_test0)
-            test_cpc_exist = 1
-        except:
+            # Use xarray to open the dataset with decode_times=False
+            ds = xr.open_dataset(test_file[0], decode_times=False)
+            
+            # Initialize variables
             test_cpc_exist = 0
-        #aitken mode aerosol
-        try:
-            ait_test0 = fin('aitken'); ait_test0.filled(fill_value=np.nan)
-            ait_test0=np.array(ait_test0)
-            test_ait_exist = 1
-        except:
             test_ait_exist = 0
-        #accumulation mode aerosol
-        try:
-            acc_test0 = fin('accumulation'); acc_test0.filled(fill_value=np.nan)
-            acc_test0=np.array(acc_test0)
-            test_acc_exist = 1
-        except:
             test_acc_exist = 0
-        #ccn at 0.2%SS
-        try:
-            ccn02_test0 = fin('ccn02'); ccn02_test0.filled(fill_value=np.nan)
-            ccn02_test0=np.array(ccn02_test0)
-            test_ccn02_exist = 1
-        except:
             test_ccn02_exist = 0
-        #ccn at 0.5%SS
-        try:
-            ccn05_test0 = fin('ccn05'); ccn05_test0.filled(fill_value=np.nan)
-            ccn05_test0=np.array(ccn05_test0)
-            test_ccn05_exist = 1
-        except:
             test_ccn05_exist = 0
-
-        fin.close()  
+            
+            # Check for cpc
+            if 'cpc' in ds:
+                cpc_test0 = ds['cpc'].values
+                cpc_test0 = np.where(np.isnan(cpc_test0), np.nan, cpc_test0)
+                test_cpc_exist = 1
+            
+            # Check for aitken mode aerosol
+            if 'aitken' in ds:
+                ait_test0 = ds['aitken'].values
+                ait_test0 = np.where(np.isnan(ait_test0), np.nan, ait_test0)
+                test_ait_exist = 1
+            
+            # Check for accumulation mode aerosol
+            if 'accumulation' in ds:
+                acc_test0 = ds['accumulation'].values
+                acc_test0 = np.where(np.isnan(acc_test0), np.nan, acc_test0)
+                test_acc_exist = 1
+            
+            # Check for ccn at 0.2%SS
+            if 'ccn02' in ds:
+                ccn02_test0 = ds['ccn02'].values
+                ccn02_test0 = np.where(np.isnan(ccn02_test0), np.nan, ccn02_test0)
+                test_ccn02_exist = 1
+            
+            # Check for ccn at 0.5%SS
+            if 'ccn05' in ds:
+                ccn05_test0 = ds['ccn05'].values
+                ccn05_test0 = np.where(np.isnan(ccn05_test0), np.nan, ccn05_test0)
+                test_ccn05_exist = 1
+            
+            ds.close()
+        except Exception as e:
+            print(f"Error loading test model data: {e}")
+            return
+            
         #initial QC
         if (test_cpc_exist == 1) and (test_ccn02_exist == 1) and (test_ccn05_exist == 1):
             lvloc=np.where((cpc_test0>0)&(ccn02_test0>0)&(ccn05_test0>0))[0]

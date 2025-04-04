@@ -12,6 +12,8 @@ This document tracks the progress of migrating from CDMS2/CDUTIL to Xarray in th
 6. `annual_cycle_zt.py` - Refactored to use xarray instead of cdms2 for height-time cloud fraction profile analysis
 7. `diurnal_cycle_LAcoupling.py` - Refactored to use xarray instead of cdms2 for Land-Atmosphere coupling analysis
 8. `convection_onset_driver.py` - Refactored to use xarray instead of cdms2/cdtime for convection onset diagnostics
+9. `aerosol_activation.py` - Refactored to use xarray instead of cdms2 for aerosol-to-CCN activation metrics
+10. `twolegged_metric.py` - Refactored to use xarray instead of cdms2/MV2 for land-atmosphere coupling metrics
 
 ## Migration Approach
 
