@@ -6,7 +6,7 @@
 #===========================================================================================================================
 # User defined case id
 case_id = 'output_cheng_20240905_armdiags_v4'
-case_id = 'output_03312025_armdiags_v4'
+case_id = 'output_04042025_armdiags_v4'
 
 # User defined the ARM-Diags package path
 #armdiags_path = '/Users/tao4/Documents/ARM_Infrastructure/ARM_DIAG/arm-gcm-diagnostics/'
