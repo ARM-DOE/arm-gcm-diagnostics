@@ -14,6 +14,7 @@ This document tracks the progress of migrating from CDMS2/CDUTIL to Xarray in th
 8. `convection_onset_driver.py` - Refactored to use xarray instead of cdms2/cdtime for convection onset diagnostics
 9. `aerosol_activation.py` - Refactored to use xarray instead of cdms2 for aerosol-to-CCN activation metrics
 10. `twolegged_metric.py` - Refactored to use xarray instead of cdms2/MV2 for land-atmosphere coupling metrics
+11. `utils.py` - Refactored to use xarray instead of cdms2/cdutil/MV2 for climatology calculations and time-series operations
 
 ## Migration Approach
 
