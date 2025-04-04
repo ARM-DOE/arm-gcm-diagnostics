@@ -50,7 +50,7 @@ For obtaining codes::
     
 To create conda environment (for a minimum environment)::
     
-    conda create -n arm_diags_env_py3 cdutil cdms2 libcdms matplotlib scipy xarray pandas netCDF4 python=3.9 -c conda-forge
+    conda create -n arm_diags_env_py3 matplotlib scipy xarray pandas netCDF4 python=3.9 -c conda-forge
     
 To activate the conda environment::
     
@@ -162,14 +162,14 @@ To run the diagnostics with your own model data:
 
 
 
-Extensions and related software
+Dependencies
 ===============================
 
-* `UVCDAT <https://github.com/UV-CDAT/uvcdat/wiki/install>`_ : 
-  Ultrascale Visualization Climate Data Analysis Tools.
-
-The other required dependencies to install Py-ART in addition to Python are:
+The required dependencies to run ARM Diagnostics are:
 
 * `NumPy <http://www.scipy.org>`_
 * `SciPy <http://www.scipy.org>`_
 * `matplotlib <http://matplotlib.org/>`_
+* `xarray <https://xarray.dev/>`_
+* `pandas <https://pandas.pydata.org/>`_
+* `netCDF4 <https://unidata.github.io/netcdf4-python/>`_

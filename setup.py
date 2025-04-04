@@ -24,8 +24,6 @@ setup(
         'xarray',
         'netCDF4',
         'pandas',
-        'cdms2',       # Still needed for unrefactored modules
-        'cdutil',      # Still needed for unrefactored modules
         'importlib-resources; python_version < "3.10"',  # For resource handling
     ],
     package_data={
