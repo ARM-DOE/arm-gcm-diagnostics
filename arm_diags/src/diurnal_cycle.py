@@ -1,5 +1,5 @@
 #===========================================================================================================================
-# Program for generate precipitation diurnal cycle from hourly data -- Originally written by Dr. Chengzhu Zhang @ LLNL
+# Program for generate precipitation diurnal cycle from hourly data
 #---------------------------------------------------------------------------------------------------------------------------
 # V4 Development
     # ----------------------------------------------------------------------------------------------------

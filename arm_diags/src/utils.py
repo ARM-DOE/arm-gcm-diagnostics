@@ -1,5 +1,5 @@
 #===========================================================================================================================
-# Functions for calculate annual/seasonal cycle from monthly data -- Original written by Dr. Chengzhu Zhang @ LLNL
+# Functions for calculate annual/seasonal cycle from monthly data
 #---------------------------------------------------------------------------------------------------------------------------
 # V3 Development
     # ---------------------------------------------------------------------------------------

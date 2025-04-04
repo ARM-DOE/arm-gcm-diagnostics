@@ -1,5 +1,5 @@
 #===========================================================================================================================
-# Program for generate annual/seasonal cycle & 2D plot from monthly data -- Original written by Dr. Chengzhu Zhang @ LLNL
+# Program for generate annual/seasonal cycle & 2D plot from monthly data
 #---------------------------------------------------------------------------------------------------------------------------
 # V3 Development
     # ---------------------------------------------------------------------------------------

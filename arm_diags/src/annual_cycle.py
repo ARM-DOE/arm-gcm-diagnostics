@@ -1,5 +1,5 @@
 #===========================================================================================================================
-# Program for generate annual/seasonal cycle & line plot from monthly data -- Original written by Dr. Chengzhu Zhang @ LLNL
+# Program for generate annual/seasonal cycle & line plot from monthly data
 #---------------------------------------------------------------------------------------------------------------------------
 # V4 Development
     # ----------------------------------------------------------------------------------------------------
