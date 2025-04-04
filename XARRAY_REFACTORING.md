@@ -10,6 +10,7 @@ This document tracks the progress of migrating from CDMS2/CDUTIL to Xarray in th
 4. `seasonal_mean.py` - Refactored to use xarray instead of cdms2/cdutil
 5. `annual_cycle_aci.py` - Refactored to use xarray instead of cdms2/cdutil
 6. `annual_cycle_zt.py` - Refactored to use xarray instead of cdms2 for height-time cloud fraction profile analysis
+7. `diurnal_cycle_LAcoupling.py` - Refactored to use xarray instead of cdms2 for Land-Atmosphere coupling analysis
 
 ## Migration Approach
 
