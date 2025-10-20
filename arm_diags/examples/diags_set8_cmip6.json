@@ -1,0 +1,13 @@
+{
+        "arm_diags": [
+          {
+      "diags_set": "set8_annual_cycle_aci",
+      "sites": ["sgpc1"],
+      "variables": ["cpc","ccn02","ccn05","organic","sulfate","nitrate","ammonium","cod"],
+      "ref_models": ["accessesm15"],
+      "season": ["J","F","M","A","M","J","J","A","S","O","N","D"]
+                }
+          ]
+
+}
+

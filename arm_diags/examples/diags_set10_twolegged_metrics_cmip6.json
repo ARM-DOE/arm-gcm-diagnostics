@@ -1,0 +1,13 @@
+{
+        "arm_diags": [
+          {
+      "diags_set": "set10_twolegged_metric",
+      "variables": ["Atmospheric Coupling Legs","Terrestrial Cooupling Legs"],
+      "sites": ["sgpc1"],
+      "season": ["DJF","MAM","JJA","SON"]
+                }
+          
+	]
+
+}
+
