@@ -65,7 +65,7 @@ def run_diagnostics(args):
         print("Install it with: conda install -c conda-forge cdp", file=sys.stderr)
         print("Alternatively, use run_arm_diags.py which doesn't require cdp.", file=sys.stderr)
         return 1
-    
+
     if not os.path.exists(args.config):
         print(f"Error: Config file not found: {args.config}", file=sys.stderr)
         return 1
