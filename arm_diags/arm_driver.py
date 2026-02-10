@@ -118,7 +118,7 @@ if __name__ == "__main__":
         print("Install it with: conda install -c conda-forge cdp")
         print("For running diagnostics, use run_arm_diags.py instead, which doesn't require cdp.")
         raise
-    
+
     parser = arm_parser.ARMParser()
     basic_parameter = parser.get_orig_parameters(argparse_vals_only=False)
     #basic_parameter = parser.get_parameters()
