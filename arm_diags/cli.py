@@ -60,14 +60,14 @@ def main():
 
 def run_diagnostics(args):
     """Run the ARM diagnostics with the provided configuration."""
-    if not os.path.exists(args.config):
-        print(f"Error: Config file not found: {args.config}", file=sys.stderr)
-        return 1
-    
     if not HAS_ARM_PARSER:
         print("Error: The 'cdp' package is required for the CLI interface.", file=sys.stderr)
         print("Install it with: conda install -c conda-forge cdp", file=sys.stderr)
         print("Alternatively, use run_arm_diags.py which doesn't require cdp.", file=sys.stderr)
+        return 1
+    
+    if not os.path.exists(args.config):
+        print(f"Error: Config file not found: {args.config}", file=sys.stderr)
         return 1
     
     try:
