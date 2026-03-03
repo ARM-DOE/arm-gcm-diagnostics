@@ -2,11 +2,11 @@
 import json
 import copy
 import numpy
-import cdutil
-import genutil
+#import cdutil
+#import genutil
 import shutil
-import cdms2
-import MV2
+#import cdms2
+#import MV2
 import glob
 import os
 import pdb
@@ -33,6 +33,7 @@ from .src.convection_onset_driver import convection_onset
 from .src.aerosol_activation import aerosol_activation_density_plot
 from .src.twolegged_metric import twolegged_metric_plot
 from .src.diurnal_cycle_LAcoupling import diurnal_cycle_LAcoupling_plot
+from .src.diurnal_amplitude_metric import diurnal_amplitude_plot
 
 from .src.create_htmls import (
     annual_cycle_zt_html,
@@ -45,6 +46,7 @@ from .src.create_htmls import (
     convection_onset_html,
     aerosol_activation_html,
     twolegged_metric_html,
+    diurnal_amplitude_html,
     diurnal_cycle_LAcoupling_html,
     diags_main_html
 )
@@ -235,7 +237,15 @@ if __name__ == "__main__":
                 html_count = html_count + 1
             except:
                 pass
-    
+
+        if diags_set == 'set12_diurnal_amplitude_metric':
+            try:
+                diurnal_amplitude_plot(parameter)
+                diurnal_amplitude_html(parameter)
+                html_count = html_count + 1
+            except:
+                pass
+
     # Create the main html page hosting all sets of diagnostics
     if html_count >= 1:
         diags_main_html(output_path, test_model)
@@ -382,6 +392,12 @@ def run_diagnostics(basic_parameter):
                 html_count = html_count + 1
             except:
                 pass
+
+        if diags_set == 'set12_diurnal_amplitude_metric':
+            diurnal_amplitude_plot(parameter)
+            diurnal_amplitude_html(parameter)
+            html_count = html_count + 1
+
     
     #
     if html_count >= 1:
