@@ -331,12 +331,9 @@ def diurnal_amplitude_plot(parameter):
     print(f"Model file: {datafile_mod}")
     print(f"Obs file:   {datafile_obs}")
 
-    fin_mod = xr.open_dataset(datafile_mod)
-    fin_obs = xr.open_dataset(datafile_obs)
-
-    data_obs = read_and_derive(fin_obs)
-    data_mod = read_and_derive(fin_mod)
-
+    with xr.open_dataset(datafile_mod) as fin_mod, xr.open_dataset(datafile_obs) as fin_obs:
+        data_obs = read_and_derive(fin_obs)
+        data_mod = read_and_derive(fin_mod)
     scatter_vars = [
         "net_srf",
         "dTsdt",
