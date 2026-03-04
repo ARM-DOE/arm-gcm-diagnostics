@@ -394,9 +394,12 @@ def run_diagnostics(basic_parameter):
                 pass
 
         if diags_set == 'set12_diurnal_amplitude_metric':
-            diurnal_amplitude_plot(parameter)
-            diurnal_amplitude_html(parameter)
-            html_count = html_count + 1
+            try:
+                diurnal_amplitude_plot(parameter)
+                diurnal_amplitude_html(parameter)
+                html_count = html_count + 1
+            except:
+                pass
 
     
     #
