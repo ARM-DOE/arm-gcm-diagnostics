@@ -1,5 +1,5 @@
 #========================================================
-# Diurnal metircs for land-atmosphere coupling
+# Diurnal metrics for land-atmosphere coupling
 # The analysis is emphasized on the diurnal amplitudes 
 #  of surface energy budget components
 #========================================================
