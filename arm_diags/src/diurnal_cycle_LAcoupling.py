@@ -150,11 +150,20 @@ def diurnal_cycle_LAcoupling_plot(parameter):
     # Calculate for observational data
     #==========================================================================
     print('ARM data', sites[0])
-    obs_file = glob.glob(os.path.join(obs_path, f"{sites[0][:3]}armdiagsLAcoupling{sites[0][3:5].upper()}*c1.nc"))
-    print('Processing obs_file', obs_file)
-    if obs_file:
+    # Sort glob results so the primary file (C1.c1.nc) is preferred over
+    # supplementary files (e.g. C1_add_more_vars.c1.nc) since '.' < '_' in ASCII.
+    obs_files = sorted(glob.glob(os.path.join(obs_path, f"{sites[0][:3]}armdiagsLAcoupling{sites[0][3:5].upper()}*c1.nc")))
+    print('Processing obs_file', obs_files)
+    if obs_files:
         # Open dataset with xarray, prevent time decoding issues
-        obs_ds = xr.open_dataset(obs_file[0], decode_times=False)
+        obs_ds = xr.open_dataset(obs_files[0], decode_times=False)
+        # If a supplementary file exists, merge any variables missing from
+        # the primary file (e.g. pbl may only be in the _add_more_vars file).
+        for extra_file in obs_files[1:]:
+            with xr.open_dataset(extra_file, decode_times=False) as obs_extra:
+                for v in obs_extra.data_vars:
+                    if v not in obs_ds:
+                        obs_ds[v] = obs_extra[v].load()
     else:
         print(f"No observation files found for {sites[0]}")
         return
