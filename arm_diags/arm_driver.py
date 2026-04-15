@@ -2,11 +2,7 @@
 import json
 import copy
 import numpy
-#import cdutil
-#import genutil
 import shutil
-#import cdms2
-#import MV2
 import glob
 import os
 import pdb
@@ -21,8 +17,6 @@ except ImportError:
     # For Python 3.9
     from importlib_resources import files
 
-# Import arm_parser from current package
-#from . import arm_parser
 from .src.seasonal_mean import seasonal_mean_table
 from .src.annual_cycle import annual_cycle_data, annual_cycle_line_plot, annual_cycle_taylor_diagram
 from .src.annual_cycle_aci import annual_cycle_aci_data, annual_cycle_aci_line_plot, annual_cycle_aci_taylor_diagram
@@ -118,6 +112,15 @@ def make_parameters(basic_parameter):
 
 # Only run this section if this file is being executed directly (not imported)
 if __name__ == "__main__":
+    # Import arm_parser here (requires cdp package from conda-forge)
+    try:
+        from . import arm_parser
+    except ImportError:
+        print("Warning: Could not import arm_parser. This requires the 'cdp' package from conda-forge.")
+        print("Install it with: conda install -c conda-forge cdp")
+        print("For running diagnostics, use run_arm_diags.py instead, which doesn't require cdp.")
+        raise
+
     parser = arm_parser.ARMParser()
     basic_parameter = parser.get_orig_parameters(argparse_vals_only=False)
     #basic_parameter = parser.get_parameters()

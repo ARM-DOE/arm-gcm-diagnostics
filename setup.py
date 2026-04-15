@@ -26,6 +26,9 @@ setup(
         'pandas',
         'importlib-resources; python_version < "3.10"',  # For resource handling
     ],
+    extras_require={
+        'legacy': ['cdp'],  # Optional: only needed for legacy CLI features (requires conda-forge)
+    },
     package_data={
         'arm_diags': [
             'misc/*',                # Logo and misc files
