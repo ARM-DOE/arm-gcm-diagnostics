@@ -22,7 +22,7 @@ except ImportError:
     from importlib_resources import files
 
 # Import arm_parser from current package
-from . import arm_parser
+#from . import arm_parser
 from .src.seasonal_mean import seasonal_mean_table
 from .src.annual_cycle import annual_cycle_data, annual_cycle_line_plot, annual_cycle_taylor_diagram
 from .src.annual_cycle_aci import annual_cycle_aci_data, annual_cycle_aci_line_plot, annual_cycle_aci_taylor_diagram
@@ -153,11 +153,11 @@ if __name__ == "__main__":
         if diags_set == 'set1_tables':
             try:
                 seasonal_mean_table(parameter) #Calculate seasonal mean climatology
-                seasonal_mean_table_html(parameter) #Generate html 
+                seasonal_mean_table_html(parameter) #Generate html
                 html_count = html_count + 1
-            except:
-                pass
-    
+            except Exception as e:
+                print(f'Error in {diags_set}: {e}')
+
         if diags_set == 'set2_annual_cycle':
             try:
                 annual_cycle_data(parameter)
@@ -165,9 +165,9 @@ if __name__ == "__main__":
                 annual_cycle_taylor_diagram(parameter)
                 annual_cycle_html(parameter)
                 html_count = html_count + 1
-            except:
-                pass
-    
+            except Exception as e:
+                print(f'Error in {diags_set}: {e}')
+
         if diags_set == 'set3_annual_cycle_zt': # this also include set5 diags
             try:
                 annual_cycle_zt_data(parameter)
@@ -175,35 +175,35 @@ if __name__ == "__main__":
                 annual_cycle_zt_html(parameter)
                 diurnal_cycle_zt_html(parameter)
                 html_count = html_count + 1
-            except:
-                pass
-    
+            except Exception as e:
+                print(f'Error in {diags_set}: {e}')
+
         if diags_set == 'set4_diurnal_cycle':
             try:
                 diurnal_cycle_data(parameter)
                 diurnal_cycle_plot(parameter)
                 diurnal_cycle_html(parameter)
                 html_count = html_count + 1
-            except:
-                pass
-    
+            except Exception as e:
+                print(f'Error in {diags_set}: {e}')
+
         if diags_set == 'set6_pdf_daily':
             try:
                 pdf_daily_data(parameter)
                 pdf_daily_plot(parameter)
                 pdf_daily_html(parameter)
                 html_count = html_count + 1
-            except:
-                pass
-    
+            except Exception as e:
+                print(f'Error in {diags_set}: {e}')
+
         if diags_set == 'set7_convection_onset':
             try:
                 convection_onset(parameter)
                 convection_onset_html(parameter)
                 html_count = html_count + 1
-            except:
-                pass
-    
+            except Exception as e:
+                print(f'Error in {diags_set}: {e}')
+
         if diags_set == 'set8_annual_cycle_aci':
             try:
                 annual_cycle_aci_data(parameter)
@@ -211,40 +211,44 @@ if __name__ == "__main__":
                 annual_cycle_aci_taylor_diagram(parameter)
                 annual_cycle_aci_html(parameter)
                 html_count = html_count + 1
-            except:
-                pass
-    
+            except Exception as e:
+                print(f'Error in {diags_set}: {e}')
+
         if diags_set == 'set9_aerosol_activation':
             try:
                 aerosol_activation_density_plot(parameter)
                 aerosol_activation_html(parameter)
                 html_count = html_count + 1
-            except:
-                pass
-         
+            except Exception as e:
+                print(f'Error in {diags_set}: {e}')
+
         if diags_set == 'set10_twolegged_metric':
             try:
                 twolegged_metric_plot(parameter)
                 twolegged_metric_html(parameter)
                 html_count = html_count + 1
-            except:
-                pass
-    
+            except Exception as e:
+                print(f'Error in {diags_set}: {e}')
+                import traceback
+                traceback.print_exc()
+
         if diags_set == 'set11_diurnal_cycle_LAcoupling':
             try:
                 diurnal_cycle_LAcoupling_plot(parameter)
                 diurnal_cycle_LAcoupling_html(parameter)
                 html_count = html_count + 1
-            except:
-                pass
+            except Exception as e:
+                print(f'Error in {diags_set}: {e}')
+                import traceback
+                traceback.print_exc()
 
         if diags_set == 'set12_diurnal_amplitude_metric':
             try:
                 diurnal_amplitude_plot(parameter)
                 diurnal_amplitude_html(parameter)
                 html_count = html_count + 1
-            except:
-                pass
+            except Exception as e:
+                print(f'Error in {diags_set}: {e}')
 
     # Create the main html page hosting all sets of diagnostics
     if html_count >= 1:
@@ -253,7 +257,7 @@ if __name__ == "__main__":
         print(('Html files saved in:'+output_path+'/html/'))
         print(('Open Html file by (MacOS): open ' +output_path+'/html/arm_diag.html'))
         print(('Open Html file by (Linux): xdg-open ' +output_path+'/html/arm_diag.html'))
-        
+
         print('Processes Completed!')
         print('------------------     END    -------------------------')
     else:
@@ -308,11 +312,11 @@ def run_diagnostics(basic_parameter):
         if diags_set == 'set1_tables':
             try:
                 seasonal_mean_table(parameter) #Calculate seasonal mean climatology
-                seasonal_mean_table_html(parameter) #Generate html 
+                seasonal_mean_table_html(parameter) #Generate html
                 html_count = html_count + 1
-            except:
-                pass
-    
+            except Exception as e:
+                print(f'Error in {diags_set}: {e}')
+
         if diags_set == 'set2_annual_cycle':
             try:
                 annual_cycle_data(parameter)
@@ -320,9 +324,9 @@ def run_diagnostics(basic_parameter):
                 annual_cycle_taylor_diagram(parameter)
                 annual_cycle_html(parameter)
                 html_count = html_count + 1
-            except:
-                pass
-    
+            except Exception as e:
+                print(f'Error in {diags_set}: {e}')
+
         if diags_set == 'set3_annual_cycle_zt': # this also include set5 diags
             try:
                 annual_cycle_zt_data(parameter)
@@ -330,35 +334,35 @@ def run_diagnostics(basic_parameter):
                 annual_cycle_zt_html(parameter)
                 diurnal_cycle_zt_html(parameter)
                 html_count = html_count + 1
-            except:
-                pass
-    
+            except Exception as e:
+                print(f'Error in {diags_set}: {e}')
+
         if diags_set == 'set4_diurnal_cycle':
             try:
                 diurnal_cycle_data(parameter)
                 diurnal_cycle_plot(parameter)
                 diurnal_cycle_html(parameter)
                 html_count = html_count + 1
-            except:
-                pass
-    
+            except Exception as e:
+                print(f'Error in {diags_set}: {e}')
+
         if diags_set == 'set6_pdf_daily':
             try:
                 pdf_daily_data(parameter)
                 pdf_daily_plot(parameter)
                 pdf_daily_html(parameter)
                 html_count = html_count + 1
-            except:
-                pass
-    
+            except Exception as e:
+                print(f'Error in {diags_set}: {e}')
+
         if diags_set == 'set7_convection_onset':
             try:
                 convection_onset(parameter)
                 convection_onset_html(parameter)
                 html_count = html_count + 1
-            except:
-                pass
-    
+            except Exception as e:
+                print(f'Error in {diags_set}: {e}')
+
         if diags_set == 'set8_annual_cycle_aci':
             try:
                 annual_cycle_aci_data(parameter)
@@ -366,42 +370,46 @@ def run_diagnostics(basic_parameter):
                 annual_cycle_aci_taylor_diagram(parameter)
                 annual_cycle_aci_html(parameter)
                 html_count = html_count + 1
-            except:
-                pass
-    
+            except Exception as e:
+                print(f'Error in {diags_set}: {e}')
+
         if diags_set == 'set9_aerosol_activation':
             try:
                 aerosol_activation_density_plot(parameter)
                 aerosol_activation_html(parameter)
                 html_count = html_count + 1
-            except:
-                pass
-         
+            except Exception as e:
+                print(f'Error in {diags_set}: {e}')
+
         if diags_set == 'set10_twolegged_metric':
             try:
                 twolegged_metric_plot(parameter)
                 twolegged_metric_html(parameter)
                 html_count = html_count + 1
-            except:
-                pass
-    
+            except Exception as e:
+                print(f'Error in {diags_set}: {e}')
+                import traceback
+                traceback.print_exc()
+
         if diags_set == 'set11_diurnal_cycle_LAcoupling':
             try:
                 diurnal_cycle_LAcoupling_plot(parameter)
                 diurnal_cycle_LAcoupling_html(parameter)
                 html_count = html_count + 1
-            except:
-                pass
+            except Exception as e:
+                print(f'Error in {diags_set}: {e}')
+                import traceback
+                traceback.print_exc()
 
         if diags_set == 'set12_diurnal_amplitude_metric':
             try:
                 diurnal_amplitude_plot(parameter)
                 diurnal_amplitude_html(parameter)
                 html_count = html_count + 1
-            except:
-                pass
+            except Exception as e:
+                print(f'Error in {diags_set}: {e}')
 
-    
+
     #
     if html_count >= 1:
     # Create the main html page hosting all sets of diagnostics

@@ -297,6 +297,11 @@
       "units": ["W/m\u00b2","W/m\u00b2","deg C","%","meter","meter"],
       "sites": ["sgpc1"],
       "season": ["ANN","DJF","MAM","JJA","SON"]
+                },
+          {
+      "diags_set": "set12_diurnal_amplitude_metric",
+      "sites": ["sgpc1"],
+      "season": ["DJF","MAM","JJA","SON"]
                 }
 
           ]
