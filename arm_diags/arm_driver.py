@@ -258,8 +258,8 @@ if __name__ == "__main__":
         diags_main_html(output_path, test_model)
         #
         print(('Html files saved in:'+output_path+'/html/'))
-        print(('Open Html file by (MacOS): open ' +output_path+'/html/arm_diag.html'))
-        print(('Open Html file by (Linux): xdg-open ' +output_path+'/html/arm_diag.html'))
+        print(('Open Html file by (MacOS): open ' +output_path+'/html/arm_diags.html'))
+        print(('Open Html file by (Linux): xdg-open ' +output_path+'/html/arm_diags.html'))
 
         print('Processes Completed!')
         print('------------------     END    -------------------------')
@@ -419,8 +419,8 @@ def run_diagnostics(basic_parameter):
         diags_main_html(output_path, test_model)
         #
         print(('Html files saved in:'+output_path+'/html/'))
-        print(('Open Html file by (MacOS): open ' +output_path+'/html/arm_diag.html'))
-        print(('Open Html file by (Linux): xdg-open ' +output_path+'/html/arm_diag.html'))
+        print(('Open Html file by (MacOS): open ' +output_path+'/html/arm_diags.html'))
+        print(('Open Html file by (Linux): xdg-open ' +output_path+'/html/arm_diags.html'))
         
         print('Processes Completed!')
         print('------------------     END    -------------------------')

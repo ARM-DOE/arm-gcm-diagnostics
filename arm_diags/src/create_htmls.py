@@ -20,7 +20,7 @@ def diags_main_html(output_path,test_model):
     #test_model = parameter.test_data_set
     os.chdir(output_path+'/html')
     print((os.getcwd()))
-    f = open('arm_diag.html','w')
+    f = open('arm_diags.html','w')
     message = """<html>
     <head>
     <TITLE>ARM Diagnostics Plots</TITLE>
