@@ -1,5 +1,5 @@
 #===========================================================================================================================
-# Program for generate the HTML files hosting the results
+# Program for generate the HTML files hosting the results -- Original written by Dr. Chengzhu Zhang @ LLNL
 #---------------------------------------------------------------------------------------------------------------------------
 # V4 Development
     # ---------------------------------------------------------------------------------------
@@ -20,7 +20,7 @@ def diags_main_html(output_path,test_model):
     #test_model = parameter.test_data_set
     os.chdir(output_path+'/html')
     print((os.getcwd()))
-    f = open('arm_diag.html','w')
+    f = open('arm_diags.html','w')
     message = """<html>
     <head>
     <TITLE>ARM Diagnostics Plots</TITLE>
@@ -60,11 +60,15 @@ def diags_main_html(output_path,test_model):
       <TH ALIGN=left VALIGN=top>
       <font color=blue>Process-oriented Diagnostics Sets</font><br>
     <p>
-      <font color=red>1</font> <A HREF="convection_onset.html">Basic diagnostics plots</A> for Convection Onset.<br>
+      <font color=red>1</font> <A HREF="convection_onset.html">Diagnostics plots</A> for Convection Onset.<br>
     <p>
-      <font color=red>2</font> <A HREF="aerosol_activation.html">Basic diagnostics plots</A> for Aerosol Activation.<br>
+      <font color=red>2</font> <A HREF="aerosol_activation.html">Diagnostics plots</A> for Aerosol Activation.<br>
     <p>
-      <font color=red>3</font> <A HREF="twolegged_metric.html">Basic diagnostics plots</A> for Two-legged metrics.<br>
+      <font color=red>3</font> <A HREF="twolegged_metric.html">Diagnostics plots</A> for Two-legged metrics.<br>
+    <p>
+      <font color=red>4</font> <A HREF="diurnal_amplitude.html">Diagnostics plots</A> for Diurnal Amplitude metrics.<br>
+    
+
     </Table>
 
     <p>
@@ -77,7 +81,7 @@ def diags_main_html(output_path,test_model):
       <A HREF="diurnal_cycle_zt.html"><img src="cl_p_obs_diurnal_clim_sgpc1.png"   border=1 hspace=3 alt="Set 3" width="180" height="150"></a>
       <A HREF="diurnal_cycle.html"><img src="pr_JJA_diurnal_cycle_sgpc1.png"   border=1 hspace=3 alt="Set 4" width="180" height="150"></a>
       <A HREF="pdf_daily.html"><img src="pr_JJA_pdf1_daily_sgpc1.png"   border=1 hspace=3 alt="Set 6" width="180" height="150"></a>
-    
+      
     </TH>
     </TD>
     
@@ -235,10 +239,8 @@ def annual_cycle_aci_html(parameter):
             htmlfile.write('<TR><TH ALIGN=LEFT>'+var_longname[j])
             two_figs='annual_cycle_'+variable+'_2plots_{}.html'.format(title_name)
             htmlfile1 = open(output_path+'/html/'+two_figs,"w")
-
             fig1='../figures/{}/'.format(title_name)+'aerosol_annual_cycle_'+variable+'_{}.png'.format(title_name)
             fig2='../figures/{}/'.format(title_name)+'aerosol_annual_cycle_'+variable+'_taylor_diagram_{}.png'.format(title_name)
-
             htmlfile1.write('<div class="container"><div style="float:left"><img src='+fig1+' alt="Line" width="600" height="450"></div><div style="float:left"><img src='+fig2+' alt="Line" width="500" height="450"></div>')
             htmlfile.write('<TH ALIGN=LEFT><A HREF='+two_figs+'>Line plot and Taylor Diagram.</a>')
     htmlfile.write('<tr><td><br/></td></tr>')
@@ -281,7 +283,6 @@ def annual_cycle_zt_html(parameter):
             fig_obs='../figures/{}/'.format(title_name)+variable+'_annual_cycle_clim_obs_{}.png'.format(title_name)
             fig_mod='../figures/{}/'.format(title_name)+variable+'_annual_cycle_clim_mod_{}.png'.format(title_name)
             fig_diff='../figures/{}/'.format(title_name)+variable+'_annual_cycle_clim_the_diff_{}.png'.format(title_name)
-
             htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig_mod+'> Model  </a>')
             htmlfile.write('<A HREF='+fig_obs+'> Obs.</a>')
             htmlfile.write('<A HREF='+fig_diff+'>  Model-Obs.</a>')
@@ -289,7 +290,6 @@ def annual_cycle_zt_html(parameter):
 
             for si in range(len(seasons)):
                fig='../figures/{}/'.format(title_name)+variable+'_zdiff_'+seasons[si]+'_{}.png'.format(title_name)
-
                if seasons[si]=='ANN':
                    htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig+'> '+seasons[si]+'</a>')
                else:
@@ -371,7 +371,6 @@ def diurnal_cycle_zt_html(parameter):
             fig_mod='../figures/{}/'.format(title_name)+variable+'_diurnal_clim_mod_{}.png'.format(title_name)
             fig_obs_mon='../figures/{}/'.format(title_name)+variable+'_mon_diurnal_clim_obs_{}.png'.format(title_name)
             fig_mod_mon='../figures/{}/'.format(title_name)+variable+'_mon_diurnal_clim_mod_{}.png'.format(title_name)
-
             htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig_mod_mon+'> Model  </a>')
             htmlfile.write('<A HREF='+fig_obs_mon+'> Obs.</a>')
             htmlfile.write('<TH ALIGN=LEFT><A HREF='+fig_mod+'> Model  </a>')
@@ -479,11 +478,43 @@ def aerosol_activation_html(parameter):
         fig1='../figures/{}/'.format(title_name)+'aerosol_activation_bulk_cpc_ccn05_obs_{}.png'.format(title_name)
         fig2='../figures/{}/'.format(title_name)+'aerosol_activation_bulk_cpc_ccn05_testmodel_{}.png'.format(title_name)
         htmlfile_05.write('<div class="container"><div style="float:left"><img src='+fig1+' alt="Line" width="720" height="600"></div><div style="float:left"><img src='+fig2+' alt="No inputs for models" width="720" height="600"></div>')
-
         #
         htmlfile.write('<TD><A HREF='+two_figs_02+'>'+'At 0.2% SS'+'</a></TD>')
         htmlfile.write('<TD><A HREF='+two_figs_05+'>'+'At 0.5% SS'+'</a></TD>')
         htmlfile.write('<tr><td><br/></td></tr>')
+
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+def diurnal_cycle_LAcoupling_html(parameter):
+    output_path = parameter.output_path
+    test_model = parameter.test_data_set
+    seasons = parameter.season
+    variables = parameter.variables
+    varnames = parameter.varnames
+    units = parameter.units
+    sites = parameter.sites
+
+    title_to_file = OrderedDict()
+    title_to_file['Southern Great Plains (SGP)'] = 'sgpc1'
+
+    htmlfile = open(output_path+'/html/diurnal_cycle_LAcoupling.html',"w")
+    htmlfile.write('<p><th><b>'+test_model+': Land-Atmosphere Coupling Diurnal Cycle'+ '</b></th></p>')
+    htmlfile.write('<table>')
+
+    for title in title_to_file:
+        title_name = title_to_file[title]
+        htmlfile.write('<TR><TH ALIGN=LEFT><BR><TH ALIGN=LEFT><font color=blue size=+1>{}</font><TH><BR><TR>'.format(title))
+        for j, variable in enumerate(variables):
+            # Create the HTML file for output
+            htmlfile.write('<TR><TH ALIGN=LEFT>'+varnames[j]+' (units: '+units[j]+')')
+
+            for season in seasons:
+                two_figs_atm = 'diurnal_cycle_LAcoupling_'+season+'_'+variables[j]+'_'+title_name+'.html'
+                htmlfile_atm = open(output_path+'/html/'+two_figs_atm,"w")
+                fig1='../figures/{}/'.format(title_name)+'Diurnal_cycle_'+season+'_'+variables[j]+'_{}.png'.format(title_name)
+     
+                htmlfile_atm.write('<div class="container"><div style="float:left"><img src='+fig1+' alt="Line" width="600" height="300"></div>') 
+                htmlfile.write('<TD><TH ALIGN=LEFT><A HREF='+two_figs_atm+'>'+season+'</a></TD>')
+        htmlfile.write('<tr><td><br/></td></tr>') 
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 def twolegged_metric_html(parameter):
@@ -533,34 +564,85 @@ def twolegged_metric_html(parameter):
         htmlfile.write('<tr><td><br/></td></tr>')
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-def diurnal_cycle_LAcoupling_html(parameter):
+def diurnal_amplitude_html(parameter):
     output_path = parameter.output_path
     test_model = parameter.test_data_set
     seasons = parameter.season
-    variables = parameter.variables
-    varnames = parameter.varnames
-    units = parameter.units
     sites = parameter.sites
 
-    title_to_file = OrderedDict()
-    title_to_file['Southern Great Plains (SGP)'] = 'sgpc1'
+    if isinstance(seasons, str):
+        seasons = [seasons]
 
-    htmlfile = open(output_path+'/html/diurnal_cycle_LAcoupling.html',"w")
-    htmlfile.write('<p><th><b>'+test_model+': Land-Atmosphere Coupling Diurnal Cycle'+ '</b></th></p>')
+    if isinstance(sites, (list, tuple)):
+        site = sites[0]
+    else:
+        site = sites
+
+    title_to_file = OrderedDict()
+    title_to_file['Southern Great Plains (SGP)'] = site
+
+    labels = [
+        "sw_dn_srf vs sw_up_srf",
+        "net_srf vs dTsdt",
+        "T_skin vs T_srf",
+        "LH + SH vs PBLH",
+    ]
+    var_pairs = [
+        ("sw_dn_srf", "sw_up_srf"),
+        ("net_srf", "dTsdt"),
+        ("T_skin", "T_srf"),
+        ("LHSH", "pbl"),
+    ]
+
+    os.makedirs(output_path + '/html', exist_ok=True)
+    htmlfile = open(output_path + '/html/diurnal_amplitude.html', "w")
+    htmlfile.write('<p><th><b>' + test_model + ': Diurnal amplitude' + '</b></th></p>')
     htmlfile.write('<table>')
 
     for title in title_to_file:
         title_name = title_to_file[title]
-        htmlfile.write('<TR><TH ALIGN=LEFT><BR><TH ALIGN=LEFT><font color=blue size=+1>{}</font><TH><BR><TR>'.format(title))
-        for j, variable in enumerate(variables):
-            # Create the HTML file for output
-            htmlfile.write('<TR><TH ALIGN=LEFT>'+varnames[j]+' (units: '+units[j]+')')
+        htmlfile.write(
+            '<TR><TH ALIGN=LEFT><BR><TH ALIGN=LEFT>'
+            '<font color=blue size=+1>{}</font><TH><BR><TR>'.format(title)
+        )
+
+        for j, label in enumerate(labels):
+            var_x, var_y = var_pairs[j]
+            htmlfile.write('<TR><TH ALIGN=LEFT>' + label + ' (Obs. vs. Model)')
 
             for season in seasons:
-                two_figs_atm = 'diurnal_cycle_LAcoupling_'+season+'_'+variables[j]+'_'+title_name+'.html'
-                htmlfile_atm = open(output_path+'/html/'+two_figs_atm,"w")
-                fig1='../figures/{}/'.format(title_name)+'Diurnal_cycle_'+season+'_'+variables[j]+'_{}.png'.format(title_name)
-     
-                htmlfile_atm.write('<div class="container"><div style="float:left"><img src='+fig1+' alt="Line" width="600" height="300"></div>') 
-                htmlfile.write('<TD><TH ALIGN=LEFT><A HREF='+two_figs_atm+'>'+season+'</a></TD>')
-        htmlfile.write('<tr><td><br/></td></tr>')           
+                sub_html = 'diurnal_amplitude_' + season + '_' + var_x + '_' + var_y + '_' + title_name + '.html'
+                sub_html_path = output_path + '/html/' + sub_html
+
+                fig = '../figures/{}/'.format(title_name) + 'Diurnal_amplitude_{}_{}_{}.png'.format(
+                    season, var_x, var_y
+                )
+
+                with open(sub_html_path, "w") as fsub:
+                    fsub.write(
+                        '<html><head>'
+                        '<style>'
+                        '.img-container {'
+                        '  text-align:center;'
+                        '  margin:20px auto;'
+                        '  max-width:900px;'
+                        '}'
+                        '.img-container img {'
+                        '  max-width:80%;'
+                        '  height:auto;'
+                        '  display:block;'
+                        '  margin:0 auto;'
+                        '}'
+                        '</style>'
+                        '</head><body>'
+                        '<div class="img-container">'
+                        '<img src="' + fig + '" alt="Diurnal amplitude scatter">'
+                        '</div>'
+                        '</body></html>'
+                    )
+
+                htmlfile.write('<TD><TH ALIGN=LEFT><A HREF=' + sub_html + '>' + season + '</a></TD>')
+
+        htmlfile.write('<tr><td><br/></td></tr>')
+
+    htmlfile.close()

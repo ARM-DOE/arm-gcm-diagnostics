@@ -112,13 +112,13 @@ For Mac OS:
 
 .. code-block:: bash
 
-    open <Your directory>/arm_diags_data/results/my_test_case/html/ARM_diag.html
+    open <Your directory>/arm_diags_data/results/my_test_case/html/arm_diags.html
 
 For Linux:
 
 .. code-block:: bash
 
-    xdg-open <Your directory>/arm_diags_data/results/my_test_case/html/ARM_diag.html
+    xdg-open <Your directory>/arm_diags_data/results/my_test_case/html/arm_diags.html
 
 
 Examples

@@ -1,0 +1,20 @@
+{
+        "arm_diags": [
+         {
+      "diags_set": "set11_diurnal_cycle_LAcoupling",
+      "variables": ["SH","LH","T_srf","RH_srf","LCL","pbl"],
+      "varnames": ["Surface Sensible Heat Flux","Surface Latent Heat Flux","Surface Air Temperature","Surface Relative Humidity","Lifting Condensation Level","Planetary Boundary Layer"],
+      "units": ["W/m\u00b2","W/m\u00b2","deg C","%","meter","meter"],
+      "sites": ["sgpc1"],
+      "season": ["ANN","DJF","MAM","JJA","SON"]
+                },
+
+         {
+      "diags_set": "set12_diurnal_amplitude_metric",
+      "sites": ["sgpc1"],
+      "season": ["DJF","MAM","JJA","SON"]
+                }
+
+          ]
+}
+
