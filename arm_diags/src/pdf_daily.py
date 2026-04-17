@@ -26,7 +26,6 @@ import matplotlib.pyplot as plt
 from matplotlib.pyplot import grid
 from .varid_dict import varid_longname
 import xarray as xr
-import pandas as pd
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 def convert_units(da):
@@ -77,13 +76,21 @@ def var_pdf_daily(da, season, years):
     
     # Process each year
     for iy, year in enumerate(years):
-        # Set start and end time for season (90-day period)
-        start_time = f"{year}-{mo0:02d}-01"
-        
-        # Calculate end time (90 days after start)
-        # Create a pandas datetime and add 90 days
-        end_date = pd.to_datetime(start_time) + pd.Timedelta(days=90)
-        end_time = end_date.strftime("%Y-%m-%d")
+        # Set season start and end bounds using calendar-safe string dates
+        # (avoid pandas datetime arithmetic, which can create invalid dates for
+        # non-Gregorian calendars such as noleap)
+        if season == 'JJA':
+            start_time = f"{year}-06-01"
+            end_time = f"{year}-09-01"
+        elif season == 'SON':
+            start_time = f"{year}-09-01"
+            end_time = f"{year}-12-01"
+        elif season == 'DJF':
+            start_time = f"{year}-12-01"
+            end_time = f"{year+1}-03-01"
+        elif season == 'MAM':
+            start_time = f"{year}-03-01"
+            end_time = f"{year}-06-01"
         
         try:
             # Select data for this season
@@ -446,4 +453,3 @@ def pdf_daily_plot(parameter):
                 print(f"Error processing {variable} {season}: {e}")
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-
