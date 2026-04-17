@@ -26,7 +26,6 @@ import matplotlib.pyplot as plt
 from matplotlib.pyplot import grid
 from .varid_dict import varid_longname
 import xarray as xr
-import pandas as pd
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 def convert_units(da):
@@ -62,28 +61,27 @@ def var_pdf_daily(da, season, years):
     np.ndarray
         Flattened array of daily data for the selected season across all years
     """
-    # Set season start month
-    if season == 'JJA':
-        mo0 = 6
-    elif season == 'SON': 
-        mo0 = 9
-    elif season == 'DJF': 
-        mo0 = 12
-    elif season == 'MAM': 
-        mo0 = 3
+    # Define seasonal bounds as calendar-safe string dates
+    # End bounds follow the original "start + 90 days" behavior while
+    # avoiding invalid noleap dates (notably Feb 29 for DJF).
+    seasonal_bounds = {
+        'JJA': lambda y: (f"{y}-06-01", f"{y}-08-30"),
+        'SON': lambda y: (f"{y}-09-01", f"{y}-11-30"),
+        'DJF': lambda y: (f"{y}-12-01", f"{y+1}-03-01"),
+        'MAM': lambda y: (f"{y}-03-01", f"{y}-05-30"),
+    }
+    if season not in seasonal_bounds:
+        raise ValueError(f"Invalid season '{season}'. Expected one of {sorted(seasonal_bounds.keys())}.")
     
     # Initialize array for storing yearly data
     var_da_year = np.empty([len(years), 90]) * np.nan
     
     # Process each year
     for iy, year in enumerate(years):
-        # Set start and end time for season (90-day period)
-        start_time = f"{year}-{mo0:02d}-01"
-        
-        # Calculate end time (90 days after start)
-        # Create a pandas datetime and add 90 days
-        end_date = pd.to_datetime(start_time) + pd.Timedelta(days=90)
-        end_time = end_date.strftime("%Y-%m-%d")
+        # Set season start and end bounds using calendar-safe string dates
+        # (avoid pandas datetime arithmetic, which can create invalid dates for
+        # non-Gregorian calendars such as noleap)
+        start_time, end_time = seasonal_bounds[season](year)
         
         try:
             # Select data for this season
@@ -446,4 +444,3 @@ def pdf_daily_plot(parameter):
                 print(f"Error processing {variable} {season}: {e}")
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-
