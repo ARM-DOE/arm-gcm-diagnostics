@@ -62,14 +62,16 @@ def var_pdf_daily(da, season, years):
         Flattened array of daily data for the selected season across all years
     """
     # Define seasonal bounds as calendar-safe string dates
+    # End bounds follow the original "start + 90 days" behavior while
+    # avoiding invalid noleap dates (notably Feb 29 for DJF).
     seasonal_bounds = {
-        'JJA': lambda y: (f"{y}-06-01", f"{y}-09-01"),
-        'SON': lambda y: (f"{y}-09-01", f"{y}-12-01"),
+        'JJA': lambda y: (f"{y}-06-01", f"{y}-08-30"),
+        'SON': lambda y: (f"{y}-09-01", f"{y}-11-30"),
         'DJF': lambda y: (f"{y}-12-01", f"{y+1}-03-01"),
-        'MAM': lambda y: (f"{y}-03-01", f"{y}-06-01"),
+        'MAM': lambda y: (f"{y}-03-01", f"{y}-05-30"),
     }
     if season not in seasonal_bounds:
-        raise ValueError(f"Invalid season '{season}'. Expected one of {list(seasonal_bounds)}.")
+        raise ValueError(f"Invalid season '{season}'. Expected one of {sorted(seasonal_bounds.keys())}.")
     
     # Initialize array for storing yearly data
     var_da_year = np.empty([len(years), 90]) * np.nan
