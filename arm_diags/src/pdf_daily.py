@@ -61,15 +61,15 @@ def var_pdf_daily(da, season, years):
     np.ndarray
         Flattened array of daily data for the selected season across all years
     """
-    # Set season start month
-    if season == 'JJA':
-        mo0 = 6
-    elif season == 'SON': 
-        mo0 = 9
-    elif season == 'DJF': 
-        mo0 = 12
-    elif season == 'MAM': 
-        mo0 = 3
+    # Define seasonal bounds as calendar-safe string dates
+    seasonal_bounds = {
+        'JJA': lambda y: (f"{y}-06-01", f"{y}-09-01"),
+        'SON': lambda y: (f"{y}-09-01", f"{y}-12-01"),
+        'DJF': lambda y: (f"{y}-12-01", f"{y+1}-03-01"),
+        'MAM': lambda y: (f"{y}-03-01", f"{y}-06-01"),
+    }
+    if season not in seasonal_bounds:
+        raise ValueError(f"Invalid season '{season}'. Expected one of {list(seasonal_bounds)}.")
     
     # Initialize array for storing yearly data
     var_da_year = np.empty([len(years), 90]) * np.nan
@@ -79,18 +79,7 @@ def var_pdf_daily(da, season, years):
         # Set season start and end bounds using calendar-safe string dates
         # (avoid pandas datetime arithmetic, which can create invalid dates for
         # non-Gregorian calendars such as noleap)
-        if season == 'JJA':
-            start_time = f"{year}-06-01"
-            end_time = f"{year}-09-01"
-        elif season == 'SON':
-            start_time = f"{year}-09-01"
-            end_time = f"{year}-12-01"
-        elif season == 'DJF':
-            start_time = f"{year}-12-01"
-            end_time = f"{year+1}-03-01"
-        elif season == 'MAM':
-            start_time = f"{year}-03-01"
-            end_time = f"{year}-06-01"
+        start_time, end_time = seasonal_bounds[season](year)
         
         try:
             # Select data for this season
